@@ -10,6 +10,11 @@ const SCHEMA = /^https:\/\/static\.modelcontextprotocol\.io\/schemas\/v1\/server
 const CARD_TYPE = "application/mcp-server-card+json";
 const ROOTS = ["", "public/", "static/", "site/", "docs/"];
 const MCP_URL = /https?:\/\/[a-z0-9.-]+(?::\d+)?\/mcp\b(?![a-z0-9_-])/gi;
+// A source file that routes "/mcp" is a live MCP server; it must serve or ship a card (tests do not count).
+const MCP_ROUTE = /(?:\b(?:pathname|path|url)\s*={2,3}\s*["'`]\/mcp["'`]|\.(?:all|post|get|use|route)\(\s*["'`]\/mcp["'`])/;
+const SRC = /\.(?:m?[jt]s|[jt]sx)$/;
+const isTest = (f) => /(^|\/)(?:tests?|__tests__|node_modules|dist)\//.test(f) || /\.(?:test|spec)\./.test(f);
+const CARD_REF = /mcp-server-card|mcp\/server-card|ai-catalog/;
 const isHttps = (u) => typeof u === "string" && /^https:\/\/[a-z0-9.-]+(?::\d+)?(\/\S*)?$/i.test(u);
 
 function parse(read, path, at) {
@@ -81,6 +86,14 @@ export function run({ files, read }) {
       const cfg = read("_config.yml") ?? "";
       if (!/^\s*-\s*["']?\.well-known["']?\s*$/m.test(cfg)) findings.push({ file: "_config.yml", line: 1, message: ".well-known is not in `include:`; Jekyll will not publish the cards" });
     }
+  }
+  // 5. A server that routes /mcp but neither ships a card file nor has code that serves one.
+  const src = files.filter((f) => SRC.test(f) && !isTest(f));
+  const routes = src.filter((f) => MCP_ROUTE.test(read(f) ?? ""));
+  if (routes.length) {
+    const served = files.some((f) => !isTest(f) && /(^|\/)\.well-known\/(?:mcp-server-card|mcp\/server-card|ai-catalog)\.json$/.test(f))
+      || src.some((f) => CARD_REF.test(read(f) ?? ""));
+    if (!served) findings.push({ file: routes[0], line: 1, message: "routes /mcp but nothing serves /.well-known/mcp-server-card.json: agents cannot discover this MCP server" });
   }
   return { pass: findings.length === 0, findings };
 }

@@ -167,5 +167,57 @@
   "files": {
    "llms.txt": "We use the MCP protocol; see https://example.com/mcp-guide\n"
   }
+ },
+ {
+  "name": "worker routes /mcp, no card anywhere",
+  "label": "bad",
+  "files": {
+   "src/index.js": "export default { fetch(r){ const { pathname } = new URL(r.url); if (pathname === \"/mcp\") return mcp(r); return new Response(\"no\", {status:404}); } };\n",
+   "wrangler.toml": "name = \"w\"\n"
+  }
+ },
+ {
+  "name": "hono app.all /mcp, no card",
+  "label": "bad",
+  "files": {
+   "src/app.ts": "app.all(\"/mcp\", (c) => handle(c));\n"
+  }
+ },
+ {
+  "name": "only a test mentions the card",
+  "label": "bad",
+  "files": {
+   "src/index.js": "if (pathname === \"/mcp\") return mcp(r);\n",
+   "test/card.test.js": "fetch('/.well-known/mcp-server-card.json')\n"
+  }
+ },
+ {
+  "name": "worker routes /mcp and serves the card in code",
+  "label": "good",
+  "files": {
+   "src/index.js": "if (pathname === \"/mcp\") return mcp(r);\nif (pathname === \"/.well-known/mcp-server-card.json\") return card();\n"
+  }
+ },
+ {
+  "name": "worker routes /mcp and ships a static card",
+  "label": "good",
+  "files": {
+   "src/index.js": "if (pathname === \"/mcp\") return mcp(r);\n",
+   "public/.well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "source mentions /mcp only in a string",
+  "label": "good",
+  "files": {
+   "src/index.js": "const hint = \"The MCP server is at /mcp\";\n"
+  }
+ },
+ {
+  "name": "router compares path to /mcp, no card",
+  "label": "bad",
+  "files": {
+   "src/index.js": "if (path === \"/mcp\") return mcpRoute(request);\n"
+  }
  }
 ]
