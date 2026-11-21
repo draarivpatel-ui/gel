@@ -1,0 +1,9 @@
+[
+ {"name": "job with no timeout", "label": "bad", "files": {".github/workflows/ci.yml": "on: [push]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo hi\n"}},
+ {"name": "one job of two has no timeout", "label": "bad", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  a:\n    runs-on: ubuntu-latest\n    timeout-minutes: 10\n    steps:\n      - run: echo a\n  b:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo b\n"}},
+ {"name": "a step timeout does not count for the job", "label": "bad", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo a\n        timeout-minutes: 5\n"}},
+ {"name": "every job has a timeout", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  a:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - run: echo a\n  b:\n    timeout-minutes: 5\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo b\n"}},
+ {"name": "job that calls a reusable workflow", "label": "good", "files": {".github/workflows/gel.yml": "on: [push]\njobs:\n  gel:\n    uses: flisk-sh/gel/.github/workflows/gel.yml@v1\n"}},
+ {"name": "no workflows", "label": "good", "files": {"README.md": "# hi\n"}},
+ {"name": "workflow outside .github/workflows", "label": "good", "files": {"docs/ci.yml": "on: push\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo a\n"}}
+]
