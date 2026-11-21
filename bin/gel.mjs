@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { measure as measureFirstScreen } from "../lib/five-second-render.mjs";
-import { appendFileSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { appendFileSync, readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { execFileSync, execSync } from "node:child_process";
-import { resolve } from "node:path";
+import { resolve, join, dirname } from "node:path";
 import { loadConfig } from "../lib/config.mjs";
 import { pickLane, lanePlan } from "../lib/lane.mjs";
 import { matchAny } from "../lib/glob.mjs";
@@ -11,6 +11,7 @@ import { GUARD_NAMES, WHOLE_TREE, loadGuard } from "../lib/guards.mjs";
 import { selftest } from "../lib/selftest.mjs";
 import { diffChanges, movedOnBase, baseReader } from "../lib/diff.mjs";
 import { readRecords, metrics, metricsMarkdown } from "../lib/metrics.mjs";
+import { plan as promotePlan, apply as promoteApply, warnings as promoteWarnings, promoteMarkdown } from "../lib/promote.mjs";
 import { factory, factoryMarkdown, fromGh } from "../lib/factory.mjs";
 import { EVAL_NAMES, runEval, ratchet, evalSelftest, readJson } from "../lib/evals.mjs";
 import { meta, metaMarkdown, metaSelftest } from "../lib/meta.mjs";
@@ -110,6 +111,19 @@ async function main() {
     }
     const report = factory(prs);
     console.log(args.includes("--json") ? JSON.stringify(report, null, 1) : factoryMarkdown(report));
+    process.exit(0);
+  }
+  if (cmd === "promote") {
+    // gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json]: turn gel metrics advice into a change of docs/gel.json
+    const root = resolve(opt("root", "."));
+    const recs = readRecords(args.slice(1).filter((a, i, xs) => !a.startsWith("--") && !(xs[i - 1] ?? "").startsWith("--")));
+    const labels = opt("labels") && existsSync(opt("labels")) ? JSON.parse(readFileSync(opt("labels"), "utf8")) : [];
+    const file = join(root, "docs", "gel.json");
+    const raw = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
+    const changes = promotePlan(metrics(recs, labels, loadConfig(root)), raw);
+    const warns = promoteWarnings(raw, changes);
+    if (args.includes("--write") && changes.length) { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, JSON.stringify(promoteApply(raw, changes), null, 2) + "\n"); }
+    console.log(args.includes("--json") ? JSON.stringify({ changes, warnings: warns, written: args.includes("--write") && changes.length > 0 }, null, 1) : promoteMarkdown(changes, warns));
     process.exit(0);
   }
   if (cmd === "metrics") {
@@ -231,7 +245,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);

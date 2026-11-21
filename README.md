@@ -135,6 +135,14 @@ Per guard: runs, fail rate, precision from your labels (`[{guard, file, line, ve
 
 Every false alarm is listed as a hard case to add to the guard's `cases.json`. Overall it reports first-pass share, blocked runs and p50/p95 time. GEL only advises: a person edits `docs/gel.json`, and that edit is lane C.
 
+### Promote and demote
+
+```bash
+node bin/gel.mjs promote gel-record.jsonl --labels docs/gel-labels.json [--write]
+```
+
+Turns the `gel metrics` advice into a change of `docs/gel.json`: a guard advised to **promote** goes from `report` to `block`, a blocking guard advised to **demote** goes back to `report`, nothing else is touched. Without `--write` it only prints the proposal as a table. It warns when the file has `mode: "report"`, because that keeps every guard advisory. Editing `docs/gel.json` is lane C, so a person approves the PR; GEL never changes the level on its own.
+
 ### Fix PRs
 
 ```bash
