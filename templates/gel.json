@@ -15,6 +15,7 @@
     "dependabot-config": "report",
     "release-integrity": "report",
     "five-second-test": "report",
+    "agent-readiness": "report",
     "north-star": "report",
     "stale-base": "block"
   }

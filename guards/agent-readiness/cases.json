@@ -1,0 +1,113 @@
+[
+ {
+  "name": "llms.txt advertises MCP, no card",
+  "label": "bad",
+  "files": {
+   "llms.txt": "MCP: https://demo.flisk.si/mcp\n"
+  }
+ },
+ {
+  "name": "llms-full.txt advertises MCP, no card",
+  "label": "bad",
+  "files": {
+   "llms-full.txt": "Add https://mcp.example.com/mcp to Claude\n",
+   "index.html": "<h1>x</h1>"
+  }
+ },
+ {
+  "name": "card is not JSON",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{nope"
+  }
+ },
+ {
+  "name": "card has no endpoint",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\"}"
+  }
+ },
+ {
+  "name": "card endpoint is http",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"name\":\"f\",\"remotes\":[{\"url\":\"http://x.dev/mcp\"}]}"
+  }
+ },
+ {
+  "name": "card has no name",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"remotes\":[{\"url\":\"https://x.dev/mcp\"}]}"
+  }
+ },
+ {
+  "name": "agent card with no interface",
+  "label": "bad",
+  "files": {
+   ".well-known/agent-card.json": "{\"name\":\"a\",\"description\":\"d\"}"
+  }
+ },
+ {
+  "name": "agent card with no description",
+  "label": "bad",
+  "files": {
+   ".well-known/agent-card.json": "{\"name\":\"a\",\"supportedInterfaces\":[{\"url\":\"https://a.dev/a2a\"}]}"
+  }
+ },
+ {
+  "name": "jekyll site drops .well-known",
+  "label": "bad",
+  "files": {
+   "_config.yml": "title: x\n",
+   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "llms.txt advertises MCP and card exists",
+  "label": "good",
+  "files": {
+   "llms.txt": "MCP: https://mcp.flisk.sh/mcp\n",
+   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "no MCP claim, no cards",
+  "label": "good",
+  "files": {
+   "llms.txt": "# Site\nhello\n",
+   "index.html": "<h1>x</h1>"
+  }
+ },
+ {
+  "name": "MCP site with no agent card is fine",
+  "label": "good",
+  "files": {
+   "llms.txt": "MCP: https://mcp.flisk.sh/mcp\n",
+   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "valid agent card",
+  "label": "good",
+  "files": {
+   ".well-known/agent-card.json": "{\"name\":\"a\",\"description\":\"d\",\"supportedInterfaces\":[{\"url\":\"https://a.dev/a2a\",\"protocolBinding\":\"JSONRPC\"}]}"
+  }
+ },
+ {
+  "name": "jekyll site includes .well-known",
+  "label": "good",
+  "files": {
+   "_config.yml": "title: x\ninclude:\n  - .well-known\n",
+   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "llms.txt mentions /mcp-guide only",
+  "label": "good",
+  "files": {
+   "llms.txt": "We use the MCP protocol; see https://example.com/mcp-guide\n"
+  }
+ }
+]

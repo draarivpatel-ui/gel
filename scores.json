@@ -154,6 +154,17 @@
   "ok": true
  },
  {
+  "guard": "agent-readiness",
+  "cases": 15,
+  "good": 6,
+  "bad": 9,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
   "guard": "north-star",
   "cases": 23,
   "good": 8,
