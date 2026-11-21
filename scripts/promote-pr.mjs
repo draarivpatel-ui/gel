@@ -24,7 +24,7 @@ const log = (s) => { console.log(s); if (process.env.GITHUB_STEP_SUMMARY) append
 
 log(`## GEL promote PR${dry ? " (dry run: GEL_PROMOTE_PR is not 1 or --dry-run)" : ""}`);
 if (isPaused(process.env.GEL_PAUSE)) { log("Paused: GEL_PAUSE is set, nothing was done."); process.exit(0); }
-const open = sh("gh", ["pr", "list", "-R", REPO, "--head", BRANCH, "--state", "open", "--json", "url", "-q", "length"]).trim() | 0;
+const open = Number(sh("gh", ["pr", "list", "-R", REPO, "--head", BRANCH, "--state", "open", "--json", "url", "-q", "length"]).trim());
 const { allow, why } = budget({ max: 1, wip: WIP, open });
 if (!allow) { log(`Stopped by the brake: ${why}.`); process.exit(0); }
 
