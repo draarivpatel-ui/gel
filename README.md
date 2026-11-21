@@ -59,6 +59,7 @@ npx github:flisk-sh/gel run --root .
 | `secret-scan` | an AWS, GitHub, Anthropic, OpenAI, Stripe live or Slack key, or a private key block, is in a file (test files, sample TLS keys and doc placeholders are skipped) |
 | `pinned-actions` | a workflow uses another org's action by tag or branch instead of a commit SHA |
 | `workflow-permissions` | a workflow job has no `permissions` (and no top-level one), uses `write-all`, or checks out the fork's code under `pull_request_target` |
+| `workflow-timeouts` | a workflow job that runs steps has no `timeout-minutes`, so a hang runs for GitHub's 360-minute default. A job that only calls a reusable workflow is skipped |
 | `dead-links` | a markdown or HTML link points to a file that is not in the repo |
 | `done-without-green` | a pull request says "all checks pass" or "ready to merge" while a check on its last commit is red |
 | `migrations-append-only` | a pull request edits, renames or deletes a migration that is already on the base branch (Rails, Django, Alembic, Prisma, Knex, Drizzle, Supabase, Flyway, golang-migrate and others). Adding a migration is fine |
