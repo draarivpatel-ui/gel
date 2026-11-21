@@ -91,10 +91,13 @@ async function main() {
     let prs;
     if (opt("repo")) {
       // gh's GraphQL node limit caps one query, so read 25 PRs at a time, walking back by creation date
+      // gh is looked up in fixed system directories, not through PATH (Sonar S4036)
+      const GH = ["/opt/homebrew/bin/gh", "/usr/local/bin/gh", "/usr/bin/gh"].find((f) => existsSync(f));
+      if (!GH) { console.log("gh not found in /opt/homebrew/bin, /usr/local/bin or /usr/bin: install the GitHub CLI, or pass a prs.json"); process.exit(2); }
       const want = Number(opt("limit", 100)); prs = []; let before = "";
       while (prs.length < want) {
         const q = ["pr", "list", "-R", opt("repo"), "--state", "merged", "--limit", "25", "--json", "number,author,createdAt,mergedAt,mergedBy,autoMergeRequest,headRefName,reviews,comments,commits", ...(before ? ["--search", `created:<${before}`] : [])];
-        const page = JSON.parse(execFileSync("gh", q, { encoding: "utf8", maxBuffer: 1 << 26 }));
+        const page = JSON.parse(execFileSync(GH, q, { encoding: "utf8", maxBuffer: 1 << 26 }));
         prs.push(...page.map(fromGh));
         if (page.length < 25) break;
         before = page.reduce((m, p) => (p.createdAt < m ? p.createdAt : m), page[0].createdAt);
