@@ -11,6 +11,7 @@ import { GUARD_NAMES, WHOLE_TREE, loadGuard } from "../lib/guards.mjs";
 import { selftest } from "../lib/selftest.mjs";
 import { diffChanges, movedOnBase, baseReader } from "../lib/diff.mjs";
 import { readRecords, metrics, metricsMarkdown } from "../lib/metrics.mjs";
+import { factory, factoryMarkdown, fromGh } from "../lib/factory.mjs";
 import { EVAL_NAMES, runEval, ratchet, evalSelftest, readJson } from "../lib/evals.mjs";
 import { meta, metaMarkdown, metaSelftest } from "../lib/meta.mjs";
 import { collectRuns } from "../evals/ci-reliability/collect.mjs";
@@ -84,6 +85,29 @@ async function main() {
       for (const w of r.wrong) console.log(`       ${w}`);
     }
     process.exit(rows.every((r) => r.ok) ? 0 : 1);
+  }
+  if (cmd === "factory") {
+    // gel factory (<prs.json> | --repo owner/name [--limit 100]) [--json]: touch points and lead time per merged PR (north star of the factory)
+    let prs;
+    if (opt("repo")) {
+      // gh's GraphQL node limit caps one query, so read 25 PRs at a time, walking back by creation date
+      const want = Number(opt("limit", 100)); prs = []; let before = "";
+      while (prs.length < want) {
+        const q = ["pr", "list", "-R", opt("repo"), "--state", "merged", "--limit", "25", "--json", "number,author,createdAt,mergedAt,mergedBy,autoMergeRequest,headRefName,reviews,comments,commits", ...(before ? ["--search", `created:<${before}`] : [])];
+        const page = JSON.parse(execFileSync("gh", q, { encoding: "utf8", maxBuffer: 1 << 26 }));
+        prs.push(...page.map(fromGh));
+        if (page.length < 25) break;
+        before = page.reduce((m, p) => (p.createdAt < m ? p.createdAt : m), page[0].createdAt);
+      }
+      prs = prs.slice(0, want);
+    } else {
+      const f = args.slice(1).find((a, i, xs) => !a.startsWith("--") && !(xs[i - 1] ?? "").startsWith("--"));
+      if (!f) { console.log("usage: gel factory (<prs.json> | --repo owner/name [--limit 100]) [--json]"); process.exit(2); }
+      prs = JSON.parse(readFileSync(f, "utf8"));
+    }
+    const report = factory(prs);
+    console.log(args.includes("--json") ? JSON.stringify(report, null, 1) : factoryMarkdown(report));
+    process.exit(0);
   }
   if (cmd === "metrics") {
     const recs = readRecords(args.slice(1).filter((a, i, xs) => !a.startsWith("--") && !(xs[i - 1] ?? "").startsWith("--")));
@@ -204,7 +228,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);

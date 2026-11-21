@@ -144,6 +144,14 @@ node scripts/flywheel.mjs --max 5 [--dry-run]             # the nightly loop ove
 
 `gel fix` edits only the lines the guard reports, then runs every guard again over the whole tree. It exits 0 only when the target guard dropped, no other guard rose, and only workflow or action files changed. `.github/workflows/flywheel.yml` runs the loop each night and opens at most 5 PRs (branch `gel/fix-pinned-actions`). It needs the secret `GEL_FLYWHEEL_TOKEN` (contents and pull requests: write on the org's repos); without it the run is a dry run.
 
+### Factory metrics
+
+```bash
+node bin/gel.mjs factory --repo flisk-sh/gel --limit 100   # or: gel factory prs.json [--json]
+```
+
+The north star of the software factory: **human touch points per merged PR** (lower is better), with the share of PRs that took none and lead time (p50, p90). A touch point is one thing a person did: opening the PR by hand, each human review or comment, each human commit pushed after it opened, and merging it by hand (auto-merge is not a touch). A PR from a loop (branch `gel/...` or a bot author) costs nothing to open. It reads merged PRs through `gh`; nothing is written.
+
 ## Nightly meta-eval
 
 `.github/workflows/meta-eval.yml` runs every night: the selftest (recall and precision per guard), then the bench, then `bench/check.mjs`, which fails if any guard catches fewer planted defects or raises more findings on clean repos than `bench/baseline.json`. Changing the baseline is lane C.
