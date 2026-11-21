@@ -2,18 +2,21 @@
 // and open a PR only where the guards score the result better. No model judges anything; the guards decide.
 // Loops may not touch policy: the fixer edits only workflow and action files (bin/gel.mjs refuses anything else).
 //
-//   node scripts/flywheel.mjs [--max 5] [--repo owner/name] [--dry-run]
+//   node scripts/flywheel.mjs [--max 5] [--wip 3] [--repo owner/name] [--dry-run]
+// Brakes: GEL_PAUSE=1 stops the run (kill switch); --wip caps how many loop PRs may be open at once across the org.
 // GH_TOKEN must be able to push branches and open PRs in the target repos. Without it the run is a dry run.
 import { execFileSync } from "node:child_process";
 import { appendFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isPaused, budget } from "../lib/brakes.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : d; };
 const MAX = Number(opt("max", 5));
+const WIP = Number(opt("wip", 3));
 const BRANCH = "gel/fix-pinned-actions";
 // gel-e2e keeps planted defects on purpose: Cilytics checks they stay visible (scripts/e2e-gel.mjs there)
 const SKIP = new Set(["gel-e2e"]);
@@ -37,9 +40,16 @@ const openPr = (repo) => {
 
 let opened = 0;
 log(`## GEL flywheel: pinned-actions${dry ? " (dry run: no GH_TOKEN or --dry-run)" : ""}`);
-for (const repo of await candidates()) {
-  if (opened >= MAX) break;
-  const existing = openPr(repo);
+if (isPaused(process.env.GEL_PAUSE)) { log("Paused: GEL_PAUSE is set, nothing was done."); process.exit(0); }
+const repos = await candidates();
+const waiting = new Map(repos.map((r) => [r, openPr(r)]));
+const open = [...waiting.values()].filter(Boolean).length;
+const { allow, why } = budget({ max: MAX, wip: WIP, open });
+log(`${open} loop PRs open (cap ${WIP}), may open ${allow} more`);
+if (!allow) { log(`Stopped by the brake: ${why}.`); process.exit(0); }
+for (const repo of repos) {
+  if (opened >= allow) break;
+  const existing = waiting.get(repo);
   if (existing) { log(`- ${repo}: already open ${existing}`); continue; }
   const dir = mkdtempSync(join(tmpdir(), "gel-fly-"));
   try {
@@ -65,4 +75,4 @@ for (const repo of await candidates()) {
     log(`- ${repo}: failed: ${String(e.stderr || e.message).split("\n")[0]}`);
   }
 }
-log(`${opened} ${dry ? "would be opened" : "opened"} (max ${MAX})`);
+log(`${opened} ${dry ? "would be opened" : "opened"} (max ${MAX}, cap ${WIP} open)`);

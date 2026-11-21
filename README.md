@@ -142,7 +142,7 @@ node bin/gel.mjs fix pinned-actions --root path/to/repo   # pins what the guard 
 node scripts/flywheel.mjs --max 5 [--dry-run]             # the nightly loop over the repos Cilytics lists
 ```
 
-`gel fix` edits only the lines the guard reports, then runs every guard again over the whole tree. It exits 0 only when the target guard dropped, no other guard rose, and only workflow or action files changed. `.github/workflows/flywheel.yml` runs the loop each night and opens at most 5 PRs (branch `gel/fix-pinned-actions`). It needs the secret `GEL_FLYWHEEL_TOKEN` (contents and pull requests: write on the org's repos); without it the run is a dry run.
+`gel fix` edits only the lines the guard reports, then runs every guard again over the whole tree. It exits 0 only when the target guard dropped, no other guard rose, and only workflow or action files changed. `.github/workflows/flywheel.yml` runs the loop each night and opens at most 5 PRs a night and never more than 3 loop PRs open at once (`--wip`), so unmerged work stops new work (branch `gel/fix-pinned-actions`). Kill switch: set the repository variable `GEL_PAUSE` to `1` (or run with `GEL_PAUSE=1`) and the run exits without touching anything. It needs the secret `GEL_FLYWHEEL_TOKEN` (contents and pull requests: write on the org's repos); without it the run is a dry run.
 
 ## Nightly meta-eval
 
