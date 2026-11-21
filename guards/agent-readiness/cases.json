@@ -25,21 +25,21 @@
   "name": "card has no endpoint",
   "label": "bad",
   "files": {
-   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\"}"
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\"}"
   }
  },
  {
   "name": "card endpoint is http",
   "label": "bad",
   "files": {
-   ".well-known/mcp-server-card.json": "{\"name\":\"f\",\"remotes\":[{\"url\":\"http://x.dev/mcp\"}]}"
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"url\":\"http://x.dev/mcp\"}]}"
   }
  },
  {
   "name": "card has no name",
   "label": "bad",
   "files": {
-   ".well-known/mcp-server-card.json": "{\"remotes\":[{\"url\":\"https://x.dev/mcp\"}]}"
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
   }
  },
  {
@@ -61,7 +61,65 @@
   "label": "bad",
   "files": {
    "_config.yml": "title: x\n",
-   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "card without $schema",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "card without version",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "card without description",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "catalog entry with neither url nor data",
+  "label": "bad",
+  "files": {
+   ".well-known/ai-catalog.json": "{\"specVersion\":\"1.0\",\"entries\":[{\"identifier\":\"urn:air:x:mcp:a\",\"type\":\"application/mcp-server-card+json\"}]}"
+  }
+ },
+ {
+  "name": "catalog inline card is hollow",
+  "label": "bad",
+  "files": {
+   ".well-known/ai-catalog.json": "{\"specVersion\":\"1.0\",\"entries\":[{\"identifier\":\"urn:air:x:mcp:a\",\"type\":\"application/mcp-server-card+json\",\"data\":{\"name\":\"a/b\"}}]}"
+  }
+ },
+ {
+  "name": "catalog with no entries",
+  "label": "bad",
+  "files": {
+   ".well-known/ai-catalog.json": "{\"specVersion\":\"1.0\",\"entries\":[]}"
+  }
+ },
+ {
+  "name": "card at the mcp/server-card.json path",
+  "label": "good",
+  "files": {
+   "llms.txt": "MCP: https://mcp.flisk.sh/mcp\n",
+   ".well-known/mcp/server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "catalog alone satisfies llms.txt",
+  "label": "good",
+  "files": {
+   "llms.txt": "MCP: https://mcp.flisk.sh/mcp\n",
+   ".well-known/ai-catalog.json": "{\"specVersion\":\"1.0\",\"entries\":[{\"identifier\":\"urn:air:x:mcp:a\",\"type\":\"application/mcp-server-card+json\",\"data\":{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}},{\"identifier\":\"urn:air:x:mcp:b\",\"type\":\"application/mcp-server-card+json\",\"url\":\"https://x.dev/card\"}]}"
   }
  },
  {
@@ -69,7 +127,7 @@
   "label": "good",
   "files": {
    "llms.txt": "MCP: https://mcp.flisk.sh/mcp\n",
-   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
   }
  },
  {
@@ -85,7 +143,7 @@
   "label": "good",
   "files": {
    "llms.txt": "MCP: https://mcp.flisk.sh/mcp\n",
-   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
   }
  },
  {
@@ -100,7 +158,7 @@
   "label": "good",
   "files": {
    "_config.yml": "title: x\ninclude:\n  - .well-known\n",
-   ".well-known/mcp-server-card.json": "{\"name\":\"flisk\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
   }
  },
  {

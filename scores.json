@@ -155,9 +155,9 @@
  },
  {
   "guard": "agent-readiness",
-  "cases": 15,
-  "good": 6,
-  "bad": 9,
+  "cases": 23,
+  "good": 8,
+  "bad": 15,
   "recall": 1,
   "precision": 1,
   "falseBlocks": 0,
