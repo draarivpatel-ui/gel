@@ -46,6 +46,10 @@ export function run({ files, read }) {
       if (!card || typeof card !== "object") { add(file)("is not a Server Card object"); return; }
       if (!SCHEMA.test(card.$schema ?? "")) add(file)('needs "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json"');
       for (const k of ["name", "version", "description"]) if (!card[k] || typeof card[k] !== "string") add(file)(`has no "${k}"`);
+      // Limits from the published Server Card schema: a consumer that validates rejects a longer value.
+      if (typeof card.description === "string" && card.description.length > 100) add(file)(`"description" is ${card.description.length} characters; the Server Card schema allows at most 100`);
+      if (typeof card.title === "string" && card.title.length > 100) add(file)(`"title" is ${card.title.length} characters; the Server Card schema allows at most 100`);
+      if (typeof card.name === "string" && !/^[a-zA-Z0-9.-]+\/[a-zA-Z0-9._-]+$/.test(card.name)) add(file)(`"name" ${card.name} must be reverse-DNS with one slash, like sh.flisk/app`);
       const remotes = Array.isArray(card.remotes) ? card.remotes : [];
       if (!remotes.length) add(file)('has no "remotes": a card with no endpoint tells an agent nothing');
       for (const r of remotes) if (!isHttps(r?.url)) add(file)(`remote "${r?.url ?? ""}" is not an https URL`);

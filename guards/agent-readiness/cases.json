@@ -219,5 +219,40 @@
   "files": {
    "src/index.js": "if (path === \"/mcp\") return mcpRoute(request);\n"
   }
+ },
+ {
+  "name": "card description over 100 characters",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "card title over 100 characters",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}],\"title\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}"
+  }
+ },
+ {
+  "name": "card name without a slash",
+  "label": "bad",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"flisk-app\",\"version\":\"1.0.0\",\"description\":\"d\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}"
+  }
+ },
+ {
+  "name": "catalog inline card description too long",
+  "label": "bad",
+  "files": {
+   ".well-known/ai-catalog.json": "{\"specVersion\":\"1.0\",\"entries\":[{\"identifier\":\"urn:air:x:mcp:a\",\"type\":\"application/mcp-server-card+json\",\"data\":{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}]}}]}"
+  }
+ },
+ {
+  "name": "card description exactly 100 characters",
+  "label": "good",
+  "files": {
+   ".well-known/mcp-server-card.json": "{\"$schema\":\"https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json\",\"name\":\"sh.flisk/app\",\"version\":\"1.0.0\",\"description\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"remotes\":[{\"type\":\"streamable-http\",\"url\":\"https://mcp.flisk.sh/mcp\"}],\"title\":\"T\"}"
+  }
  }
 ]
