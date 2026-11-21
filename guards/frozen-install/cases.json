@@ -1,0 +1,18 @@
+[
+ {"name": "plain bun install", "label": "bad", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: bun install\n"}},
+ {"name": "plain npm install", "label": "bad", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm install\n"}},
+ {"name": "plain yarn install", "label": "bad", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: yarn install\n"}},
+ {"name": "plain pnpm install", "label": "bad", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: pnpm install\n"}},
+ {"name": "plain pip install", "label": "bad", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: pip install -r requirements.txt\n"}},
+ {"name": "deps and no lockfile", "label": "bad", "files": {"package.json": "{\"dependencies\":{\"a\":\"1\"}}"}},
+ {"name": "bun frozen", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: bun install --frozen-lockfile\n"}},
+ {"name": "npm ci", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm ci\n"}},
+ {"name": "yarn immutable", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: yarn install --immutable\n"}},
+ {"name": "pnpm frozen", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: pnpm install --frozen-lockfile\n"}},
+ {"name": "pip hashes", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: pip install --require-hashes -r r.txt\n"}},
+ {"name": "global tool", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm install -g wrangler\n"}},
+ {"name": "commented out", "label": "good", "files": {".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: echo hi # npm install\n"}},
+ {"name": "deps with bun.lock", "label": "good", "files": {"package.json": "{\"dependencies\":{\"a\":\"1\"}}", "bun.lock": "x"}},
+ {"name": "no dependencies, no lockfile", "label": "good", "files": {"package.json": "{\"name\":\"x\"}"}},
+ {"name": "lockfile in the package's own folder", "label": "good", "files": {"packages/a/package.json": "{\"devDependencies\":{\"a\":\"1\"}}", "packages/a/package-lock.json": "x"}}
+]

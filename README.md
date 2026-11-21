@@ -59,6 +59,7 @@ npx github:flisk-sh/gel run --root .
 | `secret-scan` | an AWS, GitHub, Anthropic, OpenAI, Stripe live or Slack key, or a private key block, is in a file (test files, sample TLS keys and doc placeholders are skipped) |
 | `pinned-actions` | a workflow uses another org's action by tag or branch instead of a commit SHA |
 | `workflow-permissions` | a workflow job has no `permissions` (and no top-level one), uses `write-all`, or checks out the fork's code under `pull_request_target` |
+| `frozen-install` | a workflow installs with `npm install`, `bun install`, `yarn install`, `pnpm install` or `pip install` and no frozen form (`npm ci`, `--frozen-lockfile`, `--immutable`, `--require-hashes`), or a `package.json` with dependencies has no lockfile beside it. Global installs (`-g`) are skipped |
 | `dead-links` | a markdown or HTML link points to a file that is not in the repo |
 | `done-without-green` | a pull request says "all checks pass" or "ready to merge" while a check on its last commit is red |
 | `migrations-append-only` | a pull request edits, renames or deletes a migration that is already on the base branch (Rails, Django, Alembic, Prisma, Knex, Drizzle, Supabase, Flyway, golang-migrate and others). Adding a migration is fine |
