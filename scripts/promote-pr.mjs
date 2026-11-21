@@ -34,7 +34,7 @@ const lines = [];
 for (const id of arts.slice(0, RUNS)) {
   try {
     const d = join(dir, String(id));
-    writeFileSync(join(dir, `${id}.zip`), execFileSync("gh", ["api", `repos/${REPO}/actions/artifacts/${id}/zip`], { maxBuffer: 1 << 27 }));
+    writeFileSync(join(dir, `${id}.zip`), sh("gh", ["api", `repos/${REPO}/actions/artifacts/${id}/zip`], { encoding: "buffer" }));
     sh("unzip", ["-q", "-o", join(dir, `${id}.zip`), "-d", d]);
     for (const f of readdirSync(d)) lines.push(readFileSync(join(d, f), "utf8").trim());
   } catch (e) { log(`- artifact ${id}: skipped (${String(e.stderr || e.message).split("\n")[0]})`); }
