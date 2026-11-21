@@ -1,0 +1,26 @@
+# Weekly: propose a guard promotion or demotion as one PR (lane C, a person approves).
+# Kill switch: repository variable GEL_PAUSE=1. Cap: one open promote PR at a time.
+# Without the GEL_FLYWHEEL_TOKEN secret it only reports what it would do.
+name: Promote
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: promote
+  cancel-in-progress: false
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Propose level changes
+        env:
+          GH_TOKEN: ${{ secrets.GEL_FLYWHEEL_TOKEN || github.token }}
+          GEL_PROMOTE_PR: ${{ secrets.GEL_FLYWHEEL_TOKEN && '1' || '0' }}
+          GEL_PAUSE: ${{ vars.GEL_PAUSE }}
+        run: node scripts/promote-pr.mjs

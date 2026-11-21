@@ -27,3 +27,9 @@ test("flywheel with GEL_PAUSE set exits 0 before it fetches or clones anything",
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /Paused/);
 });
+
+test("promote-pr with GEL_PAUSE set exits 0 before it calls gh", () => {
+  const r = spawnSync(process.execPath, [join(import.meta.dirname, "..", "scripts", "promote-pr.mjs"), "--dry-run", "--repo", "x/none"], { encoding: "utf8", env: { ...process.env, GEL_PAUSE: "1", PATH: "/nonexistent" } });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /Paused/);
+});

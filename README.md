@@ -141,7 +141,7 @@ Every false alarm is listed as a hard case to add to the guard's `cases.json`. O
 node bin/gel.mjs promote gel-record.jsonl --labels docs/gel-labels.json [--write]
 ```
 
-Turns the `gel metrics` advice into a change of `docs/gel.json`: a guard advised to **promote** goes from `report` to `block`, a blocking guard advised to **demote** goes back to `report`, nothing else is touched. Without `--write` it only prints the proposal as a table. It warns when the file has `mode: "report"`, because that keeps every guard advisory. Editing `docs/gel.json` is lane C, so a person approves the PR; GEL never changes the level on its own.
+Turns the `gel metrics` advice into a change of `docs/gel.json`: a guard advised to **promote** goes from `report` to `block`, a blocking guard advised to **demote** goes back to `report`, nothing else is touched. Without `--write` it only prints the proposal as a table. It warns when the file has `mode: "report"`, because that keeps every guard advisory. Editing `docs/gel.json` is lane C, so a person approves the PR; GEL never changes the level on its own. `.github/workflows/promote.yml` runs `scripts/promote-pr.mjs` each Monday: it gathers the repo's last 50 `gel-record` artifacts, runs the command above and opens one PR (branch `gel/promote-guards`, one open at a time) when a guard should change. It honours the `GEL_PAUSE` kill switch and, like the flywheel, only opens the PR when the secret `GEL_FLYWHEEL_TOKEN` exists; promotion needs labelled findings in `docs/gel-labels.json`, so until someone labels findings every guard holds.
 
 ### Fix PRs
 
