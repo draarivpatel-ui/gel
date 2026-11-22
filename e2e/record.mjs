@@ -3,10 +3,9 @@
 //   file:   the file at the latest commit of the repo's default branch (pinned by commit in cases.json). "excerpt":
 //           "ice-tables" keeps only the ICE tables (third-party repos: a short excerpt, with its source and license note)
 //   clicks: the live answers of a site's /api/clicks, kept the way `gel click-map` keeps them
-// Cases with real: false are built from what sources.json says, and keep their "why". Needs `gh` (GitHub API) and network.
+// Cases with real: false are built from what sources.json says, and keep their "why". Needs network (GITHUB_TOKEN in the environment raises the GitHub rate limit).
 // The suite (tests/e2e.test.mjs) reads only e2e/cases.json: it never touches the network.
 import { readFileSync, writeFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { toEntry } from "../lib/click-map.mjs";
 import { iceTables } from "../guards/ice-score/index.mjs";
@@ -16,11 +15,17 @@ import { coverage } from "./coverage.mjs";
 const dir = import.meta.dirname;
 const args = process.argv.slice(2);
 const date = args.includes("--date") ? args[args.indexOf("--date") + 1] : new Date().toISOString().slice(0, 10);
-const gh = (path) => JSON.parse(execFileSync("gh", ["api", path], { encoding: "utf8", maxBuffer: 1 << 26 }));
+// GitHub's REST API with fetch (GITHUB_TOKEN raises the rate limit; public repos need none)
+async function gh(path) {
+  const headers = { accept: "application/vnd.github+json", ...(process.env.GITHUB_TOKEN ? { authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}) };
+  const r = await fetch(`https://api.github.com/${path}`, { headers });
+  if (!r.ok) throw new Error(`GitHub ${path}: HTTP ${r.status}`);
+  return r.json();
+}
 
-function fetchFile({ repo, path, excerpt }) {
-  const [c] = gh(`repos/${repo}/commits?path=${encodeURIComponent(path)}&per_page=1`);
-  const blob = gh(`repos/${repo}/contents/${encodeURIComponent(path).replace(/%2F/g, "/")}?ref=${c.sha}`);
+async function fetchFile({ repo, path, excerpt }) {
+  const [c] = await gh(`repos/${repo}/commits?path=${encodeURIComponent(path)}&per_page=1`);
+  const blob = await gh(`repos/${repo}/contents/${encodeURIComponent(path).replace(/%2F/g, "/")}?ref=${c.sha}`);
   let text = Buffer.from(blob.content, "base64").toString("utf8");
   if (excerpt === "ice-tables") {
     const lines = text.split("\n");
@@ -62,7 +67,7 @@ for (const c of cases) {
   const { file, clicks, entries, brief, ...rest } = c;
   let cfg = c.cfg ?? {}, files = c.files ?? {}, source = null, recordedAt = date;
   if (file) {
-    const f = fetchFile(file);
+    const f = await fetchFile(file);
     source = f.source;
     if (file.path === "docs/gel.json") cfg = JSON.parse(f.text);
     else files = { [file.path]: f.text };
