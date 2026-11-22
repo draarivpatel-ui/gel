@@ -21,6 +21,26 @@ const cases = [
   ["negation is not supported: ! is a literal prefix", "!secret.txt", "!secret.txt", true],
   ["negation does not exclude a file", "!secret.txt", "secret.txt", false],
   ["backslashes are literal characters, not separators", "lib\\glob.mjs", "lib\\glob.mjs", true],
+  // Cases carried over from #46 (AK-Lmn), written as table rows.
+  ["* works between a literal prefix and suffix", "src/file-*.mjs", "src/file-a.mjs", true],
+  ["* between a prefix and suffix does not cross folders", "src/file-*.mjs", "src/sub/file-a.mjs", false],
+  ["* between a prefix and suffix keeps the literal suffix", "src/file-*.mjs", "src/file-a.js", false],
+  ["**/ matches deeply nested folders", "**/*.md", "docs/api/v1/spec.md", true],
+  ["**/ still needs the literal rest of the pattern", "**/*.md", "docs/guide.txt", false],
+  ["a trailing ** matches the bare directory", "src/**", "src/", true],
+  ["a trailing ** is anchored at the start", "src/**", "other/src/index.mjs", false],
+  ["** matches the empty path", "**", "", true],
+  [".* matches a dotfile", ".*", ".gitignore", true],
+  [".* does not match a name without a leading dot", ".*", "file", false],
+  ["**/.env matches at the repository root", "**/.env", ".env", true],
+  ["**/.env matches in a subfolder", "**/.env", "config/.env", true],
+  [".github/** matches a workflow file", ".github/**", ".github/workflows/ci.yml", true],
+  ["a / pattern does not match a backslash path", "foo/bar", "foo\\bar", false],
+  ["a literal pattern is anchored at the end", "docs/gel.json", "docs/gel.jsonl", false],
+  ["a literal pattern is anchored at the start", "docs/gel.json", "a/docs/gel.json", false],
+  ["a literal pattern does not match a longer path", "docs/gel.json", "docs/gel.json/extra", false],
+  ["regex metacharacters are matched literally", "file.[a-z].{1}.(test)+$100.js", "file.[a-z].{1}.(test)+$100.js", true],
+  ["regex metacharacters are not interpreted", "file.[a-z].{1}.(test)+$100.js", "file.a.1.test100.js", false],
 ];
 
 for (const [name, glob, file, expected] of cases) {
