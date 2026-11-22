@@ -42,6 +42,12 @@ test("toEntry keeps the numbers and the ten most pressed things, drops the cells
   assert.deepEqual([e.page, e.dev, e.days, e.clicks, e.dead, e.targets.length, e.targets[0].n, "cells" in e], ["home", "desktop", 30, 28, 20, 10, 13, false]);
   assert.equal(toEntry(ANSWER, "saved.json", Date.parse("2026-11-22T12:00:00Z")).days, 30);
   assert.throws(() => toEntry({ error: "nope" }, "saved.json"), /did not answer with a click map/);
+  // names from the site are kept to one short line: they are printed and committed
+  const odd = toEntry({ page: "home\n::error::fake", dev: "desk\u001b[31mtop", clicks: 1, dead: 0, targets: [{ target: `Buy\r\nnow ${"x".repeat(200)}`, kind: "ctl", n: 1 }] }, "saved.json");
+  assert.equal(odd.page, "home ::error::fake");
+  assert.equal(odd.dev, "desk [31mtop");
+  assert.doesNotMatch(odd.targets[0].target, /[\r\n]/);
+  assert.equal(odd.targets[0].target.length, 60);
 });
 
 test("judge: the share of clicks that hit nothing, and the share on the main button", () => {
