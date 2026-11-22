@@ -1,0 +1,336 @@
+[
+ {
+  "name": "no click_map declared: the guard stays quiet",
+  "label": "good",
+  "cfg": {},
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "README.md": "# x\n"
+  }
+ },
+ {
+  "name": "an archived repo needs no click map",
+  "label": "good",
+  "cfg": {
+   "status": "archived",
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "README.md": "# x\n"
+  }
+ },
+ {
+  "name": "few dead clicks, fresh measurement",
+  "label": "good",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "dead share exactly at the limit passes",
+  "label": "good",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":30,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "a page with too few clicks is not judged, even when most are dead",
+  "label": "good",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":12,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "no clicks at all is an honest number",
+  "label": "good",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"mobile\",\"days\":30,\"clicks\":0,\"dead\":0,\"targets\":[]}]}"
+  }
+ },
+ {
+  "name": "the main button gets its share",
+  "label": "good",
+  "cfg": {
+   "click_map": {
+    "main": {
+     "home": "make my plan"
+    },
+    "min_main_share": 0.3
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "a looser dead limit set in gel.json is respected",
+  "label": "good",
+  "cfg": {
+   "click_map": {
+    "max_dead_share": 0.5
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":45,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "a result file at another path",
+  "label": "good",
+  "cfg": {
+   "click_map": {
+    "result": "bench/clicks.json"
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "bench/clicks.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "main named for another page does not judge this one",
+  "label": "good",
+  "cfg": {
+   "click_map": {
+    "main": {
+     "plan": "Copy"
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "declared but never measured",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "README.md": "# x\n"
+  }
+ },
+ {
+  "name": "the measurement is not JSON",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{ nope"
+  }
+ },
+ {
+  "name": "the measurement has no entries",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[]}"
+  }
+ },
+ {
+  "name": "the measurement has no date",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "the measurement is 40 days old",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-10-13T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "seven of ten clicks hit nothing (Grow home on desktop)",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":28,\"dead\":20,\"targets\":[{\"target\":\"span\",\"kind\":\"dead\",\"n\":18},{\"target\":\"The Grow Gazette\",\"kind\":\"ctl\",\"n\":7}]}]}"
+  }
+ },
+ {
+  "name": "one good page does not hide one bad page",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]},{\"page\":\"plan\",\"dev\":\"desktop\",\"days\":30,\"clicks\":95,\"dead\":40,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "the main button gets 8 of 95 clicks",
+  "label": "bad",
+  "cfg": {
+   "click_map": {
+    "main": "MAKE MY PLAN"
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"plan\",\"dev\":\"desktop\",\"days\":30,\"clicks\":95,\"dead\":10,\"targets\":[{\"target\":\"OPEN\",\"kind\":\"ctl\",\"n\":12},{\"target\":\"MAKE MY PLAN\",\"kind\":\"ctl\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "the main button is not among the pressed things at all",
+  "label": "bad",
+  "cfg": {
+   "click_map": {
+    "main": {
+     "home": "Start"
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "a dead element with the main button's name does not count as the button",
+  "label": "bad",
+  "cfg": {
+   "click_map": {
+    "main": "Start"
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Start\",\"kind\":\"dead\",\"n\":10}]}]}"
+  }
+ },
+ {
+  "name": "more dead clicks than clicks is not a measurement",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":10,\"dead\":50,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "an entry with no numbers",
+  "label": "bad",
+  "cfg": {
+   "click_map": {}
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"mobile\"}]}"
+  }
+ },
+ {
+  "name": "click_map set to true says nothing about where the numbers are",
+  "label": "bad",
+  "cfg": {
+   "click_map": true
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ },
+ {
+  "name": "a stricter dead limit set in gel.json is enforced",
+  "label": "bad",
+  "cfg": {
+   "click_map": {
+    "max_dead_share": 0.05
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T12:00:00Z"
+  },
+  "files": {
+   "docs/click-map.json": "{\"measuredAt\":\"2026-11-20T10:00:00Z\",\"entries\":[{\"page\":\"home\",\"dev\":\"desktop\",\"days\":30,\"clicks\":100,\"dead\":10,\"targets\":[{\"target\":\"Make my plan\",\"kind\":\"ctl\",\"n\":40},{\"target\":\"span\",\"kind\":\"dead\",\"n\":8}]}]}"
+  }
+ }
+]

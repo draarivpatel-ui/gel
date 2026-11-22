@@ -22,6 +22,8 @@ import { collectRelease } from "../lib/release-ctx.mjs";
 import { run as northStar, ratioOf } from "../guards/north-star/index.mjs";
 import { measure as measureInput } from "../lib/input-viewport.mjs";
 import { run as productBrief, briefRows } from "../guards/product-brief/index.mjs";
+import { judge as judgeClicks, limits as clickLimits } from "../guards/click-map/index.mjs";
+import { measure as measureClicks } from "../lib/click-map.mjs";
 
 const args = process.argv.slice(2);
 const cmd = args[0];
@@ -261,6 +263,27 @@ async function main() {
     else for (const e of entries) console.log(`${e.width}x${e.height}: input ${e.bottom == null ? "NOT FOUND" : `ends at ${Math.round(e.bottom)}px`} -> ${e.bottom != null && e.bottom <= e.height ? "IN VIEW" : "BELOW THE FIRST SCREEN"}`);
     process.exit(bad.length ? 1 : 0);
   }
+  if (cmd === "click-map") {
+    // gel click-map (--url https://site/api/clicks?page=home&dev=mobile&days=30 | --file answer.json) [--merge] [--write docs/click-map.json] [--root .] [--json]
+    // Reads one page's click numbers from the site and keeps what the click-map guard judges. --merge keeps the other pages already in the file.
+    if (!opt("url") && !opt("file")) { console.log("usage: gel click-map (--url https://site/api/clicks?page=home&dev=mobile&days=30 | --file answer.json) [--merge] [--write docs/click-map.json] [--root .] [--json]"); process.exit(2); }
+    let e;
+    try { e = await measureClicks({ url: opt("url"), file: opt("file") }); } catch (err) { console.error(`click-map: ${err.message}`); process.exit(1); }
+    const out = opt("write");
+    let entries = [e];
+    if (out && args.includes("--merge") && existsSync(out)) { try { entries = [...JSON.parse(readFileSync(out, "utf8")).entries.filter((x) => x.page !== e.page || x.dev !== e.dev), e]; } catch {} }
+    const doc = { measuredAt: new Date().toISOString(), entries };
+    if (out) writeFileSync(resolve(out), JSON.stringify(doc, null, 1) + "\n");
+    const lim = clickLimits(loadConfig(resolve(opt("root", "."))));
+    const v = judgeClicks(e, lim);
+    if (args.includes("--json")) console.log(JSON.stringify({ ok: v.problems.length === 0, judged: v.judged, deadShare: v.deadShare, mainShare: v.mainShare, problems: v.problems, entry: e }));
+    else {
+      const top = e.targets[0];
+      console.log(`click-map: ${v.label}: ${e.clicks} clicks${e.days ? ` in ${e.days} days` : ""}, ${e.dead} hit nothing (${Math.round((v.deadShare ?? 0) * 100)}%)${top ? `, most pressed: "${top.target}" (${top.n}${top.kind === "dead" ? ", does nothing" : ""})` : ""}${v.judged ? "" : ` -> too few clicks to judge (under ${lim.minClicks})`}${out ? ` -> ${out}` : ""}`);
+      for (const p of v.problems) console.log(`  ${p}`);
+    }
+    process.exit(v.problems.length ? 1 : 0);
+  }
   if (cmd === "five-second") {
     // gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]
     const target = opt("url") ?? opt("file");
@@ -284,7 +307,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);
