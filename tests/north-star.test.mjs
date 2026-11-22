@@ -61,3 +61,39 @@ test("a measure that finds nothing says why: its problem is printed, exit 2", ()
   assert.equal(r.status, 2);
   assert.match(r.stderr, /covered by div\.cookie/);
 });
+
+import { checkCandidate } from "../guards/north-star/index.mjs";
+const collect = (c, now = "2026-11-17T00:00:00Z", files = [], read = () => null) => {
+  const out = [];
+  checkCandidate(c, { files, read, now: Date.parse(now), at: (m) => out.push(m) });
+  return out;
+};
+const okCandidate = { metric: "weekly active projects with a healthy stack", state: "not-measured", declared: "2026-11-10", review_by: "2027-02-08", owner: "odykyi", promote_when: ["real telemetry"] };
+
+test("no candidate: nothing to check, repos without one are unchanged", () => {
+  assert.deepEqual(collect(undefined), []);
+});
+
+test("a not-measured candidate on time raises nothing: not measured is never a finding", () => {
+  assert.deepEqual(collect(okCandidate), []);
+});
+
+test("a candidate past its review_by date raises one finding that names the date", () => {
+  const out = collect(okCandidate, "2027-03-01T00:00:00Z");
+  assert.equal(out.length, 1);
+  assert.match(out[0], /due for review on 2027-02-08/);
+});
+
+test("a measured candidate must say whether its number is a proxy", () => {
+  const c = { ...okCandidate, state: "measured", result: "r.json" };
+  const out = collect(c, undefined, ["r.json"], () => JSON.stringify({ value: 5, measuredAt: "2026-11-15" }));
+  assert.equal(out.length, 1);
+  assert.match(out[0], /"proxy": true or false/);
+});
+
+test("the guard still holds the primary north star: a bad candidate does not hide a missing result", async () => {
+  const { run } = await import("../guards/north-star/index.mjs");
+  const r = run({ cfg: { north_star_candidate: okCandidate }, files: [], read: () => null, ctx: { now: "2026-11-17T00:00:00Z" } });
+  assert.equal(r.pass, false);
+  assert.ok(r.findings.some((f) => /no "north_star"/.test(f.message)));
+});
