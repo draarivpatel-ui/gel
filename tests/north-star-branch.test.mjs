@@ -73,3 +73,13 @@ test("gel run finds a result that exists only on the north-star branch", () => {
   const ok = gelRun(["run", "--root", d]);
   assert.equal(ok.status, 0, ok.stdout);
 });
+
+test("--measure keeps the number when the measure command exits 1 on a missed target", () => {
+  const d = repo(null);
+  writeFileSync(join(d, "bench", "m.mjs"), `console.log(JSON.stringify({ value: 20, baseline: 26.1, unit: "s" })); process.exit(1)\n`);
+  const r = gelRun(["north-star", "--root", d, "--measure"]);
+  assert.equal(r.status, 1, "the target is missed");
+  assert.equal(JSON.parse(readFileSync(join(d, "bench", "north-star.json"), "utf8")).value, 20);
+  writeFileSync(join(d, "bench", "m.mjs"), `process.exit(3)\n`);
+  assert.notEqual(gelRun(["north-star", "--root", d, "--measure"]).status, 0);
+});

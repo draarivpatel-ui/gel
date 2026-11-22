@@ -193,8 +193,13 @@ async function main() {
     if (!ns?.result) { console.log('docs/gel.json has no north_star.result: see the north-star guard in README.md'); process.exit(2); }
     if (args.includes("--measure")) {
       if (!ns.measure) { console.log("north_star.measure is not set: nothing to run"); process.exit(2); }
-      const out = execSync(ns.measure, { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] });
-      const r = JSON.parse(out.trim().split("\n").filter(Boolean).pop());
+      // a measure that exits non-zero on a missed target still printed a real number: keep it, the verdict below judges it
+      let out;
+      try { out = execSync(ns.measure, { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] }); }
+      catch (err) { out = String(err.stdout ?? ""); if (!out.trim()) throw err; }
+      let r;
+      try { r = JSON.parse(out.trim().split("\n").filter(Boolean).pop()); } catch { r = null; }
+      if (typeof r?.value !== "number") { console.error(`north star: the measure printed no {"value": ...} line last`); process.exit(2); }
       const e = process.env;
       const run = e.GITHUB_RUN_ID && e.GITHUB_REPOSITORY ? `${e.GITHUB_SERVER_URL ?? "https://github.com"}/${e.GITHUB_REPOSITORY}/actions/runs/${e.GITHUB_RUN_ID}` : undefined;
       const text = JSON.stringify({ ...r, measuredAt: new Date().toISOString(), ...(run ? { run, commit: e.GITHUB_SHA } : {}) }, null, 1) + "\n";
