@@ -7,6 +7,7 @@ Every guard GEL runs, with the exact rule it fails on. The short list is in the 
 | `secret-scan` | an AWS, GitHub, Anthropic, OpenAI, Stripe live or Slack key, or a private key block, is in a file (test files, sample TLS keys and doc placeholders are skipped) |
 | `pinned-actions` | a workflow uses another org's action by tag or branch instead of a commit SHA |
 | `workflow-permissions` | a workflow job has no `permissions` (and no top-level one), uses `write-all`, or checks out the fork's code under `pull_request_target` |
+| `workflow-timeouts` | a workflow job that runs steps has no `timeout-minutes`, so a hang runs for GitHub's 360-minute default. A job that only calls a reusable workflow (`uses:`) is skipped: the timeout lives in the callee |
 | `frozen-install` | a workflow installs with `npm install`, `bun install`, `yarn install`, `pnpm install` or `pip install` and no frozen form (`npm ci`, `--frozen-lockfile`, `--immutable`, `--require-hashes`), or a `package.json` with dependencies has no lockfile beside it. Global installs (`-g`) are skipped |
 | `dead-links` | a markdown or HTML link points to a file that is not in the repo |
 | `done-without-green` | a pull request says "all checks pass" or "ready to merge" while a check on its last commit is red |

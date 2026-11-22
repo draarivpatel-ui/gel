@@ -1,6 +1,6 @@
 # GEL: Guard, Eval, Loop
 
-GEL is a GitHub Action and a command line tool that runs 22 checks (guards) on every pull request, to catch what AI coding agents and tired people ship by mistake: a leaked key, an unpinned action, a workflow with an open token, a PR that says "all tests pass" while a check is red, an edited migration, a breaking API change.
+GEL is a GitHub Action and a command line tool that runs 23 checks (guards) on every pull request, to catch what AI coding agents and tired people ship by mistake: a leaked key, an unpinned action, a workflow with an open token, a PR that says "all tests pass" while a check is red, an edited migration, a breaking API change.
 
 It is plain Node with no dependencies, no model and no network. It starts in report mode, so nothing blocks until you promote a guard. This repo scans in about 0.1 s.
 
@@ -69,6 +69,7 @@ Planted defects are ones the bench inserted itself, so "caught" measures recall 
 | `secret-scan` | an AWS, GitHub, Anthropic, OpenAI, Stripe live or Slack key, or a private key block, is in a file |
 | `pinned-actions` | a workflow uses another org's action by tag or branch instead of a commit SHA |
 | `workflow-permissions` | a job has no `permissions`, uses `write-all`, or checks out a fork's code under `pull_request_target` |
+| `workflow-timeouts` | a workflow job that runs steps has no `timeout-minutes`, so a hang runs for GitHub's 360-minute default |
 | `frozen-install` | a workflow installs without a frozen form (`npm ci`, `--frozen-lockfile`), or `package.json` has no lockfile |
 | `public-env-secrets` | a secret-named variable has a browser-bundled prefix (`VITE_`, `NEXT_PUBLIC_`, and others) |
 | `dead-links` | a markdown or HTML link points to a file that is not in the repo |
@@ -83,7 +84,7 @@ Planted defects are ones the bench inserted itself, so "caught" measures recall 
 | `adr-required`, `status-declared`, `north-star`, `product-brief` | opt-in: you declare a rule or a number in `docs/gel.json`, and GEL checks it |
 | `five-second-test`, `input-in-viewport`, `agent-readiness`, `ice-score` | a landing page, a phone input, agent-discovery files or an ICE table does not hold up |
 
-The exact rules, options and edge cases for all 22 guards are in [docs/guards.md](docs/guards.md). `migrations-append-only`, `api-contract`, `tests-with-change`, `adr-required` and `stale-base` compare a PR with its base, so a push scan passes them.
+The exact rules, options and edge cases for all 23 guards are in [docs/guards.md](docs/guards.md). `migrations-append-only`, `api-contract`, `tests-with-change`, `adr-required` and `stale-base` compare a PR with its base, so a push scan passes them.
 
 ## Configure
 
