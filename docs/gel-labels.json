@@ -1,0 +1,92 @@
+[
+ {
+  "guard": "dependabot-config",
+  "file": ".github/dependabot.yml",
+  "line": 0,
+  "verdict": "real"
+ },
+ {
+  "guard": "done-without-green",
+  "file": "(pull request)",
+  "line": 0,
+  "verdict": "real"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 6,
+  "verdict": "false"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 13,
+  "verdict": "false"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 20,
+  "verdict": "false"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 27,
+  "verdict": "false"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 34,
+  "verdict": "false"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 41,
+  "verdict": "false"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 84,
+  "verdict": "false"
+ },
+ {
+  "guard": "public-env-secrets",
+  "file": "guards/public-env-secrets/cases.json",
+  "line": 91,
+  "verdict": "false"
+ },
+ {
+  "guard": "repo-health",
+  "file": ".github/CODEOWNERS",
+  "line": 0,
+  "verdict": "real"
+ },
+ {
+  "guard": "repo-health",
+  "file": ".github/CONTRIBUTING.md",
+  "line": 0,
+  "verdict": "real"
+ },
+ {
+  "guard": "repo-health",
+  "file": ".github/SECURITY.md",
+  "line": 0,
+  "verdict": "real"
+ },
+ {
+  "guard": "repo-health",
+  "file": "LICENSE",
+  "line": 0,
+  "verdict": "real"
+ },
+ {
+  "guard": "status-declared",
+  "file": "gel.json",
+  "line": 0,
+  "verdict": "real"
+ }
+]
