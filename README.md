@@ -23,11 +23,11 @@ node bin/gel.mjs run --root /path/to/your/repo
 
 It prints a table with one row per guard (`pass` or findings, and its level), then the first findings of each guard that failed. Every guard is in `report` mode until you say otherwise, so the exit code stays 0.
 
-Pin to a tag or a commit, not `@v1`. The `v1` tag still points at an older commit that has 15 guards, not the 22 described here.
+Pin to a tag or a commit if you want a fixed version. `@v1` is a moving tag that follows `main`, so it picks up new guards without a change on your side.
 
 ### Other ways to run it
 
-**As a whole job**, `.github/workflows/gel.yml`. Pass `gel_ref` too: its default is the old `v1`.
+**As a whole job**, `.github/workflows/gel.yml`. Pass `gel_ref` as well, so the guards run from the same version as the workflow.
 
 ```yaml
 name: GEL
