@@ -209,6 +209,17 @@
   "ok": true
  },
  {
+  "guard": "click-map",
+  "cases": 24,
+  "good": 10,
+  "bad": 14,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
   "guard": "input-in-viewport",
   "cases": 11,
   "good": 5,

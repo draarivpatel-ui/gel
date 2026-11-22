@@ -1,6 +1,6 @@
 # GEL: Guard, Eval, Loop
 
-GEL is a GitHub Action and a command line tool that runs 22 checks (guards) on every pull request, to catch what AI coding agents and tired people ship by mistake: a leaked key, an unpinned action, a workflow with an open token, a PR that says "all tests pass" while a check is red, an edited migration, a breaking API change.
+GEL is a GitHub Action and a command line tool that runs 23 checks (guards) on every pull request, to catch what AI coding agents and tired people ship by mistake: a leaked key, an unpinned action, a workflow with an open token, a PR that says "all tests pass" while a check is red, an edited migration, a breaking API change.
 
 It is plain Node with no dependencies, no model and no network. It starts in report mode, so nothing blocks until you promote a guard. This repo scans in about 0.1 s.
 
@@ -81,9 +81,9 @@ Planted defects are ones the bench inserted itself, so "caught" measures recall 
 | `repo-health` | the repo has no LICENSE, SECURITY.md, CONTRIBUTING.md or CODEOWNERS |
 | `dependabot-config` | an ecosystem in use is not covered by Dependabot or Renovate |
 | `adr-required`, `status-declared`, `north-star`, `product-brief` | opt-in: you declare a rule or a number in `docs/gel.json`, and GEL checks it |
-| `five-second-test`, `input-in-viewport`, `agent-readiness`, `ice-score` | a landing page, a phone input, agent-discovery files or an ICE table does not hold up |
+| `five-second-test`, `input-in-viewport`, `agent-readiness`, `ice-score`, `click-map` | a landing page, a phone input, agent-discovery files, an ICE table or a measured click map does not hold up |
 
-The exact rules, options and edge cases for all 22 guards are in [docs/guards.md](docs/guards.md). `migrations-append-only`, `api-contract`, `tests-with-change`, `adr-required` and `stale-base` compare a PR with its base, so a push scan passes them.
+The exact rules, options and edge cases for all 23 guards are in [docs/guards.md](docs/guards.md). `migrations-append-only`, `api-contract`, `tests-with-change`, `adr-required` and `stale-base` compare a PR with its base, so a push scan passes them.
 
 ## Configure
 
