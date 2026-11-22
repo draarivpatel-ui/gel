@@ -1,0 +1,1000 @@
+[
+ {
+  "name": "six answers, six fresh numbers",
+  "label": "good",
+  "cfg": {
+   "status": "active",
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "targets not met yet, numbers honest and fresh",
+  "label": "good",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 1000
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 100000
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "no gel.json at all",
+  "label": "good",
+  "cfg": {
+   "noConfigFile": true
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n"
+  }
+ },
+ {
+  "name": "gel.json with no brief and no north star (a library)",
+  "label": "good",
+  "cfg": {
+   "status": "active"
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n"
+  }
+ },
+ {
+  "name": "archived repo needs no brief",
+  "label": "good",
+  "cfg": {
+   "status": "archived",
+   "north_star": {
+    "metric": "first start to healthy",
+    "baseline": "Docker Compose",
+    "target": {
+     "ratio": 8,
+     "better": "lower"
+    },
+    "result": "bench/north-star.json",
+    "evidence": "bench/README.md"
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n"
+  }
+ },
+ {
+  "name": "result file at a custom path, 90 day limit",
+  "label": "good",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    },
+    "result": "bench/brief.json",
+    "max_age_days": 90
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "bench/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-09-01\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "zero is a real number",
+  "label": "good",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "north star named, no brief",
+  "label": "bad",
+  "cfg": {
+   "status": "active",
+   "north_star": {
+    "metric": "first start to healthy",
+    "baseline": "Docker Compose",
+    "target": {
+     "ratio": 8,
+     "better": "lower"
+    },
+    "result": "bench/north-star.json",
+    "evidence": "bench/README.md"
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n"
+  }
+ },
+ {
+  "name": "brief is not an object",
+  "label": "bad",
+  "cfg": {
+   "brief": "see the README"
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "who is missing",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "an answer of one word",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "speed",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "an answer with no metric",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "an answer with no target",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week"
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "target is a sentence, not a number",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": "many teams"
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "the same sentence under two questions",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "answers only, no result file",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n"
+  }
+ },
+ {
+  "name": "result file is not JSON",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "what: 12.4\n"
+  }
+ },
+ {
+  "name": "one answer has no number",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"}}"
+  }
+ },
+ {
+  "name": "a number written as text",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":\"a few\",\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "a number with no date",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "a number measured 60 days ago",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-09-23\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "a number with no source",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "source is a file that is not in the repo",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/missing.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ },
+ {
+  "name": "unknown direction for a target",
+  "label": "bad",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "starts a ten-part app with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "faster"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "local setup eats the first week of a new hire",
+     "metric": "minutes from clone to first request",
+     "target": 15,
+     "better": "lower"
+    },
+    "how": {
+     "answer": "reads one manifest per service and writes the config",
+     "metric": "config files written per manifest",
+     "target": 4
+    },
+    "where": {
+     "answer": "installed from npm on a developer laptop",
+     "metric": "npm installs per week",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day on a new codebase",
+     "metric": "share of new users who start a stack on day one",
+     "target": 0.5
+    }
+   }
+  },
+  "ctx": {
+   "now": "2026-11-22T00:00:00Z"
+  },
+  "files": {
+   "README.md": "x\n",
+   "bench/README.md": "how it is measured\n",
+   "docs/brief.json": "{\"what\":{\"value\":12.4,\"unit\":\"s\",\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md\"},\"who\":{\"value\":0,\"measuredAt\":\"2026-11-21\",\"source\":\"https://dashboard.example.com/billing\"},\"why\":{\"value\":9,\"unit\":\"min\",\"measuredAt\":\"2026-11-18\",\"source\":\"bench/README.md\"},\"how\":{\"value\":4,\"measuredAt\":\"2026-11-20\",\"source\":\"bench/README.md#config\"},\"where\":{\"value\":212,\"measuredAt\":\"2026-11-21\",\"source\":\"https://www.npmjs.com/package/example\"},\"when\":{\"value\":0.31,\"measuredAt\":\"2026-11-15\",\"source\":\"https://analytics.example.com/day-one\"}}"
+  }
+ }
+]

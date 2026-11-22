@@ -17,6 +17,7 @@
     "five-second-test": "report",
     "agent-readiness": "report",
     "north-star": "report",
+    "product-brief": "report",
     "stale-base": "block"
   }
 }

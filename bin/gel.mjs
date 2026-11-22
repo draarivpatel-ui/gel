@@ -21,6 +21,7 @@ import { fixPinned, lsRemoteResolver } from "../lib/fix-pinned.mjs";
 import { collectRelease } from "../lib/release-ctx.mjs";
 import { run as northStar, ratioOf } from "../guards/north-star/index.mjs";
 import { measure as measureInput } from "../lib/input-viewport.mjs";
+import { run as productBrief, briefRows } from "../guards/product-brief/index.mjs";
 
 const args = process.argv.slice(2);
 const cmd = args[0];
@@ -226,6 +227,24 @@ async function main() {
     }
     process.exit(verdict.pass && !measureFailed ? 0 : 1);
   }
+  if (cmd === "brief") {
+    // gel brief [--root .] [--json]: the six answers in docs/gel.json "brief" (what, who, why, how, where, when) beside their measured numbers.
+    // Exit 1 when the product-brief guard has a finding (an answer or a fresh number is missing). A target that is not met yet is printed, not failed.
+    const root = resolve(opt("root", "."));
+    const cfg = loadConfig(root);
+    if (cfg.brief == null) { console.log('docs/gel.json has no "brief": see the product-brief guard in README.md'); process.exit(2); }
+    const a = { cfg, files: walk(root), read: (f) => readText(root, f), ctx: {} };
+    const verdict = productBrief(a);
+    const { rows } = briefRows(a);
+    const metCount = rows.filter((r) => r.met).length;
+    if (args.includes("--json")) console.log(JSON.stringify({ pass: verdict.pass, met: metCount, of: rows.length, rows: rows.map(({ declared, measured, ...r }) => r), findings: verdict.findings }));
+    else {
+      console.log(`brief: ${metCount} of ${rows.length} targets met`);
+      for (const r of rows) console.log(`  ${r.question.padEnd(5)} ${r.answer ?? "(no answer)"}\n        ${r.metric ?? "(no metric)"}: ${r.value ?? "?"}${r.unit ? " " + r.unit : ""}, target ${r.better === "lower" ? "at most" : "at least"} ${r.target ?? "?"} -> ${r.met == null ? "NOT MEASURED" : r.met ? "MET" : "NOT MET"}${r.ageDays != null ? ` (${r.ageDays} days old)` : ""}`);
+      for (const f of verdict.findings) console.log(`  ${f.message}`);
+    }
+    process.exit(verdict.pass ? 0 : 1);
+  }
   if (cmd === "input-viewport") {
     // gel input-viewport (--url https://site | --file index.html) [--size 375x667,320x568] [--cookie 'a=b'] [--write bench/input-viewport.json] [--json]
     // Measures where the first visible input or textarea sits at phone sizes (headless Chrome). Exit 1 when it ends below the first screen.
@@ -265,7 +284,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);
