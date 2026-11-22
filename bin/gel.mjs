@@ -24,6 +24,8 @@ import { measure as measureInput } from "../lib/input-viewport.mjs";
 import { run as productBrief, briefRows } from "../guards/product-brief/index.mjs";
 import { judge as judgeClicks, limits as clickLimits } from "../guards/click-map/index.mjs";
 import { measure as measureClicks } from "../lib/click-map.mjs";
+import { scorecard, scorecardMarkdown } from "../lib/queue.mjs";
+import { collectQueue } from "../lib/queue-collect.mjs";
 
 const args = process.argv.slice(2);
 const cmd = args[0];
@@ -287,7 +289,7 @@ async function main() {
   if (cmd === "five-second") {
     // gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]
     const target = opt("url") ?? opt("file");
-    if (!target) { console.log("usage: gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]"); process.exit(2); }
+    if (!target) { console.log("usage: gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]"); process.exit(2); }
     const e = await measureFirstScreen({ url: opt("url"), file: opt("file"), size: opt("size", "375x812") });
     const out = opt("write");
     let entries = [e];
@@ -297,6 +299,17 @@ async function main() {
     if (args.includes("--json") || !out) console.log(JSON.stringify(doc, null, 2));
     else console.log(`five-second: ${e.html ? "first screen kept" : "NO visible <h1> drawn"}${e.covered ? `, the headline is covered by ${e.covered}` : ""} for ${e.page} -> ${out}`);
     process.exit(e.html && !e.covered ? 0 : 1);
+  }
+  if (cmd === "queue-ready") {
+    // gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json]: one preflight score before a merge queue (or a
+    // "GEL required" ruleset) is switched on. Offline unless --repo reads the ruleset; below 100 it exits 1.
+    const root = resolve(opt("root", "."));
+    const cfg = loadConfig(root);
+    const files = walk(root).filter((f) => !matchAny(cfg.ignore, f));
+    const queue = opt("snapshot") ? JSON.parse(readFileSync(opt("snapshot"), "utf8")) : opt("repo") ? collectQueue(opt("repo")) : undefined;
+    const card = scorecard({ files, read: (f) => readText(root, f), cfg, queue });
+    console.log(args.includes("--json") ? JSON.stringify(card, null, 1) : scorecardMarkdown(card));
+    process.exit(card.score === 100 ? 0 : 1);
   }
   if (cmd === "lane") {
     const root = resolve(opt("root", "."));
