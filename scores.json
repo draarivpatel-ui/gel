@@ -188,9 +188,9 @@
  },
  {
   "guard": "north-star",
-  "cases": 23,
-  "good": 8,
-  "bad": 15,
+  "cases": 40,
+  "good": 12,
+  "bad": 28,
   "recall": 1,
   "precision": 1,
   "falseBlocks": 0,
