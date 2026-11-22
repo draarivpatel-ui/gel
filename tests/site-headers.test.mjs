@@ -37,7 +37,7 @@ test("the CSP sets a default-src and restricts framing", () => {
   const csp = rules["/*"]["content-security-policy"];
   assert.equal(csp.length, 1);
   assert.match(csp[0], /^default-src 'self';/);
-  assert.match(csp[0], /frame-ancestors 'self'/);
+  assert.match(csp[0], /frame-ancestors 'self' https:\/\/analytics\.flisk\.si/);
   assert.match(csp[0], /object-src 'none'/);
 });
 
