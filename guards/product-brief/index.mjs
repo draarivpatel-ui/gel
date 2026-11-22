@@ -91,6 +91,26 @@ export function briefRows({ cfg, files, read, ctx }) {
   return { rows, resultFile, resultProblem };
 }
 
+// Five grades, lowest first. A pass is "passed" or above. The grade is how many of the six targets the measured numbers meet:
+//   bad         a finding: an answer, a target, a number, its date or its source is missing, or a number is stale
+//   passed      every answer is backed by a fresh, sourced number (targets met or not: zero paying teams is honest)
+//   good        3 or more of the 6 targets met
+//   high        5 or more met
+//   super high  all 6 met, and every number measured in the last 7 days
+// A repo the check does not apply to gets no grade (null).
+export const GRADES = ["bad", "passed", "good", "high", "super high"];
+export function grade(a) {
+  if (!applies(a.cfg)) return { grade: null, met: 0, of: 6, why: 'no "brief" or "north_star" in docs/gel.json' };
+  if (!run(a).pass) {
+    const met = obj(a.cfg.brief) ? briefRows(a).rows.filter((r) => r.met).length : 0;
+    return { grade: "bad", met, of: 6 };
+  }
+  const { rows } = briefRows(a);
+  const n = rows.filter((r) => r.met).length;
+  const g = n === 6 && rows.every((r) => r.ageDays != null && r.ageDays <= 7) ? "super high" : n >= 5 ? "high" : n >= 3 ? "good" : "passed";
+  return { grade: g, met: n, of: 6 };
+}
+
 export function run({ cfg, files, read, ctx }) {
   if (!applies(cfg)) return { pass: true, findings: [] };
   const findings = [];

@@ -21,12 +21,19 @@ test("iceTables reads scores, bold cells and phases, and gives each row its line
   assert.deepEqual(t.rows.map((r) => [r.line, r.i, r.c, r.e, r.ice, r.rank]), [[7, 8, 6, 8, 384, 0], [8, 6, 3, 2, 36, 99]]);
 });
 
-test("the average is named as the mistake", () => {
-  const res = judge(TABLE(["| Idea | 8 | 6 | 7 | 7 | P0 |"]));
-  assert.equal(res.pass, false);
-  assert.match(res.findings[0].message, /8 x 6 x 7 = 336/);
-  assert.match(res.findings[0].message, /not the average/);
-  assert.equal(res.findings[0].line, 7);
+test("a table may use the average or the product, not both", () => {
+  // real tables use either (flisk-sh/pages LAUNCH.md and public growth playbooks use the average)
+  assert.equal(judge(TABLE(["| Idea | 8 | 6 | 7 | 7 | P0 |", "| Other | 6 | 5 | 7 | 6 | P1 |"])).pass, true);
+  const mixed = judge(TABLE(["| Idea | 8 | 6 | 6 | 288 | P0 |", "| Other | 6 | 5 | 7 | 6 | P1 |"]));
+  assert.equal(mixed.pass, false);
+  assert.match(mixed.findings[0].message, /this table uses the product: 6 x 5 x 7 = 210 \(this row uses the average: pick one formula/);
+  assert.equal(mixed.findings[0].line, 8);
+  // a wrong sum under the average is still wrong
+  assert.match(judge(TABLE(["| A | 8 | 6 | 7 | 7 | P0 |", "| B | 6 | 3 | 3 | 5 | P1 |"])).findings[0].message, /\(6 \+ 3 \+ 3\) \/ 3 = 4\.0/);
+});
+
+test("placeholder template rows (/10, [1-10], [Score]) are skipped", () => {
+  assert.equal(judge(TABLE(["| 1 | /10 | /10 | /10 | | Backlog |", "| [Idea] | [1-10] | [1-10] | [1-10] | [Score] | P0 |"])).pass, true);
 });
 
 test("a later phase that outscores an earlier one is reported on the later row", () => {
@@ -45,7 +52,7 @@ test("confidence of 7 or more needs evidence; a link or an Evidence cell is enou
 
 test("gel run reports the table of a real file with its line", () => {
   const d = mkdtempSync(join(tmpdir(), "ice-"));
-  writeFileSync(join(d, "ROADMAP.md"), TABLE(["| Idea | 8 | 6 | 7 | 7 | P0 |"]));
+  writeFileSync(join(d, "ROADMAP.md"), TABLE(["| Idea | 8 | 6 | 7 | 300 | P0 |"]));
   const res = spawnSync(process.execPath, [gel, "run", "--root", d], { encoding: "utf8" });
   assert.match(res.stdout, /\| ice-score \| report \| 1 finding\(s\) \|/, res.stdout);
   assert.match(res.stdout, /ROADMAP\.md:7 ICE "Idea"/);

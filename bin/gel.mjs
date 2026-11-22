@@ -24,6 +24,7 @@ import { measure as measureInput } from "../lib/input-viewport.mjs";
 import { run as productBrief, briefRows } from "../guards/product-brief/index.mjs";
 import { judge as judgeClicks, limits as clickLimits } from "../guards/click-map/index.mjs";
 import { measure as measureClicks } from "../lib/click-map.mjs";
+import { gradeRepo } from "../lib/grades.mjs";
 
 const args = process.argv.slice(2);
 const cmd = args[0];
@@ -246,6 +247,14 @@ async function main() {
       for (const f of verdict.findings) console.log(`  ${f.message}`);
     }
     process.exit(verdict.pass ? 0 : 1);
+  }
+  if (cmd === "grade") {
+    // gel grade [--root .] [--now 2026-11-22] [--json]: the grade of each product check (click-map, ice-score, product-brief),
+    // bad < passed < good < high < super high, or "no grade" when the repo has nothing for that check. Exit 1 when one is bad.
+    const g = gradeRepo(resolve(opt("root", ".")), { now: opt("now") });
+    if (args.includes("--json")) console.log(JSON.stringify(g));
+    else for (const [check, r] of Object.entries(g)) console.log(`${check.padEnd(14)} ${r.grade ?? "no grade"}${r.why ? ` (${r.why})` : ""}`);
+    process.exit(Object.values(g).some((r) => r.grade === "bad") ? 1 : 0);
   }
   if (cmd === "input-viewport") {
     // gel input-viewport (--url https://site | --file index.html) [--size 375x667,320x568] [--cookie 'a=b'] [--write bench/input-viewport.json] [--json]

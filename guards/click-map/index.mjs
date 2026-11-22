@@ -55,6 +55,36 @@ export function judge(entry, lim) {
   return { label, judged: true, deadShare, mainShare, problems };
 }
 
+// Five grades, lowest first. A pass is "passed" or above; "bad" is a fail. One page grades like this:
+//   bad         a finding: too many dead clicks, or too few on the main button
+//   passed      no finding
+//   good        at most 15% dead clicks, and the main button (when named) gets at least 25%
+//   high        at most 10% dead, the main button named and at least 40%
+//   super high  at most 5% dead, the main button at least 50%, and at least 200 clicks
+// The repo gets its LOWEST judged page, and high or super high only when both phones and computers were measured:
+// a page nobody tapped on a phone has not earned it. A page with too few clicks gets no grade (null), not a fail.
+export const GRADES = ["bad", "passed", "good", "high", "super high"];
+export function gradeEntry(entry, lim) {
+  const v = judge(entry, lim);
+  if (!v.judged) return null;
+  if (v.problems.length) return "bad";
+  const d = v.deadShare, m = v.mainShare;
+  if (d <= 0.05 && m != null && m >= 0.5 && entry.clicks >= 200) return "super high";
+  if (d <= 0.1 && m != null && m >= 0.4) return "high";
+  if (d <= 0.15 && (m == null || m >= 0.25)) return "good";
+  return "passed";
+}
+export function grade(entries, lim) {
+  const pages = (entries ?? []).map((e) => ({ page: e?.page, dev: e?.dev, clicks: e?.clicks, grade: gradeEntry(e, lim) }));
+  const judged = pages.filter((p) => p.grade != null);
+  if (judged.length === 0) return { grade: null, pages, why: `no page has ${lim.minClicks} clicks yet` };
+  let rank = Math.min(...judged.map((p) => GRADES.indexOf(p.grade)));
+  const devs = new Set(judged.map((p) => p.dev));
+  let why = null;
+  if (rank >= 3 && !(devs.has("mobile") && devs.has("desktop"))) { rank = 2; why = "high needs judged pages on both mobile and desktop"; }
+  return { grade: GRADES[rank], pages, why };
+}
+
 export function run({ cfg, files, read, ctx }) {
   if (cfg?.status === "archived" || cfg?.click_map == null) return { pass: true, findings: [] };
   const findings = [];
