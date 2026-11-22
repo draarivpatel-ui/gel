@@ -1,0 +1,24 @@
+# Measures GEL's own north star (north_star.measure in docs/gel.json: the 30-repo planted-defect bench) every Monday
+# with this repo's reusable north-star workflow, and publishes the number with this run's link to the north-star branch.
+name: North star measure
+
+on:
+  schedule:
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: north-star
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    permissions:
+      contents: write
+    uses: ./.github/workflows/north-star.yml
+    with:
+      gel_ref: ${{ github.sha }}
+      timeout: 60
