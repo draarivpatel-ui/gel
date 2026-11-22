@@ -275,9 +275,10 @@ async function main() {
   if (cmd === "click-map") {
     // gel click-map (--url https://site/api/clicks?page=home&dev=mobile&days=30 | --file answer.json) [--merge] [--write docs/click-map.json] [--root .] [--json]
     // Reads one page's click numbers from the site and keeps what the click-map guard judges. --merge keeps the other pages already in the file.
+    // A click map that answers only its owner (Flisk Analytics) gets the key from GEL_CLICKS_TOKEN, sent as a Bearer header.
     if (!opt("url") && !opt("file")) { console.log("usage: gel click-map (--url https://site/api/clicks?page=home&dev=mobile&days=30 | --file answer.json) [--merge] [--write docs/click-map.json] [--root .] [--json]"); process.exit(2); }
     let e;
-    try { e = await measureClicks({ url: opt("url"), file: opt("file") }); } catch (err) { console.error(`click-map: ${err.message}`); process.exit(1); }
+    try { e = await measureClicks({ url: opt("url"), file: opt("file"), token: process.env.GEL_CLICKS_TOKEN }); } catch (err) { console.error(`click-map: ${err.message}`); process.exit(1); }
     const out = opt("write");
     let entries = [e];
     if (out && args.includes("--merge") && existsSync(out)) { try { entries = [...JSON.parse(readFileSync(out, "utf8")).entries.filter((x) => x.page !== e.page || x.dev !== e.dev), e]; } catch {} }

@@ -103,3 +103,24 @@ test("in block mode gel run fails on a page full of dead clicks and passes on a 
   const res = gelRun(["run", "--root", d, "--base", base]);
   assert.match(res.stdout, /\| click-map \| block \| pass \|/, res.stdout);
 });
+
+test("measure sends GEL_CLICKS_TOKEN as a Bearer key to a click map that answers only its owner", async () => {
+  const { createServer } = await import("node:http");
+  const { measure } = await import("../lib/click-map.mjs");
+  const seen = [];
+  const server = createServer((req, res) => {
+    seen.push(req.headers.authorization ?? null);
+    if (req.headers.authorization !== "Bearer fa_test") { res.writeHead(401).end("{}"); return; }
+    res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify(QUIET));
+  });
+  await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
+  const url = `http://127.0.0.1:${server.address().port}/api/clicks?site=flisk.sh&page=/&dev=desktop&days=30`;
+  try {
+    await assert.rejects(measure({ url }), /answered 401: this click map needs a key: set GEL_CLICKS_TOKEN/);
+    await assert.rejects(measure({ url, token: "fa_wrong" }), /answered 401: the key in GEL_CLICKS_TOKEN was refused/);
+    const e = await measure({ url, token: "fa_test" });
+    assert.deepEqual([e.clicks, e.dead, e.days], [100, 5, 30]);
+    assert.doesNotMatch(JSON.stringify(e), /fa_test/); // the key never lands in docs/click-map.json
+    assert.deepEqual(seen, [null, "Bearer fa_wrong", "Bearer fa_test"]);
+  } finally { server.close(); }
+});
