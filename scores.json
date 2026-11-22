@@ -198,6 +198,17 @@
   "ok": true
  },
  {
+  "guard": "ice-score",
+  "cases": 22,
+  "good": 10,
+  "bad": 12,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
   "guard": "input-in-viewport",
   "cases": 11,
   "good": 5,

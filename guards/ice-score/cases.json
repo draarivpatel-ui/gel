@@ -1,0 +1,184 @@
+[
+ {
+  "name": "right arithmetic, right order, modest confidence",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Drop wrong answers | 8 | 6 | 8 | **384** | P0 |\n| Follow-up questions | 6 | 6 | 6 | 216 | P1 |\n| Train a model | 6 | 3 | 2 | 36 | Later |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "high confidence with a link in the row",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Drop wrong answers ([20-question test](docs/test.md)) | 8 | 9 | 8 | 576 | P0 |\n| Chat button | 6 | 5 | 6 | 180 | P2 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "high confidence with an Evidence column",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "docs/plan.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | Impact | Confidence | Ease | ICE score | Evidence |\n| --- | --- | --- | --- | --- | --- |\n| Search rank test | 6 | 9 | 7 | 378 | 14 of 20 questions fail today |\n| CLI ask | 5 | 6 | 5 | 150 | |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "a blank template table",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "LAUNCH.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Idea | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- |\n| | | | | | |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "a wrong table inside a code fence is an example",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "README.md": "ICE example:\n\n```\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Bad | 8 | 9 | 10 | 9 | P0 |\n```\n"
+  }
+ },
+ {
+  "name": "a table that is not an ICE table",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "README.md": "ICE is used elsewhere.\n\n| Guard | Level | Result |\n| --- | --- | --- |\n| a | block | 9 |\n"
+  }
+ },
+ {
+  "name": "a struck-through row is not judged",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| ~~Old idea~~ | 9 | 9 | 9 | 1 | P2 |\n| New idea | 5 | 5 | 5 | 125 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "done rows are not ranked",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Shipped thing | 9 | 6 | 9 | 486 | Done |\n| Next thing | 5 | 5 | 5 | 125 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "evidence rule switched off in gel.json",
+  "label": "good",
+  "cfg": {
+   "ice": {
+    "evidence_from": 11
+   }
+  },
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Sure thing | 8 | 9 | 10 | 720 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "archived repo",
+  "label": "good",
+  "cfg": {
+   "status": "archived"
+  },
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Bad | 8 | 9 | 10 | 9 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "ICE written as the average",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "LAUNCH.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Idea | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- |\n| README checker | 8 | 6 | 7 | 7 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "a score that does not multiply out",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Drop wrong answers | 8 | 6 | 8 | 512 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "impact of 11",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Huge | 11 | 5 | 5 | 275 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "ease of zero",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Free | 5 | 5 | 0 | 0 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "a half point",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Hedged | 7.5 | 5 | 5 | 187.5 | P1 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "a word where a score belongs",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Vague | high | 5 | 5 | 125 | P1 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "scores filled in, ICE left empty",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Unfinished | 5 | 5 | 5 | | P1 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "P1 outscores P0",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Pet project | 3 | 5 | 4 | 60 | P0 |\n| The real win | 8 | 6 | 8 | 384 | P1 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "Later outscores P1",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| First | 8 | 6 | 8 | 384 | P0 |\n| Second | 4 | 5 | 5 | 100 | P1 |\n| Parked | 6 | 6 | 6 | 216 | Later |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "confidence 9 with nothing behind it",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Sure thing | 8 | 9 | 10 | 720 | P0 |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "confidence 7 with an empty Evidence cell",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "docs/plan.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Item | I | C | E | ICE | Evidence |\n| --- | --- | --- | --- | --- | --- |\n| Search rank test | 6 | 7 | 7 | 294 | |\n\nMore text.\n"
+  }
+ },
+ {
+  "name": "a first column headed Source is the item, not the evidence",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Plan\n\nICE scores.\n\n| Source | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Product docs | 8 | 9 | 10 | **720** | P0 |\n"
+  }
+ }
+]

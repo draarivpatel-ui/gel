@@ -18,6 +18,7 @@
     "agent-readiness": "report",
     "north-star": "report",
     "product-brief": "report",
+    "ice-score": "report",
     "stale-base": "block"
   }
 }
