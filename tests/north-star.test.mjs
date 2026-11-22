@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -43,4 +43,21 @@ test("on a pull request that touches an unrelated file the result and evidence f
   git("commit", "-qm", "unrelated change");
   const r = gelRun(["run", "--root", d, "--base", base]);
   assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+
+test("a measure that exits non-zero with a number that meets the target: published, but the run is not green", () => {
+  const d = repo(2.5);
+  writeFileSync(join(d, "bench", "m.mjs"), `console.log(JSON.stringify({ value: 2.5, baseline: 26.1, unit: "s", problem: "the page scrolls sideways" })); process.exit(1)\n`);
+  const r = gelRun(["north-star", "--root", d, "--measure"]);
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stdout, /the measure exited 1: the page scrolls sideways/);
+  assert.match(readFileSync(join(d, "bench", "north-star.json"), "utf8"), /"value": 2.5/);
+});
+
+test("a measure that finds nothing says why: its problem is printed, exit 2", () => {
+  const d = repo(2.5);
+  writeFileSync(join(d, "bench", "m.mjs"), `console.log(JSON.stringify({ value: null, problem: "no button a visitor can press (Start: covered by div.cookie)" })); process.exit(2)\n`);
+  const r = gelRun(["north-star", "--root", d, "--measure"]);
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /covered by div\.cookie/);
 });

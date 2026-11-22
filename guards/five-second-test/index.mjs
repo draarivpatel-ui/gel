@@ -42,7 +42,8 @@ export function run({ root, files, cfg, read, ctx }) {
   // Pages drawn by script (a single-page app, a worker that fills the page in the browser) have no headline in their source.
   // Declare them: "five_second": { "rendered": { "result": "bench/five-second.json", "max_age_days": 30 } }, and measure with
   // `gel five-second --url <page> --write bench/five-second.json` (headless Chrome, phone size). The first screen the browser
-  // drew is judged by the same rules as an offline page.
+  // drew is judged by the same rules as an offline page, counting only what a visitor can see (hidden and off-screen text is
+  // dropped when measuring), and a headline covered by a cookie wall or popup fails. The offline read cannot see CSS.
   const r = c.rendered;
   if (r != null && typeof r === "object") {
     const file = typeof r.result === "string" && r.result.trim() ? r.result.trim() : "bench/five-second.json";
@@ -60,7 +61,10 @@ export function run({ root, files, cfg, read, ctx }) {
         const maxAge = (r.max_age_days ?? 30) * 86400000;
         if (Number.isNaN(when)) at(`${file} has no "measuredAt" date`);
         else if (now - when > maxAge) at(`measured ${Math.floor((now - when) / 86400000)} days ago (limit ${r.max_age_days ?? 30}): measure again`);
-        for (const e of entries) checkFirstScreen(String(e.html ?? ""), (message) => at(`${e.page ?? "page"}: ${message}`), opts);
+        for (const e of entries) {
+          if (e.covered) at(`${e.page ?? "page"}: the headline is covered by ${e.covered} (a cookie wall or popup): that is what a visitor sees first`);
+          checkFirstScreen(String(e.html ?? ""), (message) => at(`${e.page ?? "page"}: ${message}`), opts);
+        }
       }
     }
   }

@@ -186,20 +186,24 @@ async function main() {
   if (cmd === "north-star") {
     // gel north-star [--root .] [--measure [--publish]] [--json]: with --measure, run north_star.measure (it prints {"value":..,"baseline":..,"unit":..}),
     // stamp measuredAt and, in Actions, the run link, and write north_star.result; --publish also pushes it to the north-star
-    // branch (lib/north-star-branch.mjs). Then judge the newest result against the target. Exit 1 when the target is not met.
+    // branch (lib/north-star-branch.mjs). Then judge the newest result against the target. Exit 1 when the target is not met,
+    // or when the measure itself exited non-zero (its number is still published; its "problem" field is printed).
     const root = resolve(opt("root", "."));
     const cfg = loadConfig(root);
     const ns = cfg.north_star;
     if (!ns?.result) { console.log('docs/gel.json has no north_star.result: see the north-star guard in README.md'); process.exit(2); }
+    let measureFailed = null;
     if (args.includes("--measure")) {
       if (!ns.measure) { console.log("north_star.measure is not set: nothing to run"); process.exit(2); }
-      // a measure that exits non-zero on a missed target still printed a real number: keep it, the verdict below judges it
-      let out;
+      // a measure that exits non-zero still printed a real number: keep and publish it, but remember the exit, because the
+      // measure may know something the ratio cannot see (the page scrolls sideways, the button is covered)
+      let out, measureExit = 0;
       try { out = execSync(ns.measure, { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] }); }
-      catch (err) { out = String(err.stdout ?? ""); if (!out.trim()) throw err; }
+      catch (err) { out = String(err.stdout ?? ""); measureExit = err.status ?? 1; if (!out.trim()) throw err; }
       let r;
       try { r = JSON.parse(out.trim().split("\n").filter(Boolean).pop()); } catch { r = null; }
-      if (typeof r?.value !== "number") { console.error(`north star: the measure printed no {"value": ...} line last`); process.exit(2); }
+      if (typeof r?.value !== "number") { console.error(`north star: the measure printed no {"value": ...} line last${r?.problem ? `: ${r.problem}` : ""}`); process.exit(2); }
+      measureFailed = measureExit ? `the measure exited ${measureExit}${r.problem ? `: ${r.problem}` : ""}` : null;
       const e = process.env;
       const run = e.GITHUB_RUN_ID && e.GITHUB_REPOSITORY ? `${e.GITHUB_SERVER_URL ?? "https://github.com"}/${e.GITHUB_REPOSITORY}/actions/runs/${e.GITHUB_RUN_ID}` : undefined;
       const text = JSON.stringify({ ...r, measuredAt: new Date().toISOString(), ...(run ? { run, commit: e.GITHUB_SHA } : {}) }, null, 1) + "\n";
@@ -214,12 +218,13 @@ async function main() {
     const verdict = northStar({ cfg, files: nsArgs.files, read: nsArgs.read ?? ((f) => readText(root, f)) });
     let r = null; try { r = JSON.parse((nsArgs.read ?? ((f) => readText(root, f)))(ns.result)); } catch {}
     const got = r ? ratioOf(r, ns.target?.better) : null;
-    if (args.includes("--json")) console.log(JSON.stringify({ met: verdict.pass, ratio: got, target: ns.target?.ratio, findings: verdict.findings }));
+    if (args.includes("--json")) console.log(JSON.stringify({ met: verdict.pass, ratio: got, target: ns.target?.ratio, findings: verdict.findings, ...(measureFailed ? { measure: measureFailed } : {}) }));
     else {
       console.log(`north star: ${ns.metric}\n  now ${r?.value ?? "?"}${r?.unit ? " " + r.unit : ""} vs ${ns.baseline} ${r?.baseline ?? "?"}${r?.unit ? " " + r.unit : ""} = ${got ? got.toFixed(2) : "?"}x, target ${ns.target?.ratio}x -> ${verdict.pass ? "MET" : "NOT MET"}`);
       for (const f of verdict.findings) console.log(`  ${f.message}`);
+      if (measureFailed) console.log(`  ${measureFailed}: the number is published, the run is not green`);
     }
-    process.exit(verdict.pass ? 0 : 1);
+    process.exit(verdict.pass && !measureFailed ? 0 : 1);
   }
   if (cmd === "input-viewport") {
     // gel input-viewport (--url https://site | --file index.html) [--size 375x667,320x568] [--cookie 'a=b'] [--write bench/input-viewport.json] [--json]
@@ -241,15 +246,15 @@ async function main() {
     // gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]
     const target = opt("url") ?? opt("file");
     if (!target) { console.log("usage: gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]"); process.exit(2); }
-    const e = measureFirstScreen({ url: opt("url"), file: opt("file"), size: opt("size", "375x812") });
+    const e = await measureFirstScreen({ url: opt("url"), file: opt("file"), size: opt("size", "375x812") });
     const out = opt("write");
     let entries = [e];
     if (out && args.includes("--merge") && existsSync(out)) { try { entries = [...JSON.parse(readFileSync(out, "utf8")).entries.filter((x) => x.page !== e.page), e]; } catch {} }
     const doc = { measuredAt: new Date().toISOString(), entries };
     if (out) writeFileSync(out, JSON.stringify(doc, null, 2) + "\n");
     if (args.includes("--json") || !out) console.log(JSON.stringify(doc, null, 2));
-    else console.log(`five-second: ${e.html ? "first screen kept" : "NO <h1> drawn"} for ${e.page} -> ${out}`);
-    process.exit(e.html ? 0 : 1);
+    else console.log(`five-second: ${e.html ? "first screen kept" : "NO visible <h1> drawn"}${e.covered ? `, the headline is covered by ${e.covered}` : ""} for ${e.page} -> ${out}`);
+    process.exit(e.html && !e.covered ? 0 : 1);
   }
   if (cmd === "lane") {
     const root = resolve(opt("root", "."));
