@@ -737,8 +737,8 @@
    "north_star_candidate": {
     "metric": "weekly active projects with a healthy stack",
     "state": "not-measured",
-    "declared": "2026-11-10",
-    "review_by": "2026-11-01",
+    "declared": "2027-01-10",
+    "review_by": "2027-01-01",
     "owner": "odykyi",
     "promote_when": [
      "4 weeks of real telemetry, not a proxy"
