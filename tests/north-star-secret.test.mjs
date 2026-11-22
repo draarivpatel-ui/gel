@@ -21,7 +21,7 @@ test("MEASURE_SECRET is set on the measure step only", () => {
   assert.doesNotMatch(setup, /secret/i);
 });
 
-test("the README tells callers how to pass it", () => {
-  const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+test("the docs tell callers how to pass it", () => {
+  const readme = readFileSync(new URL("../docs/loops.md", import.meta.url), "utf8");
   assert.match(readme, /measure_secret: \$\{\{ secrets\./);
 });
