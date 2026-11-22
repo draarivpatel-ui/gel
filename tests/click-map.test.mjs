@@ -48,6 +48,7 @@ test("toEntry keeps the numbers and the ten most pressed things, drops the cells
   assert.equal(odd.dev, "desk [31mtop");
   assert.doesNotMatch(odd.targets[0].target, /[\r\n]/);
   assert.equal(odd.targets[0].target.length, 60);
+  assert.equal(toEntry({ page: "Načrt плану", clicks: 1, dead: 0, targets: [] }, "saved.json").page, "Načrt плану");
 });
 
 test("judge: the share of clicks that hit nothing, and the share on the main button", () => {
