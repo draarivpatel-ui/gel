@@ -11,7 +11,7 @@ Add it as a step in a workflow you already have:
 ```yaml
 - uses: actions/checkout@v4   # pin it to a SHA; GEL will tell you
   with: { fetch-depth: 0 }
-- uses: flisk-sh/gel@v1.11.0
+- uses: flisk-sh/gel@v1.12.0
 ```
 
 Or run it on a folder, with no GitHub involved:
@@ -36,8 +36,8 @@ permissions: { contents: read }
 jobs:
   gel:
     permissions: { contents: read, checks: read, pull-requests: read }
-    uses: flisk-sh/gel/.github/workflows/gel.yml@v1.11.0
-    with: { gel_ref: v1.11.0 }
+    uses: flisk-sh/gel/.github/workflows/gel.yml@v1.12.0
+    with: { gel_ref: v1.12.0 }
 ```
 
 **Across an org**, one pull request per repo (needs `gh` signed in):
@@ -136,7 +136,7 @@ Each guard has `guards/<name>/cases.json`, labelled good and bad. `node bin/gel.
 
 ## Status
 
-Version v1.11.0, built and run by [flisk-sh](https://github.com/flisk-sh) on its own repos. It is not published to npm (`package.json` has `"private": true`); use it as an Action or from a clone. Releases: [GitHub releases](https://github.com/flisk-sh/gel/releases).
+Version v1.12.0, built and run by [flisk-sh](https://github.com/flisk-sh) on its own repos. It is not published to npm (`package.json` has `"private": true`); use it as an Action or from a clone. Releases: [GitHub releases](https://github.com/flisk-sh/gel/releases).
 
 ## License
 
