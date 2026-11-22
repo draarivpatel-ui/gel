@@ -1,0 +1,27 @@
+# Keeps the moving `v1` tag on the newest v1.x release, so `flisk-sh/gel@v1` never goes stale.
+# Runs when a release is published. A pre-release or a tag outside v1.x is ignored.
+name: Move v1 tag
+on:
+  release:
+    types: [published]
+permissions:
+  contents: write
+concurrency:
+  group: move-v1
+  cancel-in-progress: false
+jobs:
+  move:
+    if: ${{ !github.event.release.prerelease && startsWith(github.event.release.tag_name, 'v1.') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Point v1 at the release commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          sha=$(gh api "repos/$REPO/git/ref/tags/$TAG" --jq '.object.sha')
+          type=$(gh api "repos/$REPO/git/ref/tags/$TAG" --jq '.object.type')
+          if [ "$type" = "tag" ]; then sha=$(gh api "repos/$REPO/git/tags/$sha" --jq '.object.sha'); fi
+          gh api -X PATCH "repos/$REPO/git/refs/tags/v1" -f sha="$sha" -F force=true --jq '.object.sha'

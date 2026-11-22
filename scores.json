@@ -210,8 +210,8 @@
  },
  {
   "guard": "ice-score",
-  "cases": 22,
-  "good": 10,
+  "cases": 24,
+  "good": 12,
   "bad": 12,
   "recall": 1,
   "precision": 1,

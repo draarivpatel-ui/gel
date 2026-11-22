@@ -86,11 +86,11 @@
   }
  },
  {
-  "name": "ICE written as the average",
-  "label": "bad",
+  "name": "ICE written as the average, the same way on every row",
+  "label": "good",
   "cfg": {},
   "files": {
-   "LAUNCH.md": "# Roadmap\n\nICE: impact x confidence x ease.\n\n| Idea | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- |\n| README checker | 8 | 6 | 7 | 7 |\n\nMore text.\n"
+   "LAUNCH.md": "# Launch\n\nICE is the average of impact, confidence and ease.\n\n| Idea | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- |\n| README checker | 8 | 6 | 7 | 7 |\n| Badge | 6 | 5 | 7 | 6 |\n"
   }
  },
  {
@@ -179,6 +179,22 @@
   "cfg": {},
   "files": {
    "ROADMAP.md": "# Plan\n\nICE scores.\n\n| Source | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Product docs | 8 | 9 | 10 | **720** | P0 |\n"
+  }
+ },
+ {
+  "name": "one table that mixes the product and the average",
+  "label": "bad",
+  "cfg": {},
+  "files": {
+   "LAUNCH.md": "# Launch\n\n| Idea | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- |\n| README checker | 8 | 6 | 6 | 288 |\n| Badge | 6 | 5 | 7 | 6 |\n"
+  }
+ },
+ {
+  "name": "a blank ICE template with /10 placeholders",
+  "label": "good",
+  "cfg": {},
+  "files": {
+   "GROWTH.md": "# Experiments\n\n| # | Experiment | Impact | Confidence | Ease | ICE Score | Status |\n|---|---|---|---|---|---|---|\n| 1 | | /10 | /10 | /10 | | Backlog |\n| 2 | | /10 | /10 | /10 | | Backlog |\n"
   }
  }
 ]

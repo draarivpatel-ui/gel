@@ -1,0 +1,591 @@
+[
+ {
+  "id": "grow-clicks-all",
+  "check": "click-map",
+  "expect": "bad",
+  "real": true,
+  "note": "grow.flisk.si, recorder live since 2026-11-22 (flisk-sh/grow#93): home 71% dead clicks, plan 42% dead and MAKE MY PLAN under 10%",
+  "cfg": {
+   "click_map": {
+    "main": {
+     "plan": "MAKE MY PLAN"
+    }
+   }
+  },
+  "source": [
+   "https://grow.flisk.si/api/clicks?page=home&dev=desktop&days=30",
+   "https://grow.flisk.si/api/clicks?page=plan&dev=desktop&days=30",
+   "https://grow.flisk.si/api/clicks?page=home&dev=mobile&days=30",
+   "https://grow.flisk.si/api/clicks?page=plan&dev=mobile&days=30"
+  ],
+  "recordedAt": "2026-11-22",
+  "files": {
+   "docs/click-map.json": "{\n \"measuredAt\": \"2026-11-22T12:00:00Z\",\n \"entries\": [\n  {\n   \"page\": \"home\",\n   \"dev\": \"desktop\",\n   \"days\": 30,\n   \"clicks\": 28,\n   \"dead\": 20,\n   \"targets\": [\n    {\n     \"target\": \"span\",\n     \"kind\": \"dead\",\n     \"n\": 18\n    },\n    {\n     \"target\": \"The Grow Gazette\",\n     \"kind\": \"ctl\",\n     \"n\": 7\n    },\n    {\n     \"target\": \"flisk-bar\",\n     \"kind\": \"dead\",\n     \"n\": 1\n    },\n    {\n     \"target\": \"li\",\n     \"kind\": \"dead\",\n     \"n\": 1\n    },\n    {\n     \"target\": \"url\",\n     \"kind\": \"ctl\",\n     \"n\": 1\n    }\n   ],\n   \"source\": \"https://grow.flisk.si/api/clicks?page=home&dev=desktop&days=30\"\n  },\n  {\n   \"page\": \"plan\",\n   \"dev\": \"desktop\",\n   \"days\": 30,\n   \"clicks\": 95,\n   \"dead\": 40,\n   \"targets\": [\n    {\n     \"target\": \"OPEN\",\n     \"kind\": \"ctl\",\n     \"n\": 12\n    },\n    {\n     \"target\": \"b\",\n     \"kind\": \"dead\",\n     \"n\": 12\n    },\n    {\n     \"target\": \"p\",\n     \"kind\": \"dead\",\n     \"n\": 10\n    },\n    {\n     \"target\": \"MAKE MY PLAN\",\n     \"kind\": \"ctl\",\n     \"n\": 8\n    },\n    {\n     \"target\": \"span\",\n     \"kind\": \"dead\",\n     \"n\": 7\n    },\n    {\n     \"target\": \"url\",\n     \"kind\": \"ctl\",\n     \"n\": 7\n    },\n    {\n     \"target\": \"h3\",\n     \"kind\": \"dead\",\n     \"n\": 4\n    },\n    {\n     \"target\": \"checkbox\",\n     \"kind\": \"ctl\",\n     \"n\": 3\n    },\n    {\n     \"target\": \"CLASSIFIEDS\",\n     \"kind\": \"ctl\",\n     \"n\": 2\n    },\n    {\n     \"target\": \"REWRITE\",\n     \"kind\": \"ctl\",\n     \"n\": 2\n    }\n   ],\n   \"source\": \"https://grow.flisk.si/api/clicks?page=plan&dev=desktop&days=30\"\n  },\n  {\n   \"page\": \"home\",\n   \"dev\": \"mobile\",\n   \"days\": 30,\n   \"clicks\": 0,\n   \"dead\": 0,\n   \"targets\": [],\n   \"source\": \"https://grow.flisk.si/api/clicks?page=home&dev=mobile&days=30\"\n  },\n  {\n   \"page\": \"plan\",\n   \"dev\": \"mobile\",\n   \"days\": 30,\n   \"clicks\": 0,\n   \"dead\": 0,\n   \"targets\": [],\n   \"source\": \"https://grow.flisk.si/api/clicks?page=plan&dev=mobile&days=30\"\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "id": "grow-clicks-phones",
+  "check": "click-map",
+  "expect": null,
+  "real": true,
+  "note": "grow.flisk.si on phones: no taps recorded yet, so no grade (not a pass, not a fail)",
+  "cfg": {
+   "click_map": {
+    "main": {
+     "plan": "MAKE MY PLAN"
+    }
+   }
+  },
+  "source": [
+   "https://grow.flisk.si/api/clicks?page=home&dev=mobile&days=30",
+   "https://grow.flisk.si/api/clicks?page=plan&dev=mobile&days=30"
+  ],
+  "recordedAt": "2026-11-22",
+  "files": {
+   "docs/click-map.json": "{\n \"measuredAt\": \"2026-11-22T12:00:00Z\",\n \"entries\": [\n  {\n   \"page\": \"home\",\n   \"dev\": \"mobile\",\n   \"days\": 30,\n   \"clicks\": 0,\n   \"dead\": 0,\n   \"targets\": [],\n   \"source\": \"https://grow.flisk.si/api/clicks?page=home&dev=mobile&days=30\"\n  },\n  {\n   \"page\": \"plan\",\n   \"dev\": \"mobile\",\n   \"days\": 30,\n   \"clicks\": 0,\n   \"dead\": 0,\n   \"targets\": [],\n   \"source\": \"https://grow.flisk.si/api/clicks?page=plan&dev=mobile&days=30\"\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "id": "click-passed",
+  "check": "click-map",
+  "expect": "passed",
+  "real": false,
+  "why": "no Flisk page has a passing click map yet: Grow is the only site that records clicks, and both its pages fail",
+  "cfg": {
+   "click_map": {}
+  },
+  "recordedAt": "2026-11-22",
+  "files": {
+   "docs/click-map.json": "{\n \"measuredAt\": \"2026-11-22T12:00:00Z\",\n \"entries\": [\n  {\n   \"page\": \"home\",\n   \"dev\": \"desktop\",\n   \"days\": 30,\n   \"clicks\": 120,\n   \"dead\": 30,\n   \"targets\": [\n    {\n     \"target\": \"Start\",\n     \"kind\": \"ctl\",\n     \"n\": 40\n    }\n   ]\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "id": "click-good",
+  "check": "click-map",
+  "expect": "good",
+  "real": false,
+  "why": "no real example yet",
+  "cfg": {
+   "click_map": {
+    "main": "Start"
+   }
+  },
+  "recordedAt": "2026-11-22",
+  "files": {
+   "docs/click-map.json": "{\n \"measuredAt\": \"2026-11-22T12:00:00Z\",\n \"entries\": [\n  {\n   \"page\": \"home\",\n   \"dev\": \"desktop\",\n   \"days\": 30,\n   \"clicks\": 120,\n   \"dead\": 15,\n   \"targets\": [\n    {\n     \"target\": \"Start\",\n     \"kind\": \"ctl\",\n     \"n\": 36\n    }\n   ]\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "id": "click-good-desktop-only",
+  "check": "click-map",
+  "expect": "good",
+  "real": false,
+  "why": "no real example yet: numbers good enough for high, but no phone was measured, so it stops at good",
+  "cfg": {
+   "click_map": {
+    "main": "Start"
+   }
+  },
+  "recordedAt": "2026-11-22",
+  "files": {
+   "docs/click-map.json": "{\n \"measuredAt\": \"2026-11-22T12:00:00Z\",\n \"entries\": [\n  {\n   \"page\": \"home\",\n   \"dev\": \"desktop\",\n   \"days\": 30,\n   \"clicks\": 300,\n   \"dead\": 6,\n   \"targets\": [\n    {\n     \"target\": \"Start\",\n     \"kind\": \"ctl\",\n     \"n\": 180\n    }\n   ]\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "id": "click-high",
+  "check": "click-map",
+  "expect": "high",
+  "real": false,
+  "why": "no real example yet",
+  "cfg": {
+   "click_map": {
+    "main": "Start"
+   }
+  },
+  "recordedAt": "2026-11-22",
+  "files": {
+   "docs/click-map.json": "{\n \"measuredAt\": \"2026-11-22T12:00:00Z\",\n \"entries\": [\n  {\n   \"page\": \"home\",\n   \"dev\": \"desktop\",\n   \"days\": 30,\n   \"clicks\": 100,\n   \"dead\": 8,\n   \"targets\": [\n    {\n     \"target\": \"Start\",\n     \"kind\": \"ctl\",\n     \"n\": 45\n    }\n   ]\n  },\n  {\n   \"page\": \"home\",\n   \"dev\": \"mobile\",\n   \"days\": 30,\n   \"clicks\": 60,\n   \"dead\": 5,\n   \"targets\": [\n    {\n     \"target\": \"Start\",\n     \"kind\": \"ctl\",\n     \"n\": 30\n    }\n   ]\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "id": "click-super-high",
+  "check": "click-map",
+  "expect": "super high",
+  "real": false,
+  "why": "no real example yet",
+  "cfg": {
+   "click_map": {
+    "main": "Start"
+   }
+  },
+  "recordedAt": "2026-11-22",
+  "files": {
+   "docs/click-map.json": "{\n \"measuredAt\": \"2026-11-22T12:00:00Z\",\n \"entries\": [\n  {\n   \"page\": \"home\",\n   \"dev\": \"desktop\",\n   \"days\": 30,\n   \"clicks\": 400,\n   \"dead\": 12,\n   \"targets\": [\n    {\n     \"target\": \"Start\",\n     \"kind\": \"ctl\",\n     \"n\": 240\n    }\n   ]\n  },\n  {\n   \"page\": \"home\",\n   \"dev\": \"mobile\",\n   \"days\": 30,\n   \"clicks\": 250,\n   \"dead\": 10,\n   \"targets\": [\n    {\n     \"target\": \"Start\",\n     \"kind\": \"ctl\",\n     \"n\": 140\n    }\n   ]\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "id": "pages-launch",
+  "check": "ice-score",
+  "expect": "passed",
+  "real": true,
+  "note": "average ICE used on every row, no confidence of 7 or more, no phase column",
+  "source": "https://github.com/flisk-sh/pages/blob/0d0a37598365/LAUNCH.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "LAUNCH.md": "# Launch kit: Pages\n\n**Rules.** The maker posts from their own personal account. No vote requests, no vote swaps, no new accounts. Ask\npeople to look and comment, never to upvote.\n\n## 1. Why this (ICE, 1–10)\n\n| Idea | Seen on PH as | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- | --- |\n| **Publish an agent's page to a public link: git-backed, forkable, no account beyond GitHub** | spacesheep, tiiny.host, Claude artifacts | 7 | 6 | 7 | **6.7** |\n| A straight spacesheep clone, public and static | spacesheep | 6 | 5 | 7 | 6.0 |\n| A curated gallery of explainers, one branch each | — | 5 | 4 | 8 | 5.7 |\n\nThe angle: no signup, no keys, nothing hosted that can break; it is just git. We leave out private spaces, teams,\nsigning and live streams.\n\n## 2. The listing\n\n- **Name**: Pages (pages.flisk.si)\n- **Tagline** (60 at most):\n  1. Your agent builds a page. One command makes it a link.\n  2. Publish what your AI agent builds, free, as a git branch\n  3. Agent-made pages on a public link. No keys, no database.\n- **Description** (260 at most): Ask Claude Code to publish a folder and get pages.flisk.si/@you/name. Interactive\n  HTML or Markdown, checked for phishing patterns, free, public. Every space is a git branch: versions are commits,\n  and the source is one click away.\n- **Topics**: Developer Tools, Artificial Intelligence, Open Source\n- **Links**: https://pages.flisk.si, https://github.com/flisk-sh/pages\n- **Thumbnail**: https://pages.flisk.si/icon-512.png\n\n## 3. Gallery (1270×760, five images, from the live site)\n\n1. Claude Code: \"publish ./gpu-explainer to pages\", then the link.\n2. A real space: an interactive explainer with its corner bar.\n3. The pull request: check passed, \"✓ Published version 2\", link.\n4. A roadmap-style visual space (compass or comparison).\n5. The branch list on GitHub: one branch per space, history = versions.\n\n## 4. Maker's first comment\n\n> Hi, I'm … I built Pages because my agent kept making good pages that lived only on my laptop.\n>\n> How it works: the plugin opens a pull request from your fork; a workflow checks the files (no password fields, no\n> forms posting away, scripts only from known CDNs), commits them to their own branch, and GitHub Pages serves them.\n>\n> It is free and stores nothing outside git. Everything is public, by design. The code is on GitHub: …\n>\n> What would you publish first?\n\n## 5. Before launch day\n\n- [ ] Pages enabled (GitHub Actions source), custom domain pages.flisk.si, HTTPS enforced.\n- [ ] Labels exist: `publish`, `remove`, `needs-review`, `report`, `remove-request`.\n- [ ] One publish end to end from a non-member account, one removal, one refused page.\n- [ ] 10–15 real example spaces seeded (roadmap visuals, restaurant/ERP stacks, explainers).\n- [ ] Sitemap submitted to Google Search Console and Bing.\n- [ ] Gallery recorded from the live site.\n- [ ] Launch scheduled for 00:01 Pacific; you are free that day to answer every comment.\n\n## 6. Launch day\n\n- Post the maker comment as soon as it is live.\n- Answer every comment within the hour; watch the `report` label.\n- Share it where you already talk to people. Say what it does and link it; do not ask for votes.\n"
+  }
+ },
+ {
+  "id": "helpdock-launch",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "confidence 7 with no evidence",
+  "source": "https://github.com/flisk-sh/helpdock/blob/4e966849462a/LAUNCH.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "LAUNCH.md": "# Helpdock: Product Hunt listing draft\n\nNothing here has been posted. The maker posts from their own personal account. No vote requests, no vote swaps, no new accounts.\n\n## Why this product, and why it is easy (ICE)\n\n| Idea (from the Oct 1 leaderboard) | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- |\n| **AI help center** (like #8 Chat.sh, #9 Bracket) | 7 | 7 | 8 | **7.3** |\n| Drop files, get a live URL (like #12 Buddy Drop) | 5 | 4 | 9 | 6.0 |\n| Night-shift stack fixer (like #5 Polylane) | 6 | 5 | 6 | 5.7 |\n| Natural-language control for a SaaS (like #2 Yedric) | 7 | 5 | 4 | 5.3 |\n\nThe Flisk launch on Oct 27 was never featured: infrastructure is hard to feature. Helpdock is something an end user wants, with one clear outcome, and Flisk is the story underneath it (\"clone, `flisk up`, done\").\n\n## Listing\n\n**Name:** Helpdock\n\n**Tagline** (60 characters max), chosen first:\n\n1. Any GitHub repo's docs as a help center and MCP server (55)\n2. Replace github.com with helpdock.flisk.si. Instant docs. (55)\n3. Cited answers from any repo's docs, for you and your AI (55)\n\n**Description** (under 260 characters):\n\n> Replace github.com with helpdock.flisk.si and any public repo gets a help center: ask in plain words, get passages quoted from the docs with links to the exact page. Plus an MCP server per repo for your AI. No signup, no API key, open source.\n\n**Tags:** Developer Tools, Open Source, Artificial Intelligence.\n\n**Gallery (5):**\n\n1. The URL swap: `github.com/vercel/next.js` → `helpdock.flisk.si/vercel/next.js`, and the help center it opens.\n2. A question (\"how do I add middleware?\") answered with cited passages and code from the Next.js docs, linked to GitHub.\n3. \"Use in your AI\": `claude mcp add --transport http nextjs https://helpdock.flisk.si/vercel/next.js/mcp`, then Claude Code answering from it.\n4. *Ask your AI*: ChatGPT opened with the question and the cited passages.\n5. How it works: one GitHub API call, Markdown fetched in parallel, SQLite full-text search, no model; built and run with Flisk.\n\n## Maker first comment\n\n> Hi! Docs on GitHub are great until you need one answer: search finds the file, not the paragraph. Helpdock turns any public repo into a help center by URL: put helpdock.flisk.si in place of github.com. It reads the repo's Markdown, indexes it with SQLite full-text search (no embeddings, no model), and answers with the passages themselves, each linked to the exact heading on GitHub.\n>\n> Every repo also gets an MCP endpoint, so your Claude, ChatGPT or Cursor can search those docs directly. And if you want a written answer, one click hands the question and the cited passages to your own AI; we never call one.\n>\n> What repo should we try first? Drop one in the comments.\n\n## Before launch\n\n- [x] Public repo: https://github.com/flisk-sh/helpdock (published 2026-10-27).\n- [x] Live: https://helpdock.flisk.si (Render free plan; it sleeps after 15 idle minutes, so switch to Starter for launch day).\n- [ ] Record the gallery from a real run; no mockups.\n- [ ] Ask Product Hunt support whether a product built on Flisk, launched by Flisk's makers, counts as separate from the Flisk listing.\n- [ ] Post the night-before note to the people who already use Flisk (no vote ask).\n"
+  }
+ },
+ {
+  "id": "citable-launch",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "confidence 7 with no evidence",
+  "source": "https://github.com/flisk-sh/citable/blob/87711b3a95a1/LAUNCH.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "LAUNCH.md": "# Citable: Product Hunt listing draft\n\nNothing here has been posted. The maker posts from their own personal account. No vote requests, no vote swaps, no new accounts.\n\n## Why this product, and why it is easy (ICE)\n\nRead from the most-voted launches of the week of Oct 26, 2026 (weekly and Oct 27 daily leaderboards), and scored for what Flisk ships: one free Render service, no database, no API key, no model.\n\n| Idea (from the leaderboard) | Votes | Impact | Confidence | Ease | ICE |\n| --- | --- | --- | --- | --- | --- |\n| **Can AI search cite my site?** (like #12 Notra, GEO tool) | 148 | 7 | 7 | 9 | **7.7** |\n| Free PDF accessibility checker (like #9 PDF Accessibility Checker) | 170 | 5 | 6 | 6 | 5.7 |\n| Chat widget for any workflow (like #8 N8N Chat UI) | 186 | 6 | 5 | 5 | 5.3 |\n| Cloud bill cutter (like #14 CloudKnife) | 127 | 7 | 4 | 3 | 4.7 |\n| User-reaction preview (like #1 TheySaid) | 354 | 8 | 4 | 2 | 4.7 |\n\nThe top of the board (TheySaid, Strawberry, Overmind, SurgePix) needs a model or an account system; that breaks \"no keys\". Notra's idea does not: whether ChatGPT, Claude and Perplexity can read a site is decided by robots.txt, headers and HTML, all of which can be checked deterministically. Every site owner has the question, the answer fits on one page, and the URL swap makes it shareable, the same shape that worked for Helpdock.\n\n## Listing\n\n**Name:** Citable\n\n**Tagline** (60 characters max), chosen first:\n\n1. See if ChatGPT, Claude and Perplexity can cite your site (56)\n2. Put citable.flisk.si/ before any URL. AI search, checked. (57)\n3. Why AI answers skip your site, and the fix for each reason (58)\n\n**Description** (under 260 characters):\n\n> Put citable.flisk.si/ in front of any address and see whether ChatGPT, Claude, Perplexity and Google AI can read and cite the page: crawler by crawler, with the fix for each problem. Free, no signup, no AI key, open source. Also an MCP server.\n\n**Tags:** SEO, Developer Tools, Artificial Intelligence.\n\n**Gallery (5):**\n\n1. The URL swap: `stripe.com` → `citable.flisk.si/stripe.com`, and the report it opens (score ring, checks).\n2. A site that blocks answer engines: the crawler check naming OAI-SearchBot, Claude-SearchBot and PerplexityBot, and the robots.txt lines that fix it. Training crawlers listed apart: \"a choice, not a score\".\n3. A JavaScript-only page: \"0 words of readable text\" and the server-rendering fix.\n4. *Ask Claude*: the list of fixes handed to the visitor's own assistant; and `claude mcp add --transport http citable https://citable.flisk.si/mcp` answering \"can AI cite example.com?\".\n5. How it works: four GET requests, RFC 9309 robots rules, Bun's HTMLRewriter, no model, nothing stored; built and run with Flisk.\n\n## Maker first comment\n\n> Hi! More people now ask ChatGPT, Claude or Perplexity instead of searching, and a site can be invisible to them without anyone noticing: one robots.txt line written for training crawlers also blocks the crawler that fetches pages for answers, a \"noindex\" slips into production, or the whole page is JavaScript that those crawlers never run.\n>\n> Citable checks all of that from the outside: put citable.flisk.si/ in front of any address. It reads robots.txt for each answer engine separately (training crawlers are listed apart, because blocking those is a fair choice), then reads the page without JavaScript, the way they do. Every problem comes with its fix, and one click hands the list to your own AI. No model on our side, no signup, nothing stored.\n>\n> It is also an MCP server, so you can ask your assistant \"can AI cite our docs?\". Which site should we check first? Drop one in the comments.\n\n## Before launch\n\n- [x] Public repo: github.com/flisk-sh/citable.\n- [ ] Live: deploy with the Render Blueprint and add the `citable` CNAME ([DEPLOY.md](DEPLOY.md)); switch to Starter for launch day so it does not sleep.\n- [ ] Check the answers by hand on ten known sites before posting (a news site that blocks bots, an SPA, a docs site), and fix anything that reads wrong.\n- [ ] Record the gallery from a real run; no mockups.\n- [ ] Ask Product Hunt support whether products built on Flisk by Flisk's makers count as separate from the Flisk listing (same question as Helpdock; one answer covers both).\n- [ ] Post the night-before note to the people who already use Flisk (no vote ask).\n"
+  }
+ },
+ {
+  "id": "fleet-providers",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "Anona Compute: confidence 8 with no evidence",
+  "source": "https://github.com/flisk-sh/fleet/blob/ffa24bd826a2/docs/ice-providers.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "docs/ice-providers.md": "# Which sandbox providers to add next (ICE)\n\nSource: orble.tech/sandboxes, read 2026-11-15. The page lists about 700 rows; only the first 81 (agend to E2B) were read, so\nthe rest are not scored. ICE = Impact x Confidence x Ease, each 1-10, higher is better (Ease = how little work).\nImpact: cheap per hour and a free credit that lets a user try fleet. Confidence: public API docs found and checked.\nEase: reuses an adapter we already have.\n\n| Provider | Price/h (2 vCPU, 4 GiB) | I | C | E | ICE | Why |\n|---|---|---|---|---|---|---|\n| Anona Compute | $0.284 | 6 | 8 | 10 | 480 | E2B-compatible gateway, documented domain; one small file |\n| Cathedral | $0.035 | 8 | 4 | 4 | 128 | cheapest hourly rate; own API (POST /v1/sandboxes, needs required_hardware, prepaid credit first) |\n| Alibaba Cloud Agent Sandbox | $0.0714 | 7 | 2 | 6 | 84 | E2B SDK compatible, but needs an Alibaba cloud account |\n| BoxFab, Anona-style clones | n/a | 3 | 3 | 8 | 72 | E2B-compatible, no hosted price |\n| Cloudflare / Docker / Deno / AWS | $0.14-0.25 | 5 | 2 | 2 | 20 | big names, but account or SDK work |\n| BrowserPod, APIHub, agent-exec | per request | 2 | 3 | 3 | 18 | not a pod by the hour |\n\nDone: Anona. Next: Cathedral. Not run against a real account yet (marked untested, like the others before a real key).\n"
+  }
+ },
+ {
+  "id": "inference-roadmap",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "six rows with confidence 8 or 9 and no evidence",
+  "source": "https://github.com/flisk-sh/flisk-inference/blob/bdedc9787883/ROADMAP.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "ROADMAP.md": "# Roadmap: Wolf answers questions about Flisk\n\nThe service's next job after writing `service.json`: answer questions from the Flisk docs, first in the Ask box on\n[flisk.sh/docs](https://flisk.sh/docs/), then as a support chat. Training and scoring the model itself is in the\n[flisk-model roadmap](https://github.com/flisk-sh/flisk-model/blob/main/ROADMAP.md). Its Phase 2 says a new job ships only\nonce it has its own test, and the [test](#the-test) below is that test.\n\n## Where we are (2026-11-10)\n\n| | Status |\n| --- | --- |\n| Ask on flisk.sh/docs | Live, with no model. [Helpdock](https://helpdock.flisk.si) finds passages in `flisk-sh/flisk` `docs/`, and \"Ask your AI\" links send them to Claude or ChatGPT. |\n| Search quality | Fixed for the misses the test found ([helpdock#16](https://github.com/flisk-sh/helpdock/pull/16)). The one gap in the docs is filled ([flisk#3589](https://github.com/flisk-sh/flisk/pull/3589)). |\n| Model | Wolf's base model, `@cf/qwen/qwen2.5-coder-32b-instruct`, with a docs prompt (Wolf's own prompt writes JSON only). **15 of 20 correct, 4 partly right, 1 wrong, 0 made-up commands**, about 1 to 2 s each. Llama 3.3 70B: 12 correct with the older search, and 1 made-up command (`flisk import --language python`) with the fixed search. Llama 3.1 8B: dropped (it looped and garbled answers). |\n| Not measured | Pasted error messages, follow-up questions, questions outside the CLI docs, and Workers AI cost per answer. |\n\n## Decisions (Zachman)\n\n| | Decision |\n| --- | --- |\n| **Why** | Plan the work in priority order (P0, P1, P2) and build what scores best, not everything at once. |\n| **Who** | Anyone, with no sign-in. Limited per visitor and per day. |\n| **What** (sources) | Picked by ICE score (below). P0 answers from the CLI docs only. |\n| **Where** | flisk.sh/docs only, next to the existing Ask. Nothing on other pages until P1's test passes. |\n| **When** | P0 this week. P1 after a week of real questions. P2 only if P1's numbers hold. |\n| **How** | Helpdock calls Workers AI. Helpdock already has the passages, so every repository's help center can turn the answer on, and inference.flisk.si's API keeps its own limit. |\n\n## ICE scores\n\nEach item is scored 1 to 10 for **I**mpact, **C**onfidence (how sure we are it works) and **E**ase. Score = I × C × E.\nTies go to whatever earns visitors' trust.\n\n### Sources the answer may use\n\n| Source | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Flisk CLI docs (`flisk-sh/flisk` `docs/`) | 8 | 9 | 10 | **720** | P0 |\n| flisk.sh pages (features, why, migrate, blog) | 6 | 6 | 6 | 216 | P1 |\n| Other flisk.si products' docs (Wolf, Pages, Tools, Helpdock, FliskOS) | 5 | 5 | 4 | 100 | P2 |\n| Closed GitHub issues | 6 | 3 | 3 | 54 | Later |\n\n### Work\n\n| Item | I | C | E | ICE | Phase |\n| --- | --- | --- | --- | --- | --- |\n| Drop any answer line that quotes a command not in its passages | 8 | 8 | 8 | **512** | P0 |\n| \"AI answer (beta)\" button in Ask, passages first, passages kept if the model fails | 7 | 8 | 7 | **392** | P0 |\n| Hand off what the docs do not cover: Discord or a GitHub issue, with the question filled in | 6 | 8 | 8 | **384** | P0 |\n| The 20-question test in Helpdock CI, for search rank (no model) | 6 | 9 | 7 | **378** | P0 |\n| Support test: 20 more questions (pasted errors, \"is Wolf free?\", Windows installs, follow-ups) | 7 | 8 | 6 | 336 | P1 |\n| Follow-up questions (Helpdock's chat sessions; the last turns go into the search) | 6 | 6 | 6 | 216 | P1 |\n| Chat button in the shared Flisk bar on every flisk.si site | 6 | 5 | 6 | 180 | P2 |\n| `flisk ask \"<question>\"` in the CLI, calling the same endpoint | 5 | 6 | 5 | 150 | P2 |\n| Train Wolf on docs questions and answers | 6 | 3 | 2 | 36 | Later |\n\n## P0: AI answer beta in Ask (this week)\n\n**Status 2026-11-10: live on flisk.sh/docs.** Helpdock's answer endpoint with the checks, caps and ranking test\n([helpdock#17](https://github.com/flisk-sh/helpdock/pull/17), [#18](https://github.com/flisk-sh/helpdock/pull/18)) and the\nbutton with the handoff ([website#143](https://github.com/flisk-sh/website/pull/143)) are merged, and the Workers AI token\n(Workers AI Read, one account) is set on Helpdock's Render service. The week of real questions started 2026-11-10.\n\n1. **Helpdock** gets an answer endpoint: question plus the top 6 passages (up to 1,500 characters each) go to\n   `@cf/qwen/qwen2.5-coder-32b-instruct` with the docs prompt from the test, at temperature 0. It has its own daily cap\n   and a per-visitor limit. Questions are not stored; only counts are.\n2. **Checks before the answer is shown:** a line that quotes a command or flag that is not in the passages is dropped, and\n   the filler \"They do not cover X\" line is removed. When nothing is left, Ask shows the passages, as today.\n3. **flisk.sh/docs:** an \"AI answer (beta)\" button under the passages, labelled with the model's name. If the call fails or\n   the cap is reached, the button hides and the passages stay.\n4. **Handoff:** when the docs do not cover the question, Ask shows \"Ask on Discord\" and \"Open an issue\" with the\n   question filled in.\n5. **Search test in CI:** the 20 questions and the page each should find, run against Helpdock's ranking on every PR.\n\n**Needs from the owner:** a Cloudflare API token limited to Workers AI, set as a secret on Helpdock's Render service.\ninference.flisk.si's limit of 300 requests a day is sized to the account's Workers AI free allowance, and Ask would\nshare that allowance. So P0 first measures Workers AI usage per answer, then splits the allowance between the two caps\nor pays for more.\n\n**Test that ends P0:** on the 20 questions, at least 15 correct and **0 made-up commands**. After a week live: the share of\nanswers people open, and how often the cap or a failure fell back to passages.\n\n## P1: support chat on flisk.sh/docs (after a week of real questions)\n\n- Run the support test first. Ship only at 15 of 20 correct and 0 made-up commands.\n- Follow-up questions in the same chat, using Helpdock's existing chat sessions.\n- Add flisk.sh pages as a source (ICE 216).\n- **Test that ends P1:** the support test passes, and fewer of the docs' questions come back as GitHub issues or on Discord.\n\n## P2: everywhere (only if P1's numbers hold)\n\n- The chat button in the shared Flisk bar, on every flisk.si site.\n- Other flisk.si products' docs as sources, each with 10 questions of its own before it goes live.\n- `flisk ask` in the CLI.\n- **Test that ends P2:** each new place and source passes its own questions with 0 made-up commands.\n\n## The test\n\n20 questions: the 8 starter questions on flisk.sh/docs, 10 questions in users' own words (facts, answers that span pages,\ntroubleshooting), and 2 the docs should not answer. Each answer is graded by hand against the docs as correct, partly\nright, wrong, or made-up command. A made-up command fails the run whatever the score. The questions and grades go in this\nrepository with P0's first PR, so the next model or prompt is scored the same way.\n\n## Risks\n\n- **A wrong answer costs more than no answer.** That is why passages always come first, unknown commands are dropped,\n  and it says \"beta\".\n- **One Cloudflare allowance pays for two products.** Ask must not use up the API's 300 requests a day.\n- **The name.** Wolf's own prompt writes `service.json`; Ask uses the same base model with a docs prompt. The label should\n  say that, not suggest a model trained on the docs.\n- **Privacy.** Visitors paste logs and paths. Questions are not stored, and text that looks like a secret is never sent to\n  the model.\n"
+  }
+ },
+ {
+  "id": "spellbook-prd",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "public, MIT; ICE tables only. Average ICE, confidence 8 and 9 with no evidence",
+  "source": "https://github.com/majiayu000/spellbook/blob/d39dd11656d3/skills/prd-master/SKILL.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "skills/prd-master/SKILL.md": "<!-- ICE tables from https://github.com/majiayu000/spellbook/blob/d39dd11656d382a28e316f447df13692b8b970e5/skills/prd-master/SKILL.md -->\n\n| Feature | Impact | Confidence | Ease | ICE Score |\n|---------|--------|------------|------|-----------|\n| One-click login | 9 | 8 | 6 | 7.7 |\n| AI recommendations | 10 | 5 | 3 | 6.0 |\n| Email notifications | 6 | 9 | 9 | 8.0 |\n"
+  }
+ },
+ {
+  "id": "open-crust-market",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "public, MIT; ICE tables only",
+  "source": "https://github.com/jcn363/open_crust/blob/96da0fce5158/MARKET.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "MARKET.md": "<!-- ICE tables from https://github.com/jcn363/open_crust/blob/96da0fce515873644d1311c9139a3cd1af9ec3cb/MARKET.md -->\n\n| Feature | Impact | Confidence | Ease | ICE Score | Priority |\n|---------|--------|------------|------|-----------|----------|\n| Token Budget Dashboard | 9 | 9 | 7 | 567 | P0 |\n| Agent State Dashboard | 9 | 9 | 5 | 448 | P0 |\n| Interactive PTY/TTY | 9 | 9 | 6 | 432 | P0 |\n| TUI Rendering Stability | 8 | 9 | 6 | 336 | P1 |\n| Windows Support | 8 | 7 | 5 | 280 | P1 |\n| Session Persistence | 8 | 7 | 5 | 280 | P1 |\n| Prompt Injection Protection | 9 | 5 | 5 | 225 | P2 |\n| Provider Fallback Chains | 7 | 7 | 4 | 196 | P2 |\n| Git-like Checkpointing | 7 | 7 | 4 | 196 | P2 |\n| Multi-repo Support | 7 | 7 | 4 | 196 | P2 |\n"
+  }
+ },
+ {
+  "id": "meesho-case",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "public, MIT; ICE tables only",
+  "source": "https://github.com/aguru-venkata-saisantosh-patnaik/Meesho_Case_Study/blob/bcae0f6c34e2/README.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "README.md": "<!-- ICE tables from https://github.com/aguru-venkata-saisantosh-patnaik/Meesho_Case_Study/blob/bcae0f6c34e24d9f5350ddd7f296a0b0e22fe2a8/README.md -->\n\n| Priority | Intervention | Impact | Confidence | Ease | ICE Score | Expected Outcome |\n|----------|-------------|--------|------------|------|-----------|-----------------|\n| 1 | AI-powered size recommendation engine | 9 | 8 | 7 | 504 | −18% return rate |\n| 2 | Hyper-local vernacular cataloguing (22 languages) | 9 | 7 | 6 | 378 | +12% AOV in Tier-2/3 |\n| 3 | Express delivery tier for top-velocity SKUs | 8 | 8 | 6 | 384 | +9% repeat purchase |\n| 4 | Seller quality score + auto-delist threshold | 8 | 9 | 5 | 360 | +22% positive review share |\n| 5 | Reseller incentive programme (commission tiers) | 7 | 7 | 7 | 343 | +15% reseller GMV |\n| 6 | Real-time return analytics dashboard for sellers | 7 | 8 | 6 | 336 | −12% return initiation |\n| 7 | Gamified loyalty rewards for Tier-2/3 buyers | 6 | 6 | 8 | 288 | +8% MAU retention |\n| 8 | Dynamic pricing for slow-moving inventory | 7 | 6 | 5 | 210 | +5% inventory turnover |\n"
+  }
+ },
+ {
+  "id": "cro-ab-testing",
+  "check": "ice-score",
+  "expect": "bad",
+  "real": true,
+  "note": "public, MIT; ICE tables only",
+  "source": "https://github.com/ajayatwal1105-emerson/digital-marketing-pro/blob/becdf3d735f6/skills/cro/ab-testing.md",
+  "recordedAt": "2026-11-22",
+  "cfg": {},
+  "files": {
+   "skills/cro/ab-testing.md": "<!-- ICE tables from https://github.com/ajayatwal1105-emerson/digital-marketing-pro/blob/becdf3d735f6f94b7ef408a8c4e975f3457d1841/skills/cro/ab-testing.md -->\n\n| Test Idea | Impact | Confidence | Ease | ICE Score | Priority |\n|---|---|---|---|---|---|\n| Rewrite headline to match top-performing ad copy | 7 | 8 | 9 | 504 | P1 |\n| Reduce form from 8 fields to 4 | 8 | 7 | 7 | 392 | P1 |\n| Add video testimonial above fold | 6 | 5 | 4 | 120 | P2 |\n| Redesign full page layout | 9 | 4 | 2 | 72 | P3 |\n"
+  }
+ },
+ {
+  "id": "ice-good",
+  "check": "ice-score",
+  "expect": "good",
+  "real": false,
+  "why": "no real example yet: of 17 real tables (5 Flisk, 12 public), 16 fail on confidence with no evidence and the one that passes has no phase column",
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\n| Item | I | C | E | ICE | Phase | Evidence |\n| --- | --- | --- | --- | --- | --- | --- |\n| Checkout | 8 | 7 | 5 | 280 | P0 | 4 of 5 trial teams asked for it |\n| Dark mode | 4 | 5 | 8 | 160 | P1 | |\n"
+  },
+  "recordedAt": "2026-11-22",
+  "cfg": {}
+ },
+ {
+  "id": "ice-high",
+  "check": "ice-score",
+  "expect": "high",
+  "real": false,
+  "why": "no real example yet",
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\n| Item | I | C | E | ICE | Phase | Evidence |\n| --- | --- | --- | --- | --- | --- | --- |\n| Checkout | 8 | 7 | 5 | 280 | P0 | 4 of 5 trial teams asked |\n| Invoices | 6 | 7 | 6 | 252 | P0 | support tickets 12, 19 |\n| SSO | 7 | 6 | 4 | 168 | P1 | 2 sales calls |\n| Export | 5 | 5 | 6 | 150 | P1 | 3 issues |\n| Dark mode | 4 | 5 | 7 | 140 | P2 | |\n"
+  },
+  "recordedAt": "2026-11-22",
+  "cfg": {}
+ },
+ {
+  "id": "ice-super-high",
+  "check": "ice-score",
+  "expect": "super high",
+  "real": false,
+  "why": "no real example yet: no real table links evidence on every row",
+  "files": {
+   "ROADMAP.md": "# Roadmap\n\n| Item | I | C | E | ICE | Phase | Evidence |\n| --- | --- | --- | --- | --- | --- | --- |\n| Checkout | 8 | 7 | 5 | 280 | P0 | [poll](https://example.com/poll) |\n| Invoices | 6 | 7 | 6 | 252 | P0 | [tickets](https://example.com/t) |\n| SSO | 7 | 6 | 4 | 168 | P1 | [calls](https://example.com/c) |\n| Export | 5 | 5 | 6 | 150 | P1 | [issues](https://example.com/i) |\n| Dark mode | 4 | 5 | 7 | 140 | P2 | [vote](https://example.com/v) |\n"
+  },
+  "recordedAt": "2026-11-22",
+  "cfg": {}
+ },
+ {
+  "id": "gel-config",
+  "check": "product-brief",
+  "expect": "bad",
+  "real": true,
+  "note": "GEL names a north star but has no brief: the six questions are unanswered",
+  "source": "https://github.com/flisk-sh/gel/blob/f44f90994e4e/docs/gel.json",
+  "recordedAt": "2026-11-22",
+  "cfg": {
+   "mode": "block",
+   "guards": {
+    "north-star": "block"
+   },
+   "north_star": {
+    "metric": "planted defects GEL catches (keys, unpinned actions, open workflow tokens, dead links, false 'all green' claims), hard cases included, on 30 public repos",
+    "baseline": "the same repos' own CI, counted generously (any named tool counts as catching every defect of its kind)",
+    "target": {
+     "ratio": 5,
+     "better": "higher"
+    },
+    "result": "docs/north-star/result.json",
+    "evidence": "docs/north-star/README.md",
+    "measure": "node bench/north-star.mjs --work ~/.gel-bench-work",
+    "max_age_days": 90
+   }
+  },
+  "files": {}
+ },
+ {
+  "id": "chat-config",
+  "check": "product-brief",
+  "expect": "bad",
+  "real": true,
+  "note": "chat.flisk.si names a north star but has no brief",
+  "source": "https://github.com/flisk-sh/chat/blob/897453fbb14b/docs/gel.json",
+  "recordedAt": "2026-11-22",
+  "cfg": {
+   "mode": "block",
+   "guards": {
+    "secret-scan": "block",
+    "pinned-actions": "report",
+    "dead-links": "block",
+    "done-without-green": "block",
+    "five-second-test": "block",
+    "north-star": "report",
+    "input-in-viewport": "report",
+    "adr-required": "block",
+    "api-contract": "block",
+    "migrations-append-only": "block",
+    "release-integrity": "block",
+    "tests-with-change": "block",
+    "workflow-permissions": "block"
+   },
+   "north_star": {
+    "metric": "bounce rate of chat.flisk.si visits (last 7 days, Flisk Analytics)",
+    "baseline": "66% bounce before the clear first screen (7 days to 2026-11-17, 49 visitors)",
+    "target": {
+     "ratio": 1.5,
+     "better": "lower"
+    },
+    "evidence": "docs/north-star/README.md",
+    "result": "docs/north-star/result.json",
+    "max_age_days": 30,
+    "measure": "node scripts/measure-bounce.mjs"
+   },
+   "input_in_viewport": {
+    "result": "docs/north-star/input-viewport.json",
+    "max_age_days": 30
+   }
+  },
+  "files": {}
+ },
+ {
+  "id": "brief-passed",
+  "check": "product-brief",
+  "expect": "passed",
+  "real": false,
+  "why": "no real brief exists yet: no Flisk repo has a docs/brief.json. The answers come from the Flisk planner of 2026-11-13; the numbers are made up",
+  "recordedAt": "2026-11-22",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "an agentic local runtime that starts a whole stack with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "their stack takes a day to start on a new laptop",
+     "metric": "hours saved per new developer",
+     "target": 4
+    },
+    "how": {
+     "answer": "reads service.json files and generates the local config",
+     "metric": "services started without hand-written config",
+     "target": 10
+    },
+    "where": {
+     "answer": "on the developer's own laptop, from npm",
+     "metric": "weekly npm downloads",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day a developer joins the team",
+     "metric": "days until the first paying team",
+     "target": 14,
+     "better": "lower"
+    }
+   }
+  },
+  "files": {
+   "docs/brief.json": "{\n \"what\": {\n  \"value\": 15,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"who\": {\n  \"value\": 5,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"why\": {\n  \"value\": 2,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"how\": {\n  \"value\": 5,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"where\": {\n  \"value\": 250,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"when\": {\n  \"value\": 28,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n }\n}\n",
+   "docs/numbers.md": "# Numbers\n\nMade up for the e2e suite.\n"
+  }
+ },
+ {
+  "id": "brief-good",
+  "check": "product-brief",
+  "expect": "good",
+  "real": false,
+  "why": "no real brief exists yet",
+  "recordedAt": "2026-11-22",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "an agentic local runtime that starts a whole stack with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "their stack takes a day to start on a new laptop",
+     "metric": "hours saved per new developer",
+     "target": 4
+    },
+    "how": {
+     "answer": "reads service.json files and generates the local config",
+     "metric": "services started without hand-written config",
+     "target": 10
+    },
+    "where": {
+     "answer": "on the developer's own laptop, from npm",
+     "metric": "weekly npm downloads",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day a developer joins the team",
+     "metric": "days until the first paying team",
+     "target": 14,
+     "better": "lower"
+    }
+   }
+  },
+  "files": {
+   "docs/brief.json": "{\n \"what\": {\n  \"value\": 15,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"who\": {\n  \"value\": 20,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"why\": {\n  \"value\": 8,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"how\": {\n  \"value\": 5,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"where\": {\n  \"value\": 250,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"when\": {\n  \"value\": 28,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n }\n}\n",
+   "docs/numbers.md": "# Numbers\n\nMade up for the e2e suite.\n"
+  }
+ },
+ {
+  "id": "brief-high",
+  "check": "product-brief",
+  "expect": "high",
+  "real": false,
+  "why": "no real brief exists yet",
+  "recordedAt": "2026-11-22",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "an agentic local runtime that starts a whole stack with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "their stack takes a day to start on a new laptop",
+     "metric": "hours saved per new developer",
+     "target": 4
+    },
+    "how": {
+     "answer": "reads service.json files and generates the local config",
+     "metric": "services started without hand-written config",
+     "target": 10
+    },
+    "where": {
+     "answer": "on the developer's own laptop, from npm",
+     "metric": "weekly npm downloads",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day a developer joins the team",
+     "metric": "days until the first paying team",
+     "target": 14,
+     "better": "lower"
+    }
+   }
+  },
+  "files": {
+   "docs/brief.json": "{\n \"what\": {\n  \"value\": 15,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"who\": {\n  \"value\": 20,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"why\": {\n  \"value\": 8,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"how\": {\n  \"value\": 20,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"where\": {\n  \"value\": 1000,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"when\": {\n  \"value\": 28,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n }\n}\n",
+   "docs/numbers.md": "# Numbers\n\nMade up for the e2e suite.\n"
+  }
+ },
+ {
+  "id": "brief-super-high",
+  "check": "product-brief",
+  "expect": "super high",
+  "real": false,
+  "why": "no real brief exists yet",
+  "recordedAt": "2026-11-22",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "an agentic local runtime that starts a whole stack with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "their stack takes a day to start on a new laptop",
+     "metric": "hours saved per new developer",
+     "target": 4
+    },
+    "how": {
+     "answer": "reads service.json files and generates the local config",
+     "metric": "services started without hand-written config",
+     "target": 10
+    },
+    "where": {
+     "answer": "on the developer's own laptop, from npm",
+     "metric": "weekly npm downloads",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day a developer joins the team",
+     "metric": "days until the first paying team",
+     "target": 14,
+     "better": "lower"
+    }
+   }
+  },
+  "files": {
+   "docs/brief.json": "{\n \"what\": {\n  \"value\": 15,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"who\": {\n  \"value\": 20,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"why\": {\n  \"value\": 8,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"how\": {\n  \"value\": 20,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"where\": {\n  \"value\": 1000,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n },\n \"when\": {\n  \"value\": 7,\n  \"measuredAt\": \"2026-11-22\",\n  \"source\": \"docs/numbers.md\"\n }\n}\n",
+   "docs/numbers.md": "# Numbers\n\nMade up for the e2e suite.\n"
+  }
+ },
+ {
+  "id": "brief-six-met-but-old",
+  "check": "product-brief",
+  "expect": "high",
+  "real": false,
+  "why": "no real brief exists yet: all six met, but numbers 20 days old stop it at high",
+  "recordedAt": "2026-11-22",
+  "cfg": {
+   "brief": {
+    "what": {
+     "answer": "an agentic local runtime that starts a whole stack with one command",
+     "metric": "seconds from first start to healthy",
+     "target": 30,
+     "better": "lower"
+    },
+    "who": {
+     "answer": "teams of five to ten developers",
+     "metric": "teams that pay each month",
+     "target": 10
+    },
+    "why": {
+     "answer": "their stack takes a day to start on a new laptop",
+     "metric": "hours saved per new developer",
+     "target": 4
+    },
+    "how": {
+     "answer": "reads service.json files and generates the local config",
+     "metric": "services started without hand-written config",
+     "target": 10
+    },
+    "where": {
+     "answer": "on the developer's own laptop, from npm",
+     "metric": "weekly npm downloads",
+     "target": 500
+    },
+    "when": {
+     "answer": "the first day a developer joins the team",
+     "metric": "days until the first paying team",
+     "target": 14,
+     "better": "lower"
+    }
+   }
+  },
+  "files": {
+   "docs/brief.json": "{\n \"what\": {\n  \"value\": 15,\n  \"measuredAt\": \"2026-11-02\",\n  \"source\": \"docs/numbers.md\"\n },\n \"who\": {\n  \"value\": 20,\n  \"measuredAt\": \"2026-11-02\",\n  \"source\": \"docs/numbers.md\"\n },\n \"why\": {\n  \"value\": 8,\n  \"measuredAt\": \"2026-11-02\",\n  \"source\": \"docs/numbers.md\"\n },\n \"how\": {\n  \"value\": 20,\n  \"measuredAt\": \"2026-11-02\",\n  \"source\": \"docs/numbers.md\"\n },\n \"where\": {\n  \"value\": 1000,\n  \"measuredAt\": \"2026-11-02\",\n  \"source\": \"docs/numbers.md\"\n },\n \"when\": {\n  \"value\": 7,\n  \"measuredAt\": \"2026-11-02\",\n  \"source\": \"docs/numbers.md\"\n }\n}\n",
+   "docs/numbers.md": "# Numbers\n\nMade up for the e2e suite.\n"
+  }
+ }
+]

@@ -24,6 +24,7 @@ import { measure as measureInput } from "../lib/input-viewport.mjs";
 import { run as productBrief, briefRows } from "../guards/product-brief/index.mjs";
 import { judge as judgeClicks, limits as clickLimits } from "../guards/click-map/index.mjs";
 import { measure as measureClicks } from "../lib/click-map.mjs";
+import { gradeRepo } from "../lib/grades.mjs";
 import { scorecard, scorecardMarkdown } from "../lib/queue.mjs";
 import { collectQueue } from "../lib/queue-collect.mjs";
 
@@ -249,6 +250,14 @@ async function main() {
     }
     process.exit(verdict.pass ? 0 : 1);
   }
+  if (cmd === "grade") {
+    // gel grade [--root .] [--now 2026-11-22] [--json]: the grade of each product check (click-map, ice-score, product-brief),
+    // bad < passed < good < high < super high, or "no grade" when the repo has nothing for that check. Exit 1 when one is bad.
+    const g = gradeRepo(resolve(opt("root", ".")), { now: opt("now") });
+    if (args.includes("--json")) console.log(JSON.stringify(g));
+    else for (const [check, r] of Object.entries(g)) console.log(`${check.padEnd(14)} ${r.grade ?? "no grade"}${r.why ? ` (${r.why})` : ""}`);
+    process.exit(Object.values(g).some((r) => r.grade === "bad") ? 1 : 0);
+  }
   if (cmd === "input-viewport") {
     // gel input-viewport (--url https://site | --file index.html) [--size 375x667,320x568] [--cookie 'a=b'] [--write bench/input-viewport.json] [--json]
     // Measures where the first visible input or textarea sits at phone sizes (headless Chrome). Exit 1 when it ends below the first screen.
@@ -289,7 +298,7 @@ async function main() {
   if (cmd === "five-second") {
     // gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]
     const target = opt("url") ?? opt("file");
-    if (!target) { console.log("usage: gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]"); process.exit(2); }
+    if (!target) { console.log("usage: gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]"); process.exit(2); }
     const e = await measureFirstScreen({ url: opt("url"), file: opt("file"), size: opt("size", "375x812") });
     const out = opt("write");
     let entries = [e];
@@ -320,7 +329,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);
