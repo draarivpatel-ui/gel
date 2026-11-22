@@ -1,0 +1,52 @@
+# GEL north star, measured. A repo calls it on a schedule (see "North star, measured" in README.md): it runs
+# north_star.measure from docs/gel.json, stamps the date and this run's link, and pushes the result to the
+# repo's `north-star` branch (history.jsonl keeps every run). The north-star guard and Cilytics read it there,
+# so the number on the dashboard is the one a run produced, not one typed into a file.
+name: GEL north star
+
+on:
+  workflow_call:
+    inputs:
+      gel_ref:
+        description: Commit of flisk-sh/gel to run. The caller pins this.
+        type: string
+        default: v1
+      setup:
+        description: Shell run before the measurement (install, build). Empty runs nothing.
+        type: string
+        default: ""
+      timeout:
+        description: Minutes the measurement may take.
+        type: number
+        default: 30
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    name: Measure north star
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: flisk-sh/gel
+          ref: ${{ inputs.gel_ref }}
+          path: .gel-engine
+      - name: Set up
+        if: inputs.setup != ''
+        env:
+          SETUP: ${{ inputs.setup }}
+        run: bash -euo pipefail -c "$SETUP"
+      - name: Measure and publish
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        # a missed target exits 1 after publishing: the number is still real, and the red run says it missed
+        run: node .gel-engine/bin/gel.mjs north-star --measure --publish

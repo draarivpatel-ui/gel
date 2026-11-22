@@ -95,6 +95,28 @@ Optional. GEL runs on any repo without it, with every guard in `report` mode. Wi
 - `report` writes findings and never fails the job. `block` fails it. Promote a guard once its run records show it was right.
 - `trusted_owners` may use their actions by tag. Your own org is always trusted.
 
+## North star, measured
+
+A north star number typed into a file proves nothing. `.github/workflows/north-star.yml` measures it on a schedule: it runs `north_star.measure`, stamps the date, the run link (`run`) and the commit, and pushes the result to the repo's `north-star` branch, with `history.jsonl` holding one line per run. The default branch is left alone, so the workflow needs only `contents: write` and no pull request. The `north-star` guard and `gel north-star` judge whichever is newer by `measuredAt`: the committed `result` file or the branch copy. Check out with `fetch-depth: 0` so the guard sees the branch.
+
+```yaml
+# .github/workflows/north-star.yml in your repo
+name: North star
+on:
+  schedule: [{ cron: "23 5 * * 1" }]
+  workflow_dispatch:
+concurrency: { group: north-star, cancel-in-progress: false }
+jobs:
+  measure:
+    permissions: { contents: write }
+    uses: flisk-sh/gel/.github/workflows/north-star.yml@<40-char gel commit> # vX.Y.Z
+    with:
+      gel_ref: <same commit>
+      setup: npm ci   # optional: whatever the measure command needs first
+```
+
+A run that misses the target still publishes its number, then fails, so the red run says it missed.
+
 ## Lanes
 
 GEL picks a risk lane from the changed files, never from a label: **A** docs and tests, **B** product code, **C** workflows, `docs/gel.json`, auth, payment, secrets, migrations, Dockerfiles and deploy config, where a person approves.

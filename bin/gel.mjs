@@ -6,7 +6,8 @@ import { resolve, join, dirname } from "node:path";
 import { loadConfig } from "../lib/config.mjs";
 import { pickLane, lanePlan } from "../lib/lane.mjs";
 import { matchAny } from "../lib/glob.mjs";
-import { walk } from "../lib/fs.mjs";
+import { walk, readText } from "../lib/fs.mjs";
+import { NS_BRANCH, northStarArgs, publish as publishNorthStar } from "../lib/north-star-branch.mjs";
 import { GUARD_NAMES, WHOLE_TREE, loadGuard } from "../lib/guards.mjs";
 import { selftest } from "../lib/selftest.mjs";
 import { diffChanges, movedOnBase, baseReader } from "../lib/diff.mjs";
@@ -183,8 +184,9 @@ async function main() {
     process.exit(0);
   }
   if (cmd === "north-star") {
-    // gel north-star [--root .] [--measure] [--json]: with --measure, run north_star.measure (it prints {"value":..,"baseline":..,"unit":..,"run":..}),
-    // stamp measuredAt and write north_star.result; then judge the result against the target. Exit 1 when the target is not met.
+    // gel north-star [--root .] [--measure [--publish]] [--json]: with --measure, run north_star.measure (it prints {"value":..,"baseline":..,"unit":..}),
+    // stamp measuredAt and, in Actions, the run link, and write north_star.result; --publish also pushes it to the north-star
+    // branch (lib/north-star-branch.mjs). Then judge the newest result against the target. Exit 1 when the target is not met.
     const root = resolve(opt("root", "."));
     const cfg = loadConfig(root);
     const ns = cfg.north_star;
@@ -193,11 +195,19 @@ async function main() {
       if (!ns.measure) { console.log("north_star.measure is not set: nothing to run"); process.exit(2); }
       const out = execSync(ns.measure, { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] });
       const r = JSON.parse(out.trim().split("\n").filter(Boolean).pop());
-      writeFileSync(resolve(root, ns.result), JSON.stringify({ ...r, measuredAt: new Date().toISOString() }, null, 1) + "\n");
+      const e = process.env;
+      const run = e.GITHUB_RUN_ID && e.GITHUB_REPOSITORY ? `${e.GITHUB_SERVER_URL ?? "https://github.com"}/${e.GITHUB_REPOSITORY}/actions/runs/${e.GITHUB_RUN_ID}` : undefined;
+      const text = JSON.stringify({ ...r, measuredAt: new Date().toISOString(), ...(run ? { run, commit: e.GITHUB_SHA } : {}) }, null, 1) + "\n";
+      mkdirSync(dirname(resolve(root, ns.result)), { recursive: true });
+      writeFileSync(resolve(root, ns.result), text);
+      if (args.includes("--publish")) {
+        const p = publishNorthStar(root, ns.result, text);
+        console.error(`north star: published ${p.commit.slice(0, 12)} to the ${NS_BRANCH} branch (${p.runs} measurement${p.runs === 1 ? "" : "s"} in history.jsonl)`);
+      }
     }
-    const files = walk(root);
-    const verdict = northStar({ cfg, files, read: (f) => { try { return readFileSync(resolve(root, f), "utf8"); } catch { return null; } } });
-    let r = null; try { r = JSON.parse(readFileSync(resolve(root, ns.result), "utf8")); } catch {}
+    const nsArgs = northStarArgs(root, cfg, { files: walk(root) }, readText);
+    const verdict = northStar({ cfg, files: nsArgs.files, read: nsArgs.read ?? ((f) => readText(root, f)) });
+    let r = null; try { r = JSON.parse((nsArgs.read ?? ((f) => readText(root, f)))(ns.result)); } catch {}
     const got = r ? ratioOf(r, ns.target?.better) : null;
     if (args.includes("--json")) console.log(JSON.stringify({ met: verdict.pass, ratio: got, target: ns.target?.ratio, findings: verdict.findings }));
     else {
@@ -268,7 +278,9 @@ async function main() {
     const guard = await loadGuard(name);
     // links can break in files that did not change, and a licence or a Dependabot config is absent from a diff, so these guards look at the whole tree
     const files = WHOLE_TREE.has(name) ? all : scope;
-    const res = await guard.run({ root, files, ctx, cfg, changes, readBase });
+    const base = { root, files, ctx, cfg, changes, readBase };
+    // the north star is judged on the newest measurement: a scheduled run publishes it to the north-star branch
+    const res = await guard.run(name === "north-star" ? northStarArgs(root, cfg, base, readText) : base);
     results.push({ guard: name, level, pass: res.pass, findings: res.findings });
   }
   const blocked = results.filter((r) => !r.pass && r.level === "block");
