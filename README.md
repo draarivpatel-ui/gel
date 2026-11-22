@@ -113,7 +113,11 @@ jobs:
     with:
       gel_ref: <same commit>
       setup: npm ci   # optional: whatever the measure command needs first
+    secrets:
+      measure_secret: ${{ secrets.MY_API_KEY }}   # optional: the measure reads it as $MEASURE_SECRET
 ```
+
+`measure_secret` is for a number that lives behind an API key, such as a site's analytics. It is set only on the measure step, so the setup command never sees it. Keep the key in a repository secret, never in the file.
 
 A run that misses the target still publishes its number, then fails, so the red run says it missed.
 
