@@ -1,8 +1,55 @@
 # GEL: Guard, Eval, Loop
 
-Twenty-two checks that stop what AI coding agents and tired people ship by mistake: a leaked key, an unpinned action, a workflow with an open token, a link to a file that is gone, a pull request that says "all tests pass" while a check is red, an edit to a database migration that already ran, an API change that breaks existing clients, product code changed with no test, an architectural change with no decision record, a release that is not safe to ship, a landing page a stranger cannot read in five seconds, and the basics a public repo should carry (licence, security policy, owner, status, dependency updates, one north star metric, six product answers each backed by a measured number, and ICE tables that add up). Plain Node, no model, no network, about a second on a large repo. Works in any GitHub repo, any language.
+GEL is a GitHub Action and a command line tool that runs 22 checks (guards) on every pull request, to catch what AI coding agents and tired people ship by mistake: a leaked key, an unpinned action, a workflow with an open token, a PR that says "all tests pass" while a check is red, an edited migration, a breaking API change.
 
-**Bench on 30 public repos (11,350 files) and 231 real pull requests:**
+It is plain Node with no dependencies, no model and no network. It starts in report mode, so nothing blocks until you promote a guard. This repo scans in about 0.1 s.
+
+## Quick start
+
+Add it as a step in a workflow you already have:
+
+```yaml
+- uses: actions/checkout@v4   # pin it to a SHA; GEL will tell you
+  with: { fetch-depth: 0 }
+- uses: flisk-sh/gel@v1.11.0
+```
+
+Or run it on a folder, with no GitHub involved:
+
+```bash
+git clone https://github.com/flisk-sh/gel && cd gel
+node bin/gel.mjs run --root /path/to/your/repo
+```
+
+It prints a table with one row per guard (`pass` or findings, and its level), then the first findings of each guard that failed. Every guard is in `report` mode until you say otherwise, so the exit code stays 0.
+
+Pin to a tag or a commit, not `@v1`. The `v1` tag still points at an older commit that has 15 guards, not the 22 described here.
+
+### Other ways to run it
+
+**As a whole job**, `.github/workflows/gel.yml`. Pass `gel_ref` too: its default is the old `v1`.
+
+```yaml
+name: GEL
+on: [pull_request, push]
+permissions: { contents: read }
+jobs:
+  gel:
+    permissions: { contents: read, checks: read, pull-requests: read }
+    uses: flisk-sh/gel/.github/workflows/gel.yml@v1.11.0
+    with: { gel_ref: v1.11.0 }
+```
+
+**Across an org**, one pull request per repo (needs `gh` signed in):
+
+```bash
+node scripts/rollout.mjs --org your-org            # dry run
+node scripts/rollout.mjs --org your-org --apply
+```
+
+## Results
+
+Bench on 30 public repos (11,350 files) and 231 real pull requests:
 
 | | With GEL | Their own CI today |
 | --- | --- | --- |
@@ -13,77 +60,34 @@ Twenty-two checks that stop what AI coding agents and tired people ship by mista
 | PRs that said green while a check was red | 35 of 231 flagged | 0 of 30 repos check this |
 | Findings on clean repos | secrets 0; workflow-permissions 45 in 18 of 30 repos, 5 of 5 read by hand real; dead links 16 of 21 not real | |
 
-Method, limits and what GEL misses: [bench/README.md](bench/README.md). Raw numbers: [bench/results.json](bench/results.json).
+Planted defects are ones the bench inserted itself, so "caught" measures recall on known cases, not on the wild. Method, limits and what GEL misses: [bench/README.md](bench/README.md). Raw numbers: [bench/results.json](bench/results.json).
 
-## Install
-
-Pick one. All three start in report mode: nothing blocks until you say so.
-
-**1. As a step** in a workflow you already have:
-
-```yaml
-- uses: actions/checkout@v4   # pin it to a SHA; GEL will tell you
-  with: { fetch-depth: 0 }
-- uses: flisk-sh/gel@v1
-```
-
-**2. As a whole job**, `.github/workflows/gel.yml`:
-
-```yaml
-name: GEL
-on: [pull_request, push]
-permissions: { contents: read }
-jobs:
-  gel:
-    permissions: { contents: read, checks: read, pull-requests: read }
-    uses: flisk-sh/gel/.github/workflows/gel.yml@v1
-```
-
-**3. Across an org**, one pull request per repo:
-
-```bash
-node scripts/rollout.mjs --org your-org            # dry run
-node scripts/rollout.mjs --org your-org --apply
-```
-
-Run it locally on any folder:
-
-```bash
-npx github:flisk-sh/gel run --root .
-```
-
-## Guards
+## What it catches
 
 | Guard | Fails when |
 | --- | --- |
-| `secret-scan` | an AWS, GitHub, Anthropic, OpenAI, Stripe live or Slack key, or a private key block, is in a file (test files, sample TLS keys and doc placeholders are skipped) |
+| `secret-scan` | an AWS, GitHub, Anthropic, OpenAI, Stripe live or Slack key, or a private key block, is in a file |
 | `pinned-actions` | a workflow uses another org's action by tag or branch instead of a commit SHA |
-| `workflow-permissions` | a workflow job has no `permissions` (and no top-level one), uses `write-all`, or checks out the fork's code under `pull_request_target` |
-| `frozen-install` | a workflow installs with `npm install`, `bun install`, `yarn install`, `pnpm install` or `pip install` and no frozen form (`npm ci`, `--frozen-lockfile`, `--immutable`, `--require-hashes`), or a `package.json` with dependencies has no lockfile beside it. Global installs (`-g`) are skipped |
+| `workflow-permissions` | a job has no `permissions`, uses `write-all`, or checks out a fork's code under `pull_request_target` |
+| `frozen-install` | a workflow installs without a frozen form (`npm ci`, `--frozen-lockfile`), or `package.json` has no lockfile |
+| `public-env-secrets` | a secret-named variable has a browser-bundled prefix (`VITE_`, `NEXT_PUBLIC_`, and others) |
 | `dead-links` | a markdown or HTML link points to a file that is not in the repo |
-| `done-without-green` | a pull request says "all checks pass" or "ready to merge" while a check on its last commit is red |
-| `migrations-append-only` | a pull request edits, renames or deletes a migration that is already on the base branch (Rails, Django, Alembic, Prisma, Knex, Drizzle, Supabase, Flyway, golang-migrate and others). Adding a migration is fine |
-| `api-contract` | a pull request changes an OpenAPI or Swagger spec (JSON or YAML) so that an existing client breaks: an endpoint or method removed, a new required parameter or request body, a path parameter or a 2xx response gone |
-| `tests-with-change` | a pull request changes product code and no test file in the same pull request. It reads changed paths, never the PR title. Docs, generated files, config, fixtures and test-only changes pass. Tune with `tests_with_change` (`source`, `tests`, `exempt` globs) |
-| `adr-required` | opt-in: a pull request touches a path listed in `adr_required.paths` and adds no ADR (a new `.md` under `adr_required.directory`, default `docs/adr`) with Context, Decision, Alternatives and Consequences sections. `min_lane` sets the lowest risk lane that triggers it. No `paths`, no rule |
-| `repo-health` | a repo has no LICENSE, SECURITY.md, CONTRIBUTING.md or CODEOWNERS (root, `.github/` or `docs/`), or its README has no sentence saying what it is for. List files the org supplies from its `.github` repo in `docs/gel.json` as `"repo_health": {"inherit": ["security", "contributing"]}` |
-| `status-declared` | opt-in: `docs/gel.json` exists and has no `status` (production, active, experimental, archived) or no `owner`, or an `active` repo has had no commit for `stale_after_days` (default 365, needs `ctx.lastCommitAt`) |
-| `dependabot-config` | the repo uses an ecosystem (npm, pip, go, cargo, docker, github-actions and others) that `.github/dependabot.yml` (or a Renovate config) does not cover |
-| `release-integrity` | a release whose tag is not SemVer, whose commit is gone or off the default branch, with no CHANGELOG entry, a red or missing check, an earlier failed release run, or assets without checksums (or an SBOM, if required). Feed it `gel release-ctx --repo o/n --tag v1.2.3 > ctx.json`, then `gel run --ctx ctx.json`; it complements the org `release-gate` rather than replacing it |
-| `five-second-test` | the first screen of a landing page (`index.html`, `public/index.html`, `docs/index.html`; set `five_second.pages` to change) cannot be understood in five seconds on a phone: no `<h1>`, a headline over 12 words, a lead over 32 words, jargon such as endpoint, inference or MCP in either, or no link or button under the headline. Offline; tune `max_h1_words`, `max_lead_words` and `jargon` under `five_second`. A page drawn by script has no headline in its source: declare `five_second.rendered` (`result`, `max_age_days`) and commit a measurement from `gel five-second --url <page> --write bench/five-second.json --merge` (headless Chrome at 375x812); the first screen the browser drew is judged by the same rules, counting only what a visitor can see (hidden, transparent, off-screen and screen-reader-only text is dropped), a headline covered by a cookie wall or popup fails, and a missing or stale measurement fails. The offline read cannot see CSS: a page that hides its real headline needs the rendered measurement |
-| `agent-readiness` | a site's agent-discovery files contradict each other: `llms.txt` or `llms-full.txt` advertises a remote MCP server (`https://host/mcp`) but there is no `.well-known/mcp-server-card.json`, `.well-known/mcp/server-card.json` or `.well-known/ai-catalog.json`; a published Server Card (MCP Server Card draft) lacks `$schema`, `name`, `version`, `description` or an https `remotes[].url`; an `ai-catalog.json` is empty or an entry has neither `url` nor `data`; a published `agent-card.json` has no description or no https `supportedInterfaces` (never required: a site with no agent publishes none); or a Jekyll `_config.yml` does not `include: .well-known`, so the files would 404. Offline, whole tree |
-| `north-star` | opt-in (a repo with no `docs/gel.json` is skipped): the repo's one measured headline metric is missing, stale or not met. `docs/gel.json` declares `north_star` with a `metric`, a `baseline`, a `target` (`{"ratio": 8, "better": "lower"}`), an `evidence` (how it is measured: a repo file or https link) and a `result` file (`{"value": 2.5, "baseline": 26.1, "unit": "s", "measuredAt": "..."}`). The guard fails when the result is not in the repo, is older than `max_age_days` (default 30), or `baseline / value` (`value / baseline` for `"higher"`) is under the target ratio. A claim with no number gets no pass. `gel north-star --measure` runs your `measure` command, writes `result` and exits 1 when the target is not met, so a bench workflow can gate on it. When the measure itself exits non-zero but printed a number, the number is still written (and published), the run still exits 1, and the measure's `problem` field is printed: the measure may know something the ratio cannot (a page that scrolls sideways). A measure that finds nothing prints `"value": null` with a `problem` and gel exits 2 showing it. Archived repos need none |
-| `product-brief` | opt-in (applies when `docs/gel.json` has `brief` or a `north_star`): a product has not answered the six plain questions (what, who, why, how, where, when), or an answer has no number behind it. `brief` holds one entry per question with an `answer` (three words or more), a `metric`, a number `target` and optionally `"better": "lower"`; `docs/brief.json` (or `brief.result`) holds one measured number per question: `{"who": {"value": 0, "measuredAt": "2026-11-20", "source": "https://..."}}`. The guard fails when a question has no answer, metric or target, the same sentence answers two questions, a number is missing, has no `source` (a repo file or https link) or is older than `brief.max_age_days` (default 30). A target that is not met yet is not a failure: zero paying teams is an honest number. `gel brief` prints the six rows with MET or NOT MET. Archived repos need none |
-| `ice-score` | an ICE table in a Markdown file (columns `I`/`Impact`, `C`/`Confidence`, `E`/`Ease` and `ICE`) does not hold up: a score is not a whole number from 1 to 10; `ICE` is not impact x confidence x ease (the average is reported as such: it hides a weak leg); a row in a later phase (`P1`, `P2`, `Later`) outscores a row in an earlier one (`P0`), so the build order contradicts the scores; or a confidence of 7 or more has no evidence (no link in the row and nothing in an `Evidence`, `Source` or `Proof` column). Blank template rows, struck-through rows and tables inside a code fence are skipped. `"ice": {"evidence_from": 8}` in `docs/gel.json` moves the confidence that needs evidence (11 switches that rule off) |
-| `input-in-viewport` | a phone visitor cannot start: the page's first visible `<input>` or `<textarea>` ends below the first screen (a pitch, banner or animation pushed it down), so they must scroll before they can type. Layout cannot be read from source, so the guard reads a measurement: `gel input-viewport --url https://site --write bench/input-viewport.json` loads the page in headless Chrome at 375x667 and 320x568 (add `--cookie 'a=b'` for a theme or state) and records where the input ends. `docs/gel.json` may declare `input_in_viewport` (`result`, `max_age_days`, `pages`); the guard applies when it is declared or when `index.html`, `public/index.html`, `docs/index.html` or `site/index.html` contain a text input. Missing or stale measurement, no input found, or `bottom` over `height` fails. Archived repos need none |
-| `stale-base` | a pull request branch was cut before the base branch changed its CI or scoring files (`.github/workflows/**`, `.github/actions/**`, `scripts/scores/**`, `Makefile`, `docs/gel.json`; tune with `stale_base.watch` and `stale_base.ignore`). Its checks then run old gates and can fail on something the base already fixed. It reads changed paths only, and a push scan passes. Fix: merge or rebase the base branch. |
-| `public-env-secrets` | a variable that a bundler copies into the browser (`VITE_`, `NEXT_PUBLIC_`, `REACT_APP_`, `NUXT_PUBLIC_`, `EXPO_PUBLIC_`, `PUBLIC_`) is named like a secret: `SECRET`, `PRIVATE`, `PASSWORD`, `SERVICE_ROLE`, or an OpenAI, Anthropic, Stripe, Resend, AWS, GitHub and similar `KEY` or `TOKEN`. A git-ignored `.env` does not help: the value is in the JavaScript every visitor downloads. Publishable, anon, site and client-id names, `_URL` and `_LENGTH` settings, test files and markdown are skipped. Fix: call the vendor from a server or edge function, keep the key in a server-only variable, and rotate any key that was ever deployed |
+| `done-without-green` | a PR says "all checks pass" while a check on its last commit is red |
+| `migrations-append-only` | a PR edits, renames or deletes a migration already on the base branch |
+| `api-contract` | a PR changes an OpenAPI spec so an existing client breaks |
+| `tests-with-change` | a PR changes product code and no test file |
+| `stale-base` | a PR branch was cut before the base changed its CI or scoring files |
+| `release-integrity` | a release has a non-SemVer tag, no CHANGELOG entry, a red check or assets without checksums |
+| `repo-health` | the repo has no LICENSE, SECURITY.md, CONTRIBUTING.md or CODEOWNERS |
+| `dependabot-config` | an ecosystem in use is not covered by Dependabot or Renovate |
+| `adr-required`, `status-declared`, `north-star`, `product-brief` | opt-in: you declare a rule or a number in `docs/gel.json`, and GEL checks it |
+| `five-second-test`, `input-in-viewport`, `agent-readiness`, `ice-score` | a landing page, a phone input, agent-discovery files or an ICE table does not hold up |
 
-`migrations-append-only`, `api-contract`, `tests-with-change` and `adr-required` compare a pull request with its base branch, so they run on pull requests only; a push scan passes them. `api-contract` reads a spec it understands and skips one it does not (YAML anchors, for example) rather than guess.
+The exact rules, options and edge cases for all 22 guards are in [docs/guards.md](docs/guards.md). `migrations-append-only`, `api-contract`, `tests-with-change`, `adr-required` and `stale-base` compare a PR with its base, so a push scan passes them.
 
-## docs/gel.json
+## Configure
 
-Optional. GEL runs on any repo without it, with every guard in `report` mode. Without the file, `status-declared`, `north-star` and `product-brief` have nothing declared to check and stay quiet; the other guards still run. Add the file to opt in, to tune a guard or to promote one to `block`.
+Optional. GEL runs on any repo without a config file, with every guard in `report` mode. To tune a guard or promote it to `block`, add `docs/gel.json`:
 
 ```json
 {
@@ -96,32 +100,9 @@ Optional. GEL runs on any repo without it, with every guard in `report` mode. Wi
 
 - `report` writes findings and never fails the job. `block` fails it. Promote a guard once its run records show it was right.
 - `trusted_owners` may use their actions by tag. Your own org is always trusted.
+- A top-level `"mode": "report"` keeps every guard advisory, whatever the per-guard level says.
 
-## North star, measured
-
-A north star number typed into a file proves nothing. `.github/workflows/north-star.yml` measures it on a schedule: it runs `north_star.measure`, stamps the date, the run link (`run`) and the commit, and pushes the result to the repo's `north-star` branch, with `history.jsonl` holding one line per run. The default branch is left alone, so the workflow needs only `contents: write` and no pull request. The `north-star` guard and `gel north-star` judge whichever is newer by `measuredAt`: the committed `result` file or the branch copy. Check out with `fetch-depth: 0` so the guard sees the branch.
-
-```yaml
-# .github/workflows/north-star.yml in your repo
-name: North star
-on:
-  schedule: [{ cron: "23 5 * * 1" }]
-  workflow_dispatch:
-concurrency: { group: north-star, cancel-in-progress: false }
-jobs:
-  measure:
-    permissions: { contents: write }
-    uses: flisk-sh/gel/.github/workflows/north-star.yml@<40-char gel commit> # vX.Y.Z
-    with:
-      gel_ref: <same commit>
-      setup: npm ci   # optional: whatever the measure command needs first
-    secrets:
-      measure_secret: ${{ secrets.MY_API_KEY }}   # optional: the measure reads it as $MEASURE_SECRET
-```
-
-`measure_secret` is for a number that lives behind an API key, such as a site's analytics. It is set only on the measure step, so the setup command never sees it. Keep the key in a repository secret, never in the file.
-
-A run that misses the target still publishes its number, then fails, so the red run says it missed.
+Each run appends one JSON line to `gel-record.jsonl`: repo, commit, lane, each guard's result, its first 10 findings and the time. That record is how you decide to promote a guard.
 
 ## Lanes
 
@@ -137,64 +118,24 @@ The lane also sets how much CI runs. `gel lane --base <sha>` prints the plan and
 
 A push to the default branch, the weekly run and a manual run have no diff to judge, so they always run lane C. `"minLane": "B"` (or `"C"`) in `docs/gel.json` sets a floor for a repo; a change can raise the lane, never lower it.
 
-## Eval of the guards
+## How the guards are tested
 
 Each guard has `guards/<name>/cases.json`, labelled good and bad. `node bin/gel.mjs selftest` must catch every bad case and pass every good one, or GEL's own CI fails. Every false alarm the bench found became a case first, then a fix.
 
-## Run record
+## What GEL does not do
 
-Each run appends one JSON line to `gel-record.jsonl`: repo, commit, lane, each guard's result, its first 10 findings and the time. That record is how you decide to promote a guard.
+- It does not replace a code scanner, dependency review or a test suite. It checks the repo and PR facts those tools do not look at.
+- It reads files and PR metadata. It does not run your code, and it cannot judge whether a change is correct.
+- It never promotes a guard to `block` on its own. A person edits `docs/gel.json`, and that edit is lane C.
+- The five-second and phone-input guards read a committed browser measurement, because layout cannot be read from source.
 
-## Org view: Cilytics
+## Go further
 
-[Cilytics](https://cilytics.flisk.si/) ([flisk-sh/cilytics](https://github.com/flisk-sh/cilytics)) shows GEL across a whole org or user account. It finds the newest completed run of each repo's workflow named `GEL` (or a file called `gel.yml`), reads `gel-record.jsonl` from its `gel-record` artifact, and shows which repos run GEL, the guard findings and what is blocked. Keep that workflow name and artifact name, or the repo shows as "GEL not installed". Cilytics also shows each guard's own quality score (recall, precision, false blocks) from `scores.json`, the published result of `gel selftest`; regenerate it with `node bin/gel.mjs selftest --json > scores.json` when a guard changes (a test fails if it is stale).
+[docs/loops.md](docs/loops.md) covers the parts that run around the guards: a scheduled north star measurement, per-guard precision and promote/demote advice, nightly fix PRs, the factory metrics, the [Cilytics](https://cilytics.flisk.si/) org view, and the release gate and deploy health workflows in [flisk-sh/.github](https://github.com/flisk-sh/.github).
 
-## Metrics and the flywheel
+## Status
 
-```bash
-node bin/gel.mjs metrics records/*.jsonl --labels docs/gel-labels.json
-```
-
-Per guard: runs, fail rate, precision from your labels (`[{guard, file, line, verdict: "real" | "false"}]`), and advice:
-
-- **promote** to block after 20 runs, 5 labelled findings and 95% precision;
-- **demote** a blocking guard on a labelled false alarm;
-- **hold** otherwise. It never promotes on an unknown precision.
-
-Every false alarm is listed as a hard case to add to the guard's `cases.json`. Overall it reports first-pass share, blocked runs and p50/p95 time. GEL only advises: a person edits `docs/gel.json`, and that edit is lane C.
-
-### Promote and demote
-
-```bash
-node bin/gel.mjs promote gel-record.jsonl --labels docs/gel-labels.json [--write]
-```
-
-Turns the `gel metrics` advice into a change of `docs/gel.json`: a guard advised to **promote** goes from `report` to `block`, a blocking guard advised to **demote** goes back to `report`, nothing else is touched. Without `--write` it only prints the proposal as a table. It warns when the file has `mode: "report"`, because that keeps every guard advisory. Editing `docs/gel.json` is lane C, so a person approves the PR; GEL never changes the level on its own. `.github/workflows/promote.yml` runs `scripts/promote-pr.mjs` each Monday: it gathers the repo's last 50 `gel-record` artifacts, runs the command above and opens one PR (branch `gel/promote-guards`, one open at a time) when a guard should change. It honours the `GEL_PAUSE` kill switch and, like the flywheel, only opens the PR when the secret `GEL_FLYWHEEL_TOKEN` exists; promotion needs labelled findings in `docs/gel-labels.json`, so until someone labels findings every guard holds.
-
-### Fix PRs
-
-```bash
-node bin/gel.mjs fix pinned-actions --root path/to/repo   # pins what the guard reports, then re-scores
-node scripts/flywheel.mjs --max 5 [--dry-run]             # the nightly loop over the repos Cilytics lists
-```
-
-`gel fix` edits only the lines the guard reports, then runs every guard again over the whole tree. It exits 0 only when the target guard dropped, no other guard rose, and only workflow or action files changed. `.github/workflows/flywheel.yml` runs the loop each night and opens at most 5 PRs a night and never more than 3 loop PRs open at once (`--wip`), so unmerged work stops new work (branch `gel/fix-pinned-actions`). Kill switch: set the repository variable `GEL_PAUSE` to `1` (or run with `GEL_PAUSE=1`) and the run exits without touching anything. It needs the secret `GEL_FLYWHEEL_TOKEN` (contents and pull requests: write on the org's repos); without it the run is a dry run.
-
-### Factory metrics
-
-```bash
-node bin/gel.mjs factory --repo flisk-sh/gel --limit 100   # or: gel factory prs.json [--json]
-```
-
-The north star of the software factory: **human touch points per merged PR** (lower is better), with the share of PRs that took none and lead time (p50, p90). A touch point is one thing a person did: opening the PR by hand, each human review or comment, each human commit pushed after it opened, and merging it by hand (auto-merge is not a touch). A PR from a loop (branch `gel/...` or a bot author) costs nothing to open. It reads merged PRs through `gh`; nothing is written.
-
-## Nightly meta-eval
-
-`.github/workflows/meta-eval.yml` runs every night: the selftest (recall and precision per guard), then the bench, then `bench/check.mjs`, which fails if any guard catches fewer planted defects or raises more findings on clean repos than `bench/baseline.json`. Changing the baseline is lane C.
-
-## Release gate and deploy health
-
-The shared [flisk-sh/.github](https://github.com/flisk-sh/.github) workflows cover the stages after GEL: `release-gate.yml` waits for every check on the release commit and fails on a red or missing required one, and `deploy-health.yml` checks the deployed URL. The `flisk-release` starter wires both around a publish job.
+Version v1.11.0, built and run by [flisk-sh](https://github.com/flisk-sh) on its own repos. It is not published to npm (`package.json` has `"private": true`); use it as an Action or from a clone. Releases: [GitHub releases](https://github.com/flisk-sh/gel/releases).
 
 ## License
 
