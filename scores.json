@@ -33,6 +33,17 @@
   "ok": true
  },
  {
+  "guard": "workflow-timeouts",
+  "cases": 7,
+  "good": 4,
+  "bad": 3,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
   "guard": "frozen-install",
   "cases": 16,
   "good": 10,
