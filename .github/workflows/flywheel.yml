@@ -40,3 +40,18 @@ jobs:
           REPO: ${{ inputs.repo }}
           DRY: ${{ inputs.dry_run && '--dry-run' || '' }}
         run: node scripts/flywheel.mjs --max "$MAX" --wip "$WIP" ${REPO:+--repo "$REPO"} $DRY
+  # SonarCloud findings the sonar-patterns guard knows (`[ ]` in bash, bare `.sort()`): fix up to 15 files per PR in flisk-sh/flisk.
+  sonar-patterns:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Fix and open PRs
+        env:
+          GH_TOKEN: ${{ secrets.GEL_FLYWHEEL_TOKEN }}
+          MAX: ${{ inputs.max || '5' }}
+          WIP: ${{ inputs.wip || '3' }}
+          GEL_PAUSE: ${{ vars.GEL_PAUSE }}
+          REPO: ${{ inputs.repo || 'flisk-sh/flisk' }}
+          DRY: ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: node scripts/flywheel.mjs --fixer sonar-patterns --max "$MAX" --wip "$WIP" --repo "$REPO" $DRY

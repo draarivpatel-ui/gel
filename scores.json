@@ -309,9 +309,9 @@
  },
  {
   "guard": "sonar-patterns",
-  "cases": 22,
-  "good": 10,
-  "bad": 12,
+  "cases": 26,
+  "good": 12,
+  "bad": 14,
   "recall": 1,
   "precision": 1,
   "falseBlocks": 0,

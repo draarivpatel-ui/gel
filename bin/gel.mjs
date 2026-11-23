@@ -18,6 +18,7 @@ import { EVAL_NAMES, runEval, ratchet, evalSelftest, readJson } from "../lib/eva
 import { meta, metaMarkdown, metaSelftest } from "../lib/meta.mjs";
 import { collectRuns } from "../evals/ci-reliability/collect.mjs";
 import { fixPinned, lsRemoteResolver } from "../lib/fix-pinned.mjs";
+import { fixSonar, collectHits } from "../lib/fix-sonar.mjs";
 import { collectRelease } from "../lib/release-ctx.mjs";
 import { collectHistory } from "../lib/history.mjs";
 import { run as northStar, ratioOf } from "../guards/north-star/index.mjs";
@@ -56,9 +57,50 @@ async function scanTree(root) {
 }
 
 // gel fix <guard>: fix what the guard reports, then let the guards score the result
+// gel fix sonar-patterns: rewrite `[ ]` to `[[ ]]` and bare `.sort()` in up to --max-files files, then lower the frozen baseline
+async function fixSonarPatterns(root) {
+  const cfg = loadConfig(root);
+  const files = walk(root).filter((f) => !matchAny(cfg.ignore, f));
+  const limit = Number(opt("max-files", 15));
+  const hitFiles = files.map((f) => [f, collectHits(root, [f])]).filter(([, h]) => h.length).sort((a, b) => a[1].length - b[1].length || (a[0] < b[0] ? -1 : 1));
+  const picked = hitFiles.slice(0, limit);
+  const before = await scanTree(root);
+  const hitsBefore = picked.reduce((n, [, h]) => n + h.length, 0);
+  const res = fixSonar(root, picked.flatMap(([, h]) => h));
+  const hitsAfter = collectHits(root, picked.map(([f]) => f)).length;
+  // lower the baseline of the files that got cleaner; it never rises
+  const cfgPath = join(root, "docs/gel.json");
+  const raw = existsSync(cfgPath) ? JSON.parse(readFileSync(cfgPath, "utf8")) : null;
+  const base = raw?.sonar_patterns?.baseline;
+  let lowered = 0;
+  if (base) {
+    for (const [f] of picked) {
+      if (!(f in base)) continue;
+      const now = collectHits(root, [f]).length;
+      if (now < base[f]) { if (now === 0) delete base[f]; else base[f] = now; lowered++; }
+    }
+    if (lowered) { writeFileSync(cfgPath, JSON.stringify(raw, null, 2) + "\n"); res.files.push("docs/gel.json"); }
+  }
+  const after = await scanTree(root);
+  const counts = (s) => Object.fromEntries(Object.entries(s).map(([k, v]) => [k, v.count]));
+  const worse = Object.keys(after).filter((k) => after[k].count > (before[k]?.count ?? 0));
+  const outside = res.files.filter((f) => f !== "docs/gel.json" && !/\.(sh|bash|[cm]?js|ts)$/.test(f) && /\.[^/]*$/.test(f.slice(f.lastIndexOf("/") + 1)));
+  const better = hitsAfter < hitsBefore && !worse.length && !outside.length;
+  const b = counts(before), a = counts(after);
+  b["sonar-patterns"] = hitsBefore; a["sonar-patterns"] = hitsAfter;
+  const report = { fixer: "sonar-patterns", better, before: b, after: a, worse, outside, files: res.files, pinned: res.fixed, fixed: res.fixed, lowered, unresolved: res.unresolved };
+  if (args.includes("--json")) console.log(JSON.stringify(report));
+  else {
+    console.log(`sonar-patterns: ${hitsBefore} -> ${hitsAfter} hits in ${picked.length} files, ${res.fixed} fixed, baseline lowered for ${lowered}${better ? "" : " (not better: do not open a PR)"}`);
+    for (const u of res.unresolved) console.log(`left ${u.file}:${u.line} ${u.why}`);
+  }
+  process.exit(better ? 0 : 1);
+}
+
 async function fix() {
   const what = args[1];
-  if (what !== "pinned-actions") { console.log("usage: gel fix pinned-actions [--root .] [--repo owner/name] [--json]"); process.exit(2); }
+  if (what !== "pinned-actions" && what !== "sonar-patterns") { console.log("usage: gel fix pinned-actions|sonar-patterns [--root .] [--repo owner/name] [--max-files 15] [--json]"); process.exit(2); }
+  if (what === "sonar-patterns") return fixSonarPatterns(resolve(opt("root", ".")));
   const root = resolve(opt("root", "."));
   // the repo's own owner is trusted (its actions may stay on a tag), as in CI, so the fixer needs to know the repo
   if (!process.env.GITHUB_REPOSITORY) {
@@ -382,7 +424,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run] | gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel verify [--root .] [--base <sha>] [--ctx ctx.json] | gel perf [--root .] [--ctx ctx.json] [--update-baseline] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run] | gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel verify [--root .] [--base <sha>] [--ctx ctx.json] | gel perf [--root .] [--ctx ctx.json] [--update-baseline] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions|sonar-patterns [--root .] [--repo owner/name] [--max-files 15] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);
