@@ -25,6 +25,7 @@ import { run as productBrief, briefRows } from "../guards/product-brief/index.mj
 import { judge as judgeClicks, limits as clickLimits } from "../guards/click-map/index.mjs";
 import { measure as measureClicks } from "../lib/click-map.mjs";
 import { gradeRepo } from "../lib/grades.mjs";
+import { plan as initPlan, apply as initApply } from "../lib/init.mjs";
 import { scorecard, scorecardMarkdown } from "../lib/queue.mjs";
 import { collectQueue } from "../lib/queue-collect.mjs";
 
@@ -310,6 +311,27 @@ async function main() {
     else console.log(`five-second: ${e.html ? "first screen kept" : "NO visible <h1> drawn"}${e.covered ? `, the headline is covered by ${e.covered}` : ""} for ${e.page} -> ${out}`);
     process.exit(e.html && !e.covered ? 0 : 1);
   }
+  if (cmd === "init") {
+    // gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run]: add GEL to a repo (caller workflow +
+    // docs/gel.json, every guard "block") and scan it at once. Exits 1 when a blocking guard already finds something.
+    const root = resolve(opt("root", "."));
+    const files = initPlan(root, { mode: opt("mode", "block"), strict: args.includes("--strict") });
+    const done = args.includes("--dry-run") ? files.map((f) => ({ path: f.path, action: f.exists && !args.includes("--force") ? "would keep" : "would write" })) : initApply(root, files, { force: args.includes("--force") });
+    for (const d of done) console.log(`${d.action.padEnd(10)} ${d.path}`);
+    if (args.includes("--dry-run")) process.exit(0);
+    const scan = await scanTree(root);
+    const cfg = loadConfig(root);
+    let blocking = 0;
+    for (const [g, r] of Object.entries(scan)) {
+      if (!r.count) continue;
+      const level = cfg.guards[g];
+      if (level === "block") blocking += r.count;
+      console.log(`${level === "block" ? "BLOCK" : "report"}  ${g}: ${r.count}`);
+      for (const f of r.findings.slice(0, 10)) console.log(`   ${f.file}${f.line ? `:${f.line}` : ""} ${f.message}`);
+    }
+    console.log(blocking ? `\ngel init: ${blocking} blocking finding(s). CI will fail until they are fixed.` : "\ngel init: clean. Every guard passes.");
+    process.exit(blocking ? 1 : 0);
+  }
   if (cmd === "queue-ready") {
     // gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json]: one preflight score before a merge queue (or a
     // "GEL required" ruleset) is switched on. Offline unless --repo reads the ruleset; below 100 it exits 1.
@@ -330,7 +352,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run] | gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);
