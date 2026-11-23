@@ -20,6 +20,12 @@ export const EXEMPT = [
   "bench/**", "site/**", "scripts/**",
 ];
 
+// product code: source by extension (or `source` globs), not a test, not generated or exempt. verify and perf-budget share it.
+export function isSourceFile(f, c = {}) {
+  const exempt = [...EXEMPT, ...(c?.exempt ?? [])];
+  return (c?.source ? matchAny(c.source, f) : CODE_RE.test(f)) && !matchAny(c?.tests ?? TESTS, f) && !matchAny(exempt, f);
+}
+
 export function run({ changes, cfg }) {
   if (!changes) return { pass: true, findings: [] };
   const c = cfg?.tests_with_change ?? {};

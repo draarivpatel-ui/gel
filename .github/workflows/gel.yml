@@ -35,6 +35,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node .gel-engine/bin/gel-ctx.mjs "$RUNNER_TEMP/gel-ctx.json"
+      # opt-in: docs/gel.json "verify" (install, build, test, revert check) and "perf_budget" (a named benchmark). These run the
+      # project's own commands on the pull request checkout, so the caller must trigger on pull_request, never pull_request_target.
+      # The project's toolchain (node, bun, python) must already be on the runner; put setup in verify.install.
+      - name: Build, test and measure the change
+        if: github.event_name == 'pull_request' && hashFiles('docs/gel.json') != ''
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # only a repo that declared verify or perf_budget runs commands; an older engine without these commands is left alone
+          if grep -qE '"(verify|perf_budget)"' docs/gel.json; then
+            node .gel-engine/bin/gel.mjs verify --base "$BASE_SHA" --ctx "$RUNNER_TEMP/gel-ctx.json"
+            node .gel-engine/bin/gel.mjs perf --ctx "$RUNNER_TEMP/gel-ctx.json"
+          fi
       - name: Run guards
         env:
           # a pull request checks its diff; a push to the default branch scans the whole tree, so the record
