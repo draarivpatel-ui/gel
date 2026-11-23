@@ -28,6 +28,7 @@ import { gradeRepo } from "../lib/grades.mjs";
 import { plan as initPlan, apply as initApply } from "../lib/init.mjs";
 import { scorecard, scorecardMarkdown } from "../lib/queue.mjs";
 import { collectQueue } from "../lib/queue-collect.mjs";
+import { verify, perf, mergeCtx } from "../lib/verify.mjs";
 
 const args = process.argv.slice(2);
 const cmd = args[0];
@@ -94,6 +95,34 @@ async function main() {
       for (const w of r.wrong) console.log(`       ${w}`);
     }
     process.exit(rows.every((r) => r.ok) ? 0 : 1);
+  }
+  if (cmd === "verify" || cmd === "perf") {
+    // gel verify | gel perf [--root .] [--base <sha>] [--ctx ctx.json] [--update-baseline]: run the project's own build, tests
+    // (and a revert check) or its named benchmark, and put the result in the ctx file for change-verified / perf-budget
+    const root = resolve(opt("root", "."));
+    const cfg = loadConfig(root);
+    const ctxFile = opt("ctx");
+    const log = (m) => console.error(m);
+    if (cmd === "verify") {
+      if (!cfg.verify) { console.log('gel verify: no "verify" in docs/gel.json (install, build, test), nothing to run'); process.exit(0); }
+      const r = verify({ root, cfg, base: opt("base"), log });
+      if (ctxFile) mergeCtx(ctxFile, "verify", r);
+      console.log(JSON.stringify(r, null, 1));
+      process.exit(0);
+    }
+    if (!cfg.perf_budget?.command) { console.log('gel perf: no "perf_budget.command" in docs/gel.json, nothing to run'); process.exit(0); }
+    const r = perf({ root, cfg, log });
+    if (args.includes("--update-baseline")) {
+      if (r.value === null) { console.log(`gel perf: the benchmark gave no number (exit ${r.exit}): ${r.tail}`); process.exit(1); }
+      const file = join(root, cfg.perf_budget.baseline ?? "bench/perf-baseline.json");
+      mkdirSync(dirname(file), { recursive: true });
+      writeFileSync(file, JSON.stringify({ value: r.value, unit: r.unit, measuredAt: new Date().toISOString(), command: r.command }, null, 2) + "\n");
+      console.log(`gel perf: baseline ${r.value}${r.unit ?? ""} written to ${file}`);
+      process.exit(0);
+    }
+    if (ctxFile) mergeCtx(ctxFile, "perf", r);
+    console.log(JSON.stringify(r, null, 1));
+    process.exit(0);
   }
   if (cmd === "factory") {
     // gel factory (<prs.json> | --repo owner/name [--limit 100]) [--json]: touch points and lead time per merged PR (north star of the factory)
@@ -352,7 +381,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run] | gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run] | gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel verify [--root .] [--base <sha>] [--ctx ctx.json] | gel perf [--root .] [--ctx ctx.json] [--update-baseline] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions [--root .] [--repo owner/name] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);

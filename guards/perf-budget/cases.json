@@ -1,0 +1,11 @@
+[
+  {"name": "benchmark 40% slower than baseline", "label": "bad", "base": {"src/engine.js": "1\n"}, "files": {"src/engine.js": "2\n", "bench/perf-baseline.json": "{\"value\": 10, \"unit\": \"s\"}\n"}, "cfg": {"perf_budget": {"command": "node bench/shrink.mjs"}}, "ctx": {"perf": {"value": 14, "unit": "s", "exit": 0, "runs": [14, 14, 14]}}},
+  {"name": "throughput (higher is better) dropped 30%", "label": "bad", "base": {"src/engine.js": "1\n"}, "files": {"src/engine.js": "2\n", "bench/perf-baseline.json": "{\"value\": 100}\n"}, "cfg": {"perf_budget": {"command": "node bench.mjs", "better": "higher"}}, "ctx": {"perf": {"value": 70, "exit": 0}}},
+  {"name": "benchmark command crashed", "label": "bad", "base": {"src/engine.js": "1\n"}, "files": {"src/engine.js": "2\n", "bench/perf-baseline.json": "{\"value\": 10}\n"}, "cfg": {"perf_budget": {"command": "node bench/shrink.mjs"}}, "ctx": {"perf": {"value": null, "exit": 1, "tail": "TypeError: x is not a function"}}},
+  {"name": "no baseline committed", "label": "bad", "base": {"src/engine.js": "1\n"}, "files": {"src/engine.js": "2\n"}, "cfg": {"perf_budget": {"command": "node bench/shrink.mjs"}}, "ctx": {}},
+  {"name": "code changed and the benchmark never ran", "label": "bad", "base": {"src/engine.js": "1\n"}, "files": {"src/engine.js": "2\n", "bench/perf-baseline.json": "{\"value\": 10}\n"}, "cfg": {"perf_budget": {"command": "node bench/shrink.mjs"}}, "ctx": {}},
+  {"name": "5% slower is inside the 10% budget", "label": "good", "base": {"src/engine.js": "1\n"}, "files": {"src/engine.js": "2\n", "bench/perf-baseline.json": "{\"value\": 10}\n"}, "cfg": {"perf_budget": {"command": "node bench/shrink.mjs"}}, "ctx": {"perf": {"value": 10.5, "exit": 0}}},
+  {"name": "faster than baseline", "label": "good", "base": {"src/engine.js": "1\n"}, "files": {"src/engine.js": "2\n", "bench/perf-baseline.json": "{\"value\": 10}\n"}, "cfg": {"perf_budget": {"command": "node bench/shrink.mjs"}}, "ctx": {"perf": {"value": 6, "exit": 0}}},
+  {"name": "docs-only change, benchmark not needed", "label": "good", "base": {"README.md": "a\n"}, "files": {"README.md": "b\n", "bench/perf-baseline.json": "{\"value\": 10}\n"}, "cfg": {"perf_budget": {"command": "node bench/shrink.mjs"}}, "ctx": {}},
+  {"name": "not configured: opt-in guard stays quiet", "label": "good", "files": {}, "cfg": {}, "ctx": {}}
+]

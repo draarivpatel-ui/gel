@@ -317,5 +317,49 @@
   "falseBlocks": 0,
   "wrong": [],
   "ok": true
+ },
+ {
+  "guard": "checks-green",
+  "cases": 8,
+  "good": 4,
+  "bad": 4,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
+  "guard": "deploy-delivered",
+  "cases": 9,
+  "good": 5,
+  "bad": 4,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
+  "guard": "change-verified",
+  "cases": 9,
+  "good": 4,
+  "bad": 5,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
+  "guard": "perf-budget",
+  "cases": 9,
+  "good": 4,
+  "bad": 5,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
  }
 ]

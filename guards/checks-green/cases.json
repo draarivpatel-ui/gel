@@ -1,0 +1,10 @@
+[
+  {"name": "sonar quality gate failed, no claim in the PR text", "label": "bad", "files": {}, "ctx": {"checkRuns": [{"name": "SonarCloud Code Analysis", "conclusion": "failure", "title": "Quality Gate failed", "summary": "C Security Rating on New Code (required >= A)"}, {"name": "test", "conclusion": "success"}]}},
+  {"name": "sonar project does not exist, check ended neutral", "label": "bad", "files": {}, "ctx": {"checkRuns": [{"name": "SonarCloud Code Analysis", "conclusion": "neutral", "title": "Analysis failed", "summary": "Project doesn't exist. Please import it first."}]}},
+  {"name": "commit status in error", "label": "bad", "files": {}, "ctx": {"statuses": [{"context": "ci/deploy-preview", "state": "error", "description": "Bad credentials"}]}},
+  {"name": "a check was still running", "label": "bad", "files": {}, "ctx": {"checkRuns": [{"name": "test", "conclusion": "success"}], "checksSettled": false, "pendingChecks": ["SonarCloud Code Analysis"]}},
+  {"name": "all checks green", "label": "good", "files": {}, "ctx": {"checkRuns": [{"name": "test", "conclusion": "success"}, {"name": "lint", "conclusion": "success"}], "statuses": [{"context": "ci", "state": "success"}], "checksSettled": true}},
+  {"name": "skipped and neutral are not red", "label": "good", "files": {}, "ctx": {"checkRuns": [{"name": "CodeRabbit", "conclusion": "skipped"}, {"name": "e2e", "conclusion": "neutral", "title": "No e2e tests changed"}]}},
+  {"name": "no checks collected (push scan)", "label": "good", "files": {}, "ctx": {}},
+  {"name": "a red check the repo chose to ignore", "label": "good", "files": {}, "cfg": {"checks_green": {"ignore": ["CodeRabbit"]}}, "ctx": {"checkRuns": [{"name": "CodeRabbit", "conclusion": "failure"}]}}
+]
