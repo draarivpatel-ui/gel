@@ -1,7 +1,7 @@
-# Nightly flywheel: fix what a guard reports in the org's repos and open a PR where the guards score it better.
+# Nightly autofix: fix what a guard reports in the org's repos and open a PR where the guards score it better.
 # Kill switch: set the repository variable GEL_PAUSE to 1 and the loop does nothing. Cap: at most 3 loop PRs open at once.
-# Without the GEL_FLYWHEEL_TOKEN secret (contents and pull requests: write on the target repos) it is a dry run.
-name: Flywheel
+# Without the GEL_AUTOFIX_GITHUB_TOKEN secret (contents and pull requests: write on the target repos) it is a dry run.
+name: Autofix
 on:
   schedule:
     - cron: "41 4 * * *"
@@ -23,7 +23,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: flywheel
+  group: autofix
   cancel-in-progress: false
 jobs:
   pinned-actions:
@@ -33,13 +33,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Fix and open PRs
         env:
-          GH_TOKEN: ${{ secrets.GEL_FLYWHEEL_TOKEN }}
+          GH_TOKEN: ${{ secrets.GEL_AUTOFIX_GITHUB_TOKEN }}
           MAX: ${{ inputs.max || '5' }}
           WIP: ${{ inputs.wip || '3' }}
           GEL_PAUSE: ${{ vars.GEL_PAUSE }}
           REPO: ${{ inputs.repo }}
           DRY: ${{ inputs.dry_run && '--dry-run' || '' }}
-        run: node scripts/flywheel.mjs --max "$MAX" --wip "$WIP" ${REPO:+--repo "$REPO"} $DRY
+        run: node scripts/autofix.mjs --max "$MAX" --wip "$WIP" ${REPO:+--repo "$REPO"} $DRY
   # SonarCloud findings the sonar-patterns guard knows (`[ ]` in bash, bare `.sort()`): fix up to 15 files per PR in flisk-sh/flisk.
   sonar-patterns:
     runs-on: ubuntu-latest
@@ -48,10 +48,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Fix and open PRs
         env:
-          GH_TOKEN: ${{ secrets.GEL_FLYWHEEL_TOKEN }}
+          GH_TOKEN: ${{ secrets.GEL_AUTOFIX_GITHUB_TOKEN }}
           MAX: ${{ inputs.max || '5' }}
           WIP: ${{ inputs.wip || '3' }}
           GEL_PAUSE: ${{ vars.GEL_PAUSE }}
           REPO: ${{ inputs.repo || 'flisk-sh/flisk' }}
           DRY: ${{ inputs.dry_run && '--dry-run' || '' }}
-        run: node scripts/flywheel.mjs --fixer sonar-patterns --max "$MAX" --wip "$WIP" --repo "$REPO" $DRY
+        run: node scripts/autofix.mjs --fixer sonar-patterns --max "$MAX" --wip "$WIP" --repo "$REPO" $DRY

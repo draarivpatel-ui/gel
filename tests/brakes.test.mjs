@@ -22,8 +22,8 @@ test("budget is zero at or over the cap and says why", () => {
   assert.equal(budget({ max: 5, wip: 3, open: 7 }).allow, 0);
 });
 
-test("flywheel with GEL_PAUSE set exits 0 before it fetches or clones anything", () => {
-  const r = spawnSync(process.execPath, [join(import.meta.dirname, "..", "scripts", "flywheel.mjs"), "--dry-run", "--data", "http://127.0.0.1:9/none"], { encoding: "utf8", env: { ...process.env, GEL_PAUSE: "1" } });
+test("autofix with GEL_PAUSE set exits 0 before it fetches or clones anything", () => {
+  const r = spawnSync(process.execPath, [join(import.meta.dirname, "..", "scripts", "autofix.mjs"), "--dry-run", "--data", "http://127.0.0.1:9/none"], { encoding: "utf8", env: { ...process.env, GEL_PAUSE: "1" } });
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /Paused/);
 });

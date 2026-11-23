@@ -56,16 +56,16 @@ Every false alarm is listed as a hard case to add to the guard's `cases.json`. O
 node bin/gel.mjs promote gel-record.jsonl --labels docs/gel-labels.json [--write]
 ```
 
-Turns the `gel metrics` advice into a change of `docs/gel.json`: a guard advised to **promote** goes from `report` to `block`, a blocking guard advised to **demote** goes back to `report`, nothing else is touched. Without `--write` it only prints the proposal as a table. It warns when the file has `mode: "report"`, because that keeps every guard advisory. Editing `docs/gel.json` is lane C, so a person approves the PR; GEL never changes the level on its own. `.github/workflows/promote.yml` runs `scripts/promote-pr.mjs` each Monday: it gathers the repo's last 50 `gel-record` artifacts, runs the command above and opens one PR (branch `gel/promote-guards`, one open at a time) when a guard should change. It honours the `GEL_PAUSE` kill switch and, like the flywheel, only opens the PR when the secret `GEL_FLYWHEEL_TOKEN` exists; promotion needs labelled findings in `docs/gel-labels.json`, so until someone labels findings every guard holds.
+Turns the `gel metrics` advice into a change of `docs/gel.json`: a guard advised to **promote** goes from `report` to `block`, a blocking guard advised to **demote** goes back to `report`, nothing else is touched. Without `--write` it only prints the proposal as a table. It warns when the file has `mode: "report"`, because that keeps every guard advisory. Editing `docs/gel.json` is lane C, so a person approves the PR; GEL never changes the level on its own. `.github/workflows/promote.yml` runs `scripts/promote-pr.mjs` each Monday: it gathers the repo's last 50 `gel-record` artifacts, runs the command above and opens one PR (branch `gel/promote-guards`, one open at a time) when a guard should change. It honours the `GEL_PAUSE` kill switch and, like the flywheel, only opens the PR when the secret `GEL_AUTOFIX_GITHUB_TOKEN` exists; promotion needs labelled findings in `docs/gel-labels.json`, so until someone labels findings every guard holds.
 
 ### Fix PRs
 
 ```bash
 node bin/gel.mjs fix pinned-actions --root path/to/repo   # pins what the guard reports, then re-scores
-node scripts/flywheel.mjs --max 5 [--dry-run]             # the nightly loop over the repos Cilytics lists
+node scripts/autofix.mjs --max 5 [--dry-run]             # the nightly loop over the repos Cilytics lists
 ```
 
-`gel fix` edits only the lines the guard reports, then runs every guard again over the whole tree. It exits 0 only when the target guard dropped, no other guard rose, and only workflow or action files changed. `.github/workflows/flywheel.yml` runs the loop each night and opens at most 5 PRs a night and never more than 3 loop PRs open at once (`--wip`), so unmerged work stops new work (branch `gel/fix-pinned-actions`). Kill switch: set the repository variable `GEL_PAUSE` to `1` (or run with `GEL_PAUSE=1`) and the run exits without touching anything. It needs the secret `GEL_FLYWHEEL_TOKEN` (contents and pull requests: write on the org's repos); without it the run is a dry run.
+`gel fix` edits only the lines the guard reports, then runs every guard again over the whole tree. It exits 0 only when the target guard dropped, no other guard rose, and only workflow or action files changed. `.github/workflows/flywheel.yml` runs the loop each night and opens at most 5 PRs a night and never more than 3 loop PRs open at once (`--wip`), so unmerged work stops new work (branch `gel/fix-pinned-actions`). Kill switch: set the repository variable `GEL_PAUSE` to `1` (or run with `GEL_PAUSE=1`) and the run exits without touching anything. It needs the secret `GEL_AUTOFIX_GITHUB_TOKEN` (contents and pull requests: write on the org's repos); without it the run is a dry run.
 
 ### Factory metrics
 

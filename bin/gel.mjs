@@ -43,7 +43,7 @@ function changedFiles(root, base) {
   } catch { return null; }
 }
 
-// every guard over the whole tree: { guard: { count, findings } } (the flywheel's before/after score)
+// every guard over the whole tree: { guard: { count, findings } } (the autofix's before/after score)
 async function scanTree(root) {
   const cfg = loadConfig(root);
   const files = walk(root).filter((f) => !matchAny(cfg.ignore, f));
