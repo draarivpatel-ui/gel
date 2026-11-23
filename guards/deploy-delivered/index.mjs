@@ -12,19 +12,39 @@ export const name = "deploy-delivered";
 const DEPLOYISH = /deploy|publish|release|wrangler|ship|upload|push image|flyctl|vercel|netlify/i;
 const DEPLOY_USES = /wrangler-action|deploy-pages|webapps-deploy|amplify|flyctl|vercel|netlify|aws-actions|google-github-actions\/deploy|azure\/|kubectl|helm|docker\/build-push-action|pypa\/gh-action-pypi-publish|publish/i;
 
+const norm = (x) => x.split(/\s+/).filter(Boolean).join(" ");
 function secretEnvs(text) {
   const names = new Set();
-  for (const m of text.matchAll(/^\s*([A-Z][A-Z0-9_]*)\s*:\s*\$\{\{\s*secrets\.[A-Za-z0-9_]+\s*\}\}/gm)) names.add(m[1]);
+  for (const l of text.split("\n")) {
+    const i = l.indexOf(":");
+    if (i < 1) continue;
+    const key = l.slice(0, i).trim();
+    const val = norm(l.slice(i + 1));
+    if (/^[A-Z][A-Z0-9_]*$/.test(key) && val.startsWith("${{ secrets.") && val.endsWith("}}")) names.add(key);
+  }
   return names;
 }
 
 // the name of the secret-backed variable an `if:` compares with an empty string, and which way
 function emptyTest(expr, secretNames) {
-  const m = expr.match(/(?:env\.|secrets\.)([A-Za-z0-9_]+)\s*(==|!=)\s*(?:''|"")/);
-  if (m && (expr.includes("secrets.") || secretNames.has(m[1]))) return { name: m[1], whenEmpty: m[2] === "==" };
-  const n = expr.match(/^\s*(?:\$\{\{\s*)?(!)?\s*(?:env|secrets)\.([A-Za-z0-9_]+)\s*(?:\}\})?\s*$/);
-  if (n && (expr.includes("secrets.") || secretNames.has(n[2]))) return { name: n[2], whenEmpty: !!n[1] };
+  const e = norm(expr);
+  const m = e.match(/(?:env|secrets)\.(\w+) ?(==|!=) ?(?:''|"")/);
+  if (m && (e.includes("secrets.") || secretNames.has(m[1]))) return { name: m[1], whenEmpty: m[2] === "==" };
+  const neg = e.startsWith("!");
+  const n = (neg ? e.slice(1).trim() : e).match(/^(?:env|secrets)\.(\w+)$/);
+  if (n && (e.includes("secrets.") || secretNames.has(n[1]))) return { name: n[1], whenEmpty: neg };
   return null;
+}
+
+// the expression after `if:` on a workflow line (also `- if:`), without `${{ }}`, or null
+function ifExpr(line) {
+  let t = line.trim();
+  if (t.startsWith("- ")) t = t.slice(2).trim();
+  if (!t.startsWith("if:")) return null;
+  t = t.slice(3).trim();
+  if (t.startsWith("${{")) t = t.slice(3);
+  if (t.endsWith("}}")) t = t.slice(0, -2);
+  return t.trim();
 }
 
 export function run({ files = [], read, ctx = {}, cfg = {} }) {
@@ -34,21 +54,21 @@ export function run({ files = [], read, ctx = {}, cfg = {} }) {
     const text = read?.(f);
     if (text == null || allow.has(f)) continue;
     const lines = text.split("\n");
-    const title = text.match(/^name\s*:\s*(.+)$/m)?.[1] ?? "";
+    const title = lines.find((l) => l.startsWith("name:"))?.slice(5).trim() ?? "";
     const isDeploy = DEPLOYISH.test(f.split("/").pop()) || DEPLOYISH.test(title) || DEPLOY_USES.test(text) || /\bwrangler\s+deploy\b|\bflyctl\s+deploy\b|\bnpm\s+publish\b/.test(text);
     if (!isDeploy) continue;
     const secrets = secretEnvs(text);
     const gated = []; // { name, line, whenEmpty }
     let loud = false; // some step runs only when the secret is empty and fails
     lines.forEach((l, i) => {
-      const m = l.match(/^\s*(?:-\s+)?if\s*:\s*(.+?)\s*$/);
-      if (!m) return;
-      const t = emptyTest(m[1].replace(/^\$\{\{\s*|\s*\}\}$/g, ""), secrets);
+      const expr = ifExpr(l);
+      if (!expr) return;
+      const t = emptyTest(expr, secrets);
       if (!t) return;
       if (t.whenEmpty) {
         // the step this `if` belongs to: look a few lines around for a failing command
         const around = lines.slice(Math.max(0, i - 4), i + 8).join("\n");
-        if (/\bexit\s+[1-9]|::error|\bfalse\b\s*$/m.test(around.replace(/exit\s+0/g, ""))) loud = true;
+        if (around.includes("::error") || /\bexit [1-9]/.test(around.split("exit 0").join(""))) loud = true;
       } else gated.push({ name: t.name, line: i + 1 });
     });
     if (gated.length && !loud) {
