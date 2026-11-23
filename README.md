@@ -107,6 +107,19 @@ Optional. GEL runs on any repo without a config file, with every guard in `repor
 - `trusted_owners` may use their actions by tag. Your own org is always trusted.
 - A top-level `"mode": "report"` keeps every guard advisory, whatever the per-guard level says.
 
+### The level does not make GEL find more
+
+`report` or `block` only decides what happens to a finding: `block` fails the job, `report` does not. It never changes what GEL looks for. A guard finds only the thing it checks, so a green GEL means "none of the guards found their thing", not "this pull request is correct".
+
+What GEL does not find, even with every guard on `block`:
+
+- Whether the change is right. It does not run your code, so a logic bug or a slowdown passes. `tests-with-change` only asks that a test file changed, not that a test covers the change.
+- Whether another check is red or misconfigured. A failing SonarCloud check, or a Sonar project that does not exist, is not a GEL finding. `sonar-patterns` only scans the code for risky regex shapes.
+- Whether a deploy really deployed. A workflow that skips because a secret is unset still ends green.
+- Whether the numbers in `docs/brief.json` or the north-star file are true. GEL checks that they exist and are recent.
+
+Treat `block` as "a known hygiene or safety rule is enforced", and keep your tests, build and other required checks for correctness.
+
 Each run appends one JSON line to `gel-record.jsonl`: repo, commit, lane, each guard's result, its first 10 findings and the time. That record is how you decide to promote a guard.
 
 ## Lanes
