@@ -1,0 +1,11 @@
+{
+ "value": 599,
+ "baseline": 42,
+ "unit": "defects caught, of 900 planted",
+ "planted": 900,
+ "repos": 30,
+ "runs": 1,
+ "measuredAt": "2026-11-23T16:13:18.256Z",
+ "run": "https://github.com/flisk-sh/gel/actions/runs/45213916718",
+ "commit": "9e84b7e8431207203a5f34ffcc7d24890a6d6a0c"
+}
