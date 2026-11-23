@@ -1,0 +1,222 @@
+[
+ {
+  "name": "file with many fixes and reverts, changed this week, no test",
+  "label": "bad",
+  "ctx": {
+   "now": "2026-11-23T12:00:00Z",
+   "history": {
+    "shallow": false,
+    "commits": 120,
+    "files": {
+     "lib/auth/session.mjs": {
+      "changes": 12,
+      "fixes": 6,
+      "reverts": 2,
+      "lastAt": "2026-11-20T09:00:00Z"
+     }
+    }
+   }
+  },
+  "base": {
+   "lib/auth/session.mjs": "a\n"
+  },
+  "files": {
+   "lib/auth/session.mjs": "b\n"
+  }
+ },
+ {
+  "name": "reverted twice and changed yesterday, other files calm",
+  "label": "bad",
+  "ctx": {
+   "now": "2026-11-23T12:00:00Z",
+   "history": {
+    "shallow": false,
+    "commits": 90,
+    "files": {
+     "src/queue.ts": {
+      "changes": 5,
+      "fixes": 1,
+      "reverts": 2,
+      "lastAt": "2026-11-22T09:00:00Z"
+     },
+     "src/util.ts": {
+      "changes": 2,
+      "fixes": 0,
+      "reverts": 0,
+      "lastAt": "2025-01-01T00:00:00Z"
+     }
+    }
+   }
+  },
+  "base": {
+   "src/queue.ts": "a\n",
+   "src/util.ts": "a\n"
+  },
+  "files": {
+   "src/queue.ts": "b\n",
+   "src/util.ts": "b\n"
+  }
+ },
+ {
+  "name": "threshold lowered to catch a medium score",
+  "label": "bad",
+  "cfg": {
+   "risk_history": {
+    "threshold": 30
+   }
+  },
+  "ctx": {
+   "now": "2026-11-23T12:00:00Z",
+   "history": {
+    "shallow": false,
+    "commits": 60,
+    "files": {
+     "api/pay.go": {
+      "changes": 6,
+      "fixes": 2,
+      "reverts": 0,
+      "lastAt": "2026-06-01T09:00:00Z"
+     }
+    }
+   }
+  },
+  "base": {
+   "api/pay.go": "a\n"
+  },
+  "files": {
+   "api/pay.go": "b\n"
+  }
+ },
+ {
+  "name": "calm file, few fixes, old",
+  "label": "good",
+  "ctx": {
+   "now": "2026-11-23T12:00:00Z",
+   "history": {
+    "shallow": false,
+    "commits": 120,
+    "files": {
+     "src/util.ts": {
+      "changes": 3,
+      "fixes": 0,
+      "reverts": 0,
+      "lastAt": "2025-12-01T09:00:00Z"
+     }
+    }
+   }
+  },
+  "base": {
+   "src/util.ts": "a\n"
+  },
+  "files": {
+   "src/util.ts": "b\n"
+  }
+ },
+ {
+  "name": "risky file but the pull request adds a test",
+  "label": "good",
+  "ctx": {
+   "now": "2026-11-23T12:00:00Z",
+   "history": {
+    "shallow": false,
+    "commits": 120,
+    "files": {
+     "lib/auth/session.mjs": {
+      "changes": 12,
+      "fixes": 3,
+      "reverts": 0,
+      "lastAt": "2026-06-01T09:00:00Z"
+     }
+    }
+   }
+  },
+  "base": {
+   "lib/auth/session.mjs": "a\n"
+  },
+  "files": {
+   "lib/auth/session.mjs": "b\n",
+   "tests/session.test.mjs": "t\n"
+  }
+ },
+ {
+  "name": "shallow clone: does not apply, never guesses",
+  "label": "good",
+  "ctx": {
+   "history": {
+    "shallow": true,
+    "commits": 0,
+    "files": {}
+   }
+  },
+  "base": {
+   "src/a.ts": "a\n"
+  },
+  "files": {
+   "src/a.ts": "b\n"
+  }
+ },
+ {
+  "name": "young repo with too few commits",
+  "label": "good",
+  "ctx": {
+   "now": "2026-11-23T12:00:00Z",
+   "history": {
+    "shallow": false,
+    "commits": 5,
+    "files": {
+     "src/a.ts": {
+      "changes": 5,
+      "fixes": 5,
+      "reverts": 0,
+      "lastAt": "2026-11-22T09:00:00Z"
+     }
+    }
+   }
+  },
+  "base": {
+   "src/a.ts": "a\n"
+  },
+  "files": {
+   "src/a.ts": "b\n"
+  }
+ },
+ {
+  "name": "docs only change",
+  "label": "good",
+  "ctx": {
+   "now": "2026-11-23T12:00:00Z",
+   "history": {
+    "shallow": false,
+    "commits": 120,
+    "files": {
+     "README.md": {
+      "changes": 30,
+      "fixes": 20,
+      "reverts": 5,
+      "lastAt": "2026-11-22T09:00:00Z"
+     }
+    }
+   }
+  },
+  "base": {
+   "README.md": "a\n"
+  },
+  "files": {
+   "README.md": "b\n"
+  }
+ },
+ {
+  "name": "push scan has no diff, so it passes",
+  "label": "good",
+  "ctx": {
+   "history": {
+    "shallow": false,
+    "commits": 120,
+    "files": {}
+   }
+  },
+  "files": {
+   "src/a.ts": "b\n"
+  }
+ }
+]

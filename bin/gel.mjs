@@ -19,6 +19,7 @@ import { meta, metaMarkdown, metaSelftest } from "../lib/meta.mjs";
 import { collectRuns } from "../evals/ci-reliability/collect.mjs";
 import { fixPinned, lsRemoteResolver } from "../lib/fix-pinned.mjs";
 import { collectRelease } from "../lib/release-ctx.mjs";
+import { collectHistory } from "../lib/history.mjs";
 import { run as northStar, ratioOf } from "../guards/north-star/index.mjs";
 import { measure as measureInput } from "../lib/input-viewport.mjs";
 import { run as productBrief, briefRows } from "../guards/product-brief/index.mjs";
@@ -366,6 +367,9 @@ async function main() {
   const readBase = changes ? baseReader(root, opt("base")) : null;
   // stale-base: what the base branch changed since this branch forked (pull requests only; a push scan has no base)
   if (changed && ctx.baseMoved === undefined) { const moved = movedOnBase(root, opt("base")); if (moved) ctx.baseMoved = moved; }
+
+  // risk-history reads what git remembers about the files this pull request changes (pull requests only)
+  if (changes && cfg.guards["risk-history"] !== "off" && ctx.history === undefined) ctx.history = collectHistory(root);
 
   const started = Date.now();
   const results = [];
