@@ -306,5 +306,16 @@
   "falseBlocks": 0,
   "wrong": [],
   "ok": true
+ },
+ {
+  "guard": "sonar-patterns",
+  "cases": 18,
+  "good": 8,
+  "bad": 10,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
  }
 ]

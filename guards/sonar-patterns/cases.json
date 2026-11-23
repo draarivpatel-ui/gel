@@ -1,0 +1,151 @@
+[
+ {
+  "name": "bash single bracket",
+  "label": "bad",
+  "files": {
+   "run.sh": "#!/usr/bin/env bash\nif [ -f x ]; then echo hi; fi\n"
+  }
+ },
+ {
+  "name": "bash single bracket after &&",
+  "label": "bad",
+  "files": {
+   "scripts/go": "#!/usr/bin/env bash\ntrue && [ -n \"$A\" ] || exit 1\n"
+  }
+ },
+ {
+  "name": "bash double bracket",
+  "label": "good",
+  "files": {
+   "run.sh": "#!/usr/bin/env bash\nif [[ -f x ]]; then echo hi; fi\n"
+  }
+ },
+ {
+  "name": "posix sh with single bracket",
+  "label": "good",
+  "files": {
+   "entry.sh": "#!/bin/sh\nif [ -f x ]; then echo hi; fi\n"
+  }
+ },
+ {
+  "name": "single bracket only in a comment",
+  "label": "good",
+  "files": {
+   "run.sh": "#!/usr/bin/env bash\n# if [ -f x ] is old style\necho ok\n"
+  }
+ },
+ {
+  "name": "single bracket inside a heredoc body",
+  "label": "good",
+  "files": {
+   "run.sh": "#!/usr/bin/env bash\ncat <<'EOF'\nif [ -f x ]; then :; fi\nEOF\necho ok\n"
+  }
+ },
+ {
+  "name": "trailing \\s*$",
+  "label": "bad",
+  "files": {
+   "src/a.ts": "const m = /^(\\w+)\\s*$/.exec(s);\nconst t = s.match(/foo\\s*$/);\n"
+  }
+ },
+ {
+  "name": "replace x+$",
+  "label": "bad",
+  "files": {
+   "src/a.ts": "const t = s.replace(/-+$/, \"\");\n"
+  }
+ },
+ {
+  "name": "replace ^x+",
+  "label": "bad",
+  "files": {
+   "src/a.ts": "const t = s.replace(/^-+/, \"\");\n"
+  }
+ },
+ {
+  "name": "replace ^x+|x+$",
+  "label": "bad",
+  "files": {
+   "src/a.ts": "const t = s.replace(/^-+|-+$/g, \"\");\n"
+  }
+ },
+ {
+  "name": "split padded with \\s*",
+  "label": "bad",
+  "files": {
+   "src/a.ts": "const p = s.split(/\\s*,\\s*/);\n"
+  }
+ },
+ {
+  "name": "lazy (.+?)\\s*$",
+  "label": "bad",
+  "files": {
+   "src/a.ts": "const m = /^name: (.+?)\\s*$/.exec(s);\n"
+  }
+ },
+ {
+  "name": "clean ts",
+  "label": "good",
+  "files": {
+   "src/a.ts": "const p = s.split(\",\").map((x) => x.trim());\n"
+  }
+ },
+ {
+  "name": "regex shape in a test file",
+  "label": "good",
+  "files": {
+   "src/a.test.ts": "const t = s.replace(/-+$/, \"\");\n"
+  }
+ },
+ {
+  "name": "regex shape in a comment",
+  "label": "good",
+  "files": {
+   "src/a.ts": "// was s.replace(/-+$/, \"\")\nconst t = 1;\n"
+  }
+ },
+ {
+  "name": "baseline holds a known hit",
+  "label": "good",
+  "files": {
+   "run.sh": "#!/usr/bin/env bash\nif [ -f x ]; then :; fi\n",
+   "src/a.ts": "const t = s.replace(/-+$/, \"\");\n"
+  },
+  "cfg": {
+   "sonar_patterns": {
+    "baseline": {
+     "run.sh": 1,
+     "src/a.ts": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "baseline exceeded",
+  "label": "bad",
+  "files": {
+   "run.sh": "#!/usr/bin/env bash\nif [ -f x ]; then :; fi\nif [ -f y ]; then :; fi\n"
+  },
+  "cfg": {
+   "sonar_patterns": {
+    "baseline": {
+     "run.sh": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "file not in baseline must be clean",
+  "label": "bad",
+  "files": {
+   "other.sh": "#!/usr/bin/env bash\n[ -f x ] && echo\n"
+  },
+  "cfg": {
+   "sonar_patterns": {
+    "baseline": {
+     "run.sh": 3
+    }
+   }
+  }
+ }
+]

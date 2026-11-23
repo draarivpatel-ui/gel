@@ -20,6 +20,7 @@
     "product-brief": "report",
     "ice-score": "report",
     "click-map": "report",
+    "sonar-patterns": "report",
     "stale-base": "block"
   }
 }
