@@ -2,6 +2,8 @@
 //   shell: `[ ... ]` instead of `[[ ... ]]` (bash:S7688) in files whose first line is a bash shebang. POSIX `#!/bin/sh`
 //          files are skipped, `[[` is invalid there. Comments and heredoc bodies are skipped.
 //   regex: backtracking-prone expressions (typescript:S5852) in non-test .ts files, of the shapes below.
+//   tests: an assertion reached through a wrapper object, `native.expect(...)` (typescript:S2699, "add at least one
+//          assertion"): SonarCloud only counts a bare `expect(` call, so import `expect` from the test runner instead.
 // Existing hits are frozen in docs/gel.json as "sonar_patterns": {"baseline": {"<file>": <count>}}: a file may only
 // get cleaner, a file not listed must be clean. Lower the baseline after fixing files.
 export const name = "sonar-patterns";
@@ -16,6 +18,9 @@ const REGEX_SHAPES = [
   [/\.(?:split|replace)\(\/\\s[*+][^/\n]*\\s[*+]\//, "a regex padded with `\\s*` on both sides (split on the literal, then trim)"],
   [/\(\.\+\?\)\\s\*\$/, "lazy `(.+?)\\s*$`"],
 ];
+
+const WRAPPED_EXPECT = /(^|[^\w$.])[A-Za-z_$][\w$]*\s*\.expect\b|^\s*\.expect\(/;
+const isTest = (f) => /\.(test|spec)\.[cm]?[jt]sx?$/.test(f) && !SKIP_DIR.test(f);
 
 const SKIP_DIR = /(^|\/)(node_modules|vendor|dist|build)\//;
 const isTs = (f) => /\.ts$/.test(f) && !/\.d\.ts$/.test(f) && !/\.(test|spec)\.ts$/.test(f) && !/(^|\/)__tests__\//.test(f) && !SKIP_DIR.test(f);
@@ -45,11 +50,20 @@ function regexHits(file, text) {
   return out;
 }
 
+function testHits(file, text) {
+  const out = [];
+  text.split("\n").forEach((line, i) => {
+    if (/^\s*(\/\/|\*|\/\*)/.test(line)) return;
+    if (WRAPPED_EXPECT.test(line)) out.push({ file, line: i + 1, message: "assertion through a wrapper (`obj.expect(...)`), import `expect` from the test runner (typescript:S2699)" });
+  });
+  return out;
+}
+
 export function run({ files, cfg, read }) {
   const baseline = cfg?.sonar_patterns?.baseline ?? {};
   const findings = [];
   for (const f of files) {
-    const check = isTs(f) ? regexHits : maybeShell(f) && !SKIP_DIR.test(f) ? shellHits : null;
+    const check = isTest(f) ? testHits : isTs(f) ? regexHits : maybeShell(f) && !SKIP_DIR.test(f) ? shellHits : null;
     if (!check) continue;
     const text = read(f);
     if (text == null) continue;

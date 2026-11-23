@@ -147,5 +147,33 @@
     }
    }
   }
+ },
+ {
+  "name": "wrapped expect",
+  "label": "bad",
+  "files": {
+   "a.test.ts": "native.expect(1).toBe(1);\n"
+  }
+ },
+ {
+  "name": "wrapped expect on a continuation line",
+  "label": "bad",
+  "files": {
+   "a.test.ts": "native\n  .expect(1)\n  .toBe(1);\n"
+  }
+ },
+ {
+  "name": "bare expect",
+  "label": "good",
+  "files": {
+   "a.test.ts": "expect(1).toBe(1);\nexpect.any(Number);\nawait expect(p).rejects.toThrow();\n"
+  }
+ },
+ {
+  "name": "wrapped expect in a non-test file",
+  "label": "good",
+  "files": {
+   "helper.ts": "export const x = native.expect;\n"
+  }
  }
 ]
