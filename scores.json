@@ -154,6 +154,17 @@
   "ok": true
  },
  {
+  "guard": "gitattributes-eol",
+  "cases": 10,
+  "good": 4,
+  "bad": 6,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
   "guard": "release-integrity",
   "cases": 18,
   "good": 6,

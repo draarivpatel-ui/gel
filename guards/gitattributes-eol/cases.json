@@ -1,0 +1,12 @@
+[
+ { "name": "text=auto alone", "label": "bad", "files": { ".gitattributes": "* text=auto\n" } },
+ { "name": "eol=crlf", "label": "bad", "files": { ".gitattributes": "*.ps1 text eol=crlf\n" } },
+ { "name": "bare text", "label": "bad", "files": { ".gitattributes": "*.sh text\n" } },
+ { "name": "crlf attribute", "label": "bad", "files": { "pkg/.gitattributes": "*.txt crlf\n" } },
+ { "name": "-binary is a rule", "label": "bad", "files": { ".gitattributes": "*.png -binary\n" } },
+ { "name": "second eol on the line", "label": "bad", "files": { ".gitattributes": "*.sh text eol=lf eol=crlf\n" } },
+ { "name": "eol=lf on every rule", "label": "good", "files": { ".gitattributes": "# c\n* text=auto eol=lf\n*.sh text eol=lf\n" } },
+ { "name": "-text and binary stay", "label": "good", "files": { ".gitattributes": "*.bat -text\n*.png binary\n*.lock -crlf\n" } },
+ { "name": "no gitattributes", "label": "good", "files": { "README.md": "hello\n" } },
+ { "name": "unrelated attributes", "label": "good", "files": { ".gitattributes": "*.js linguist-vendored\npackage-lock.json -diff\n" } }
+]

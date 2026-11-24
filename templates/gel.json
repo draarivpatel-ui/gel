@@ -13,6 +13,7 @@
     "repo-health": "report",
     "status-declared": "report",
     "dependabot-config": "report",
+    "gitattributes-eol": "report",
     "release-integrity": "report",
     "five-second-test": "report",
     "agent-readiness": "report",
