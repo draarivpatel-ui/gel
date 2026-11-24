@@ -67,6 +67,15 @@ test("rule 5: CSS without an animation, or without prefers-reduced-motion, fails
   const noMotion = page(body, "<style>.next-cta{animation:spin 3s infinite}</style>");
   assert.match(msgs(await judge({ "index.html": noMotion })), /prefers-reduced-motion/);
 });
+test("rule 5: an animation elsewhere, or animation:none on the class, does not count", async () => {
+  const body = '<h1>X</h1><a class="next-cta" data-next-cta href="#">A</a>';
+  const other = page(body, "<style>.next-cta{border:1px solid red}.pulse{animation:p 1s infinite}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style>");
+  assert.match(msgs(await judge({ "index.html": other })), /no animation/);
+  const none = page(body, "<style>.next-cta{animation:none}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style>");
+  assert.match(msgs(await judge({ "index.html": none })), /no animation/);
+  const noFallback = page(body, "<style>.next-cta{animation:s 1s infinite}@media (prefers-reduced-motion:reduce){.pulse{animation:none}}</style>");
+  assert.match(msgs(await judge({ "index.html": noFallback })), /prefers-reduced-motion/);
+});
 test("rule 5: a linked stylesheet in the repo satisfies the CSS rule", async () => {
   const html = page('<h1>X</h1><a class="next-cta" data-next-cta href="#">A</a>', '<link rel="stylesheet" href="css/app.css">');
   assert.equal((await judge({ "index.html": html, "css/app.css": CSS })).pass, true);
