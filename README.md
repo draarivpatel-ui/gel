@@ -86,6 +86,7 @@ Planted defects are ones the bench inserted itself, so "caught" measures recall 
 | `checks-green`, `deploy-delivered` | another check on the commit is red or says it is misconfigured (a SonarCloud project that does not exist), or a deploy workflow ends green and deployed nothing because a secret is unset |
 | `change-verified`, `perf-budget` | opt-in: the project's own build or tests fail on the PR, no test notices the change (the tests still pass with it reverted), or a named benchmark is slower than its committed baseline. `gel verify` and `gel perf` run the commands |
 | `adr-required`, `status-declared`, `north-star`, `product-brief` | opt-in: you declare a rule or a number in `docs/gel.json`, and GEL checks it |
+| `cta-label` | the first button under a landing page's headline is a bare "Sign in" or "Learn more" (or over 6 words) instead of saying what the visitor gets and that it is free |
 | `five-second-test`, `input-in-viewport`, `agent-readiness`, `ice-score`, `click-map` | a landing page, a phone input, agent-discovery files, an ICE table or a measured click map does not hold up |
 | `queue-merge-group-parity`, `queue-cost-budget`, `queue-main-duplicates`, `queue-required-satisfiable` | a merge queue would stall: a required check with no `merge_group` trigger, a shared concurrency group, a matrix over budget, a duplicate run on main, a ruleset rule nothing can satisfy. `gel queue-ready` scores all twelve items: [docs/queue.md](docs/queue.md) |
 
