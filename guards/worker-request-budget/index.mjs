@@ -18,7 +18,7 @@ export const name = "worker-request-budget";
 
 const WRANGLER = /(^|\/)wrangler\.(toml|jsonc?)$/;
 const SOURCE = /\.(m?[jt]s|[jt]sx)$/;
-const SKIP = /(^|\/)(node_modules|dist|build|tests?|__tests__|\.wrangler)\/|\.(test|spec)\.[jt]s$/;
+const SKIP = /(?:(?:^|\/)(?:node_modules|dist|build|tests?|__tests__|\.wrangler)\/)|(?:\.(?:test|spec)\.[jt]s$)/;
 // A quoted "/mcp" path, which is how a Worker routes its MCP endpoint (app.post("/mcp"), pathname === "/mcp").
 const MCP_ROUTE = /["'`]\/mcp["'`]/;
 
