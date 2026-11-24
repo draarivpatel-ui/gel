@@ -18,9 +18,11 @@ export const name = "worker-request-budget";
 
 const WRANGLER = /(^|\/)wrangler\.(toml|jsonc?)$/;
 const SOURCE = /\.(m?[jt]s|[jt]sx)$/;
-const SKIP = /(^|\/)(node_modules|dist|build|tests?|__tests__|\.wrangler)\/|\.(test|spec)\.[jt]s$/;
+const SKIP = /(?:(?:^|\/)(?:node_modules|dist|build|tests?|__tests__|\.wrangler)\/)|(?:\.(?:test|spec)\.[jt]s$)/;
 // A quoted "/mcp" path, which is how a Worker routes its MCP endpoint (app.post("/mcp"), pathname === "/mcp").
 const MCP_ROUTE = /["'`]\/mcp["'`]/;
+// Comments do not route anything: a guard that merely talks about "/mcp" (GEL's own agent-readiness) is not an MCP server.
+const code = (text) => text.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|\s)\/\/.*$/gm, "$1");
 
 const pct = (x) => `${Math.round(x * 1000) / 10}%`;
 
@@ -30,7 +32,7 @@ export function run({ cfg, files, read, ctx }) {
   const declared = c != null && typeof c === "object";
   const list = files ?? [];
   const hasWrangler = list.some((f) => WRANGLER.test(f));
-  const mcpFile = hasWrangler ? list.find((f) => SOURCE.test(f) && !SKIP.test(f) && MCP_ROUTE.test(read?.(f) ?? "")) : undefined;
+  const mcpFile = hasWrangler ? list.find((f) => SOURCE.test(f) && !SKIP.test(f) && MCP_ROUTE.test(code(read?.(f) ?? ""))) : undefined;
   if (!declared && !mcpFile) return { pass: true, findings: [] };
   const findings = [];
   const at = (message) => findings.push({ file: "docs/gel.json", line: 0, message: `worker request budget: ${message}` });

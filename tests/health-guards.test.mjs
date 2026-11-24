@@ -67,3 +67,18 @@ test("gitattributes-eol fails text=auto and passes eol=lf, -text and binary", as
   assert.equal(judge("*.ps1 text eol=crlf\n").pass, false);
   assert.equal(judge("* text=auto eol=lf\n*.bat -text\n*.png binary\n").pass, true);
 });
+
+test("cta-label judges the first button under the h1, offline and rendered", async () => {
+  const m = await import("../guards/cta-label/index.mjs");
+  const page = (btn) => `<html><body><h1>Chat</h1><p>Ask anything.</p>${btn}</body></html>`;
+  const judge = (btn, cfg = {}) => m.run({ files: ["index.html"], cfg, read: () => page(btn) }).pass;
+  assert.equal(judge('<a href="#">Get a free API key</a>'), true);
+  assert.equal(judge('<a href="#">Start free with GitHub</a>'), true);
+  assert.equal(judge('<a href="#">Sign in</a>'), false);
+  assert.equal(judge('<a href="#">Sign in with GitHub</a>'), false);
+  assert.equal(judge(""), true);
+  const rendered = { five_second: { rendered: {} } };
+  const run = (html) => m.run({ files: ["bench/five-second.json"], cfg: rendered, read: () => JSON.stringify({ entries: [{ page: "p", html }] }) });
+  assert.equal(run(page("<button>Sign in with GitHub</button>")).pass, false);
+  assert.equal(run(page("<button>Start free with GitHub</button>")).pass, true);
+});

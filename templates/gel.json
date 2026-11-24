@@ -16,6 +16,7 @@
     "gitattributes-eol": "report",
     "release-integrity": "report",
     "five-second-test": "report",
+    "cta-label": "report",
     "agent-readiness": "report",
     "north-star": "report",
     "product-brief": "report",
