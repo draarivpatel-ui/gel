@@ -1,0 +1,128 @@
+[
+ {
+  "name": "console.log with error.message",
+  "label": "bad",
+  "files": {
+   "src/a.ts": "try { go(); } catch (error) {\n  console.log(`failed: ${error.message}`);\n}\n"
+  }
+ },
+ {
+  "name": "console.error with err.message",
+  "label": "bad",
+  "files": {
+   "src/a.mjs": "catch (err) { console.error('x: ' + err.message); }\n"
+  }
+ },
+ {
+  "name": "log() with request body",
+  "label": "bad",
+  "files": {
+   "src/h.js": "log(`got ${req.body.name}`);\n"
+  }
+ },
+ {
+  "name": "core.warning with e.message",
+  "label": "bad",
+  "files": {
+   "src/a.cjs": "core.warning(`bad: ${e.message}`);\n"
+  }
+ },
+ {
+  "name": "workflow annotation with event title",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: echo \"::warning::PR ${{ github.event.pull_request.title }} is odd\"\n"
+  }
+ },
+ {
+  "name": "workflow error with head_ref",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: echo \"::error::branch ${{ github.head_ref }}\"\n"
+  }
+ },
+ {
+  "name": "shell annotation with $MESSAGE",
+  "label": "bad",
+  "files": {
+   "scripts/x.sh": "#!/usr/bin/env bash\necho \"::error::$MESSAGE\"\n"
+  }
+ },
+ {
+  "name": "replace strips line breaks",
+  "label": "good",
+  "files": {
+   "src/a.ts": "console.log(`failed: ${error.message.replace(/[\\r\\n]+/g, ' ')}`);\n"
+  }
+ },
+ {
+  "name": "sanitize helper",
+  "label": "good",
+  "files": {
+   "src/a.ts": "console.log(`failed: ${sanitize(error.message)}`);\n"
+  }
+ },
+ {
+  "name": "JSON.stringify",
+  "label": "good",
+  "files": {
+   "src/a.ts": "console.log(JSON.stringify({ msg: error.message }));\n"
+  }
+ },
+ {
+  "name": "static log line",
+  "label": "good",
+  "files": {
+   "src/a.ts": "console.log('started');\n"
+  }
+ },
+ {
+  "name": "error.message not logged",
+  "label": "good",
+  "files": {
+   "src/a.ts": "return new Response(error.message, { status: 500 });\n"
+  }
+ },
+ {
+  "name": "annotation with a fixed text",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: echo \"::error::build failed\"\n"
+  }
+ },
+ {
+  "name": "annotation, newlines stripped",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: echo \"::error::$(echo \\\"$MESSAGE\\\" | tr -d '\\\\r\\\\n')\"\n"
+  }
+ },
+ {
+  "name": "test file is skipped",
+  "label": "good",
+  "files": {
+   "src/a.test.ts": "console.log(error.message);\n"
+  }
+ },
+ {
+  "name": "comment line",
+  "label": "good",
+  "files": {
+   "src/a.ts": "// console.log(error.message)\n"
+  }
+ },
+ {
+  "name": "frozen in baseline",
+  "label": "good",
+  "files": {
+   "src/a.ts": "console.log(error.message);\n"
+  },
+  "cfg": {
+   "log_injection": {
+    "baseline": {
+     "src/a.ts": 1
+    }
+   }
+  }
+ }
+]
