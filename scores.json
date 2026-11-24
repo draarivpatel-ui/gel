@@ -416,5 +416,49 @@
   "falseBlocks": 0,
   "wrong": [],
   "ok": true
+ },
+ {
+  "guard": "install-ignore-scripts",
+  "cases": 21,
+  "good": 11,
+  "bad": 10,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
+  "guard": "curl-https-only",
+  "cases": 13,
+  "good": 8,
+  "bad": 5,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
+  "guard": "log-injection",
+  "cases": 17,
+  "good": 10,
+  "bad": 7,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
+  "guard": "workflow-checkout-safety",
+  "cases": 12,
+  "good": 6,
+  "bad": 6,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
  }
 ]
