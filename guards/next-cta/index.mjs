@@ -50,7 +50,20 @@ function splitMotion(css) {
   }
   return { rest: rest + css.slice(i), motion };
 }
-const blocks = (css) => [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1], body: m[2] }));
+// Innermost "selector { body }" pairs in one pass (no regex backtracking): a "{" closed by the next "}" with no brace between.
+const blocks = (css) => {
+  const out = [];
+  let start = 0, open = -1;
+  for (let i = 0; i < css.length; i++) {
+    const ch = css[i];
+    if (ch === "{") open = i;
+    else if (ch === "}") {
+      if (open >= start) out.push({ sel: css.slice(start, open), body: css.slice(open + 1, i) });
+      start = i + 1; open = -1;
+    }
+  }
+  return out;
+};
 const hasClass = (sel, cls) => new RegExp(`\\.${esc(cls)}(?![\\w-])`).test(sel);
 
 export function checkCss(css, at, { cls }) {
