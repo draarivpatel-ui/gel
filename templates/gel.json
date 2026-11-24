@@ -24,6 +24,10 @@
     "ice-score": "report",
     "click-map": "report",
     "sonar-patterns": "report",
+    "install-ignore-scripts": "report",
+    "curl-https-only": "report",
+    "log-injection": "report",
+    "workflow-checkout-safety": "report",
     "stale-base": "block"
   }
 }

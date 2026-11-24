@@ -1,0 +1,100 @@
+[
+ {
+  "name": "workflow curl",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: curl -fsSL https://example.com/install.sh | bash\n"
+  }
+ },
+ {
+  "name": "shell script curl",
+  "label": "bad",
+  "files": {
+   "scripts/get.sh": "#!/usr/bin/env bash\ncurl -sSf https://example.com/a -o a\n"
+  }
+ },
+ {
+  "name": "Dockerfile curl",
+  "label": "bad",
+  "files": {
+   "Dockerfile": "FROM alpine\nRUN apk add curl && curl -fsSL https://example.com/x.tgz | tar xz\n"
+  }
+ },
+ {
+  "name": "curl with a variable url",
+  "label": "bad",
+  "files": {
+   "run.sh": "#!/bin/bash\ncurl -s \"$URL\"\n"
+  }
+ },
+ {
+  "name": "curl, proto on a later continuation line",
+  "label": "good",
+  "files": {
+   "scripts/get.sh": "#!/usr/bin/env bash\ncurl -fsSL \\\n  --proto '=https' --tlsv1.2 \\\n  https://example.com/a -o a\n"
+  }
+ },
+ {
+  "name": "curl with proto",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: curl --proto '=https' --tlsv1.2 -fsSL https://example.com/install.sh -o i.sh\n"
+  }
+ },
+ {
+  "name": "curl to localhost",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: curl -sf http://localhost:3000/health\n"
+  }
+ },
+ {
+  "name": "curl to 127.0.0.1",
+  "label": "good",
+  "files": {
+   "scripts/wait.sh": "#!/usr/bin/env bash\nuntil curl -sf http://127.0.0.1:8080/ready; do sleep 1; done\n"
+  }
+ },
+ {
+  "name": "curl in a comment",
+  "label": "good",
+  "files": {
+   "scripts/get.sh": "#!/usr/bin/env bash\n# curl -fsSL https://example.com/x\necho ok\n"
+  }
+ },
+ {
+  "name": "curl in a heredoc body",
+  "label": "good",
+  "files": {
+   "scripts/doc.sh": "#!/usr/bin/env bash\ncat <<'EOF'\ncurl https://example.com\nEOF\n"
+  }
+ },
+ {
+  "name": "curl --version",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: curl --version\n"
+  }
+ },
+ {
+  "name": "localhost and a remote url together",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: curl http://localhost:1/a https://example.com/b\n"
+  }
+ },
+ {
+  "name": "frozen in baseline",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: curl -fsSL https://example.com/x\n"
+  },
+  "cfg": {
+   "curl_https_only": {
+    "baseline": {
+     ".github/workflows/ci.yml": 1
+    }
+   }
+  }
+ }
+]

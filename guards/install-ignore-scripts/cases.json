@@ -1,0 +1,163 @@
+[
+ {
+  "name": "bun install",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: bun install --frozen-lockfile\n"
+  }
+ },
+ {
+  "name": "npm ci",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm ci\n"
+  }
+ },
+ {
+  "name": "npm install",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm install\n"
+  }
+ },
+ {
+  "name": "pnpm install",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: pnpm install --frozen-lockfile\n"
+  }
+ },
+ {
+  "name": "yarn install",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: yarn install --immutable\n"
+  }
+ },
+ {
+  "name": "install after cd and &&",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: cd cli && npm ci && npm test\n"
+  }
+ },
+ {
+  "name": "npx unpinned",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npx wrangler deploy\n"
+  }
+ },
+ {
+  "name": "bunx unpinned",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: bunx prettier --check .\n"
+  }
+ },
+ {
+  "name": "composite action install",
+  "label": "bad",
+  "files": {
+   ".github/actions/setup/action.yml": "runs:\n  using: composite\n  steps:\n    - run: npm ci\n      shell: bash\n"
+  }
+ },
+ {
+  "name": "bun install ignore-scripts",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: bun install --frozen-lockfile --ignore-scripts\n"
+  }
+ },
+ {
+  "name": "npm ci ignore-scripts",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm ci --ignore-scripts\n"
+  }
+ },
+ {
+  "name": "global install",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm install -g wrangler\n"
+  }
+ },
+ {
+  "name": "npx pinned",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npx wrangler@3.50.0 deploy\n"
+  }
+ },
+ {
+  "name": "npx scoped pinned",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npx @biomejs/biome@1.9.4 check .\n"
+  }
+ },
+ {
+  "name": "npx no-install",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npx --no-install tsc --noEmit\n"
+  }
+ },
+ {
+  "name": "bunx pinned",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: bunx prettier@3.3.0 --check .\n"
+  }
+ },
+ {
+  "name": "commented install",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: echo hi # npm ci\n"
+  }
+ },
+ {
+  "name": "npm test is not an install",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm test\n"
+  }
+ },
+ {
+  "name": "install outside workflows is ignored",
+  "label": "good",
+  "files": {
+   "scripts/setup.sh": "#!/usr/bin/env bash\nnpm ci\n"
+  }
+ },
+ {
+  "name": "frozen in baseline",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm ci\n"
+  },
+  "cfg": {
+   "install_ignore_scripts": {
+    "baseline": {
+     ".github/workflows/ci.yml": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "over the baseline",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - run: npm ci\n      - run: bun install\n"
+  },
+  "cfg": {
+   "install_ignore_scripts": {
+    "baseline": {
+     ".github/workflows/ci.yml": 1
+    }
+   }
+  }
+ }
+]

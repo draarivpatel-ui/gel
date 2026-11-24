@@ -1,0 +1,93 @@
+[
+ {
+  "name": "workflow_run checkout, no persist-credentials",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: \n  workflow_run:\n    workflows: [CI]\n    types: [completed]\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n"
+  }
+ },
+ {
+  "name": "pull_request_target checkout, no persist-credentials",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: pull_request_target\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n"
+  }
+ },
+ {
+  "name": "workflow_run checks out the head sha",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: \n  workflow_run:\n    workflows: [CI]\n    types: [completed]\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n        with:\n          persist-credentials: false\n          ref: ${{ github.event.workflow_run.head_sha }}\n"
+  }
+ },
+ {
+  "name": "pull_request_target checks out the PR head",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: pull_request_target\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n        with:\n          persist-credentials: false\n          ref: ${{ github.event.pull_request.head.sha }}\n"
+  }
+ },
+ {
+  "name": "pull_request_target with refs/pull",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: pull_request_target\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n        with:\n          ref: refs/pull/${{ github.event.number }}/merge\n"
+  }
+ },
+ {
+  "name": "workflow_run, persist-credentials false",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: \n  workflow_run:\n    workflows: [CI]\n    types: [completed]\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n        with:\n          persist-credentials: false\n"
+  }
+ },
+ {
+  "name": "pull_request_target, base checkout, persist false",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: pull_request_target\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n        with:\n          persist-credentials: false\n          ref: ${{ github.event.pull_request.base.sha }}\n"
+  }
+ },
+ {
+  "name": "push workflow needs no flag",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n"
+  }
+ },
+ {
+  "name": "pull_request workflow needs no flag",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: pull_request\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n"
+  }
+ },
+ {
+  "name": "two steps, only the second is bad",
+  "label": "bad",
+  "files": {
+   ".github/workflows/ci.yml": "on: pull_request_target\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n        with:\n          persist-credentials: false\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n"
+  }
+ },
+ {
+  "name": "trigger only in a comment",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: push # workflow_run later\njobs:\n  t:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n"
+  }
+ },
+ {
+  "name": "frozen in baseline",
+  "label": "good",
+  "files": {
+   ".github/workflows/ci.yml": "on: pull_request_target\njobs:\n  t:\n    runs-on: ubuntu-latest\n    timeout-minutes: 5\n    steps:\n      - uses: actions/checkout@0123456789abcdef0123456789abcdef01234567\n"
+  },
+  "cfg": {
+   "workflow_checkout_safety": {
+    "baseline": {
+     ".github/workflows/ci.yml": 1
+    }
+   }
+  }
+ }
+]
