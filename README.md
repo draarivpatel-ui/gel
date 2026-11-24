@@ -108,6 +108,7 @@ Optional. GEL runs on any repo without a config file, with every guard in `repor
 - `report` writes findings and never fails the job. `block` fails it. Promote a guard once its run records show it was right.
 - `trusted_owners` may use their actions by tag. Your own org is always trusted.
 - A top-level `"mode": "report"` keeps every guard advisory, whatever the per-guard level says.
+- A top-level `"mode": "block"` is the level of every guard the file does not list, so a guard added in a later GEL version blocks too. List a guard as `report` or `off` to opt it out.
 
 ### The level does not make GEL find more
 

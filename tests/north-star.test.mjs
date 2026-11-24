@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { GUARD_NAMES } from "../lib/guards.mjs";
 
 const gel = join(import.meta.dirname, "..", "bin", "gel.mjs");
 function repo(value) {
@@ -11,7 +12,7 @@ function repo(value) {
   mkdirSync(join(d, "bench"));
   writeFileSync(join(d, "bench", "README.md"), "how\n");
   writeFileSync(join(d, "bench", "m.mjs"), `console.log(JSON.stringify({ value: ${value}, baseline: 26.1, unit: "s" }))\n`);
-  mkdirSync(join(d, "docs"), { recursive: true }); writeFileSync(join(d, "docs", "gel.json"), JSON.stringify({ mode: "block", guards: { "north-star": "block" }, north_star: { metric: "first start to healthy", baseline: "Docker Compose", target: { ratio: 8, better: "lower" }, result: "bench/north-star.json", evidence: "bench/README.md", measure: "node bench/m.mjs" } }));
+  mkdirSync(join(d, "docs"), { recursive: true }); writeFileSync(join(d, "docs", "gel.json"), JSON.stringify({ mode: "block", guards: { ...Object.fromEntries(GUARD_NAMES.map((g) => [g, "off"])), "north-star": "block" }, north_star: { metric: "first start to healthy", baseline: "Docker Compose", target: { ratio: 8, better: "lower" }, result: "bench/north-star.json", evidence: "bench/README.md", measure: "node bench/m.mjs" } }));
   return d;
 }
 const gelRun = (args) => spawnSync(process.execPath, [gel, ...args], { encoding: "utf8" });

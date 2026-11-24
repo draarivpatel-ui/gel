@@ -6,6 +6,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFileSync, spawnSync } from "node:child_process";
+import { GUARD_NAMES } from "../lib/guards.mjs";
 import { newerResult } from "../lib/north-star-branch.mjs";
 
 const gel = join(import.meta.dirname, "..", "bin", "gel.mjs");
@@ -22,7 +23,7 @@ function repo(committed) {
   writeFileSync(join(d, "bench", "README.md"), "how\n");
   writeFileSync(join(d, "bench", "value"), "2.5");
   writeFileSync(join(d, "bench", "m.mjs"), `import { readFileSync } from "node:fs"; console.log(JSON.stringify({ value: Number(readFileSync("bench/value", "utf8")), baseline: 26.1, unit: "s" }))\n`);
-  writeFileSync(join(d, "docs", "gel.json"), JSON.stringify({ mode: "block", guards: { "north-star": "block" }, north_star: { metric: "first start to healthy", baseline: "Docker Compose", target: { ratio: 8, better: "lower" }, result: "bench/north-star.json", evidence: "bench/README.md", measure: "node bench/m.mjs" } }));
+  writeFileSync(join(d, "docs", "gel.json"), JSON.stringify({ mode: "block", guards: { ...Object.fromEntries(GUARD_NAMES.map((g) => [g, "off"])), "north-star": "block" }, north_star: { metric: "first start to healthy", baseline: "Docker Compose", target: { ratio: 8, better: "lower" }, result: "bench/north-star.json", evidence: "bench/README.md", measure: "node bench/m.mjs" } }));
   if (committed) writeFileSync(join(d, "bench", "north-star.json"), JSON.stringify(committed));
   git(d, "add", "-A"); git(d, "commit", "-qm", "init"); git(d, "push", "-q", "origin", "HEAD");
   return d;

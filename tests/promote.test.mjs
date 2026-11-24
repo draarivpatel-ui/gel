@@ -34,7 +34,7 @@ test("a promotion under mode report carries a warning", () => {
 test("gel promote --write edits docs/gel.json from records and labels", () => {
   const d = mkdtempSync(join(tmpdir(), "promo-"));
   mkdirSync(join(d, "docs"));
-  writeFileSync(join(d, "docs", "gel.json"), JSON.stringify({ mode: "block", guards: {} }));
+  writeFileSync(join(d, "docs", "gel.json"), JSON.stringify({ mode: "block", guards: { "secret-scan": "report" } }));
   const rec = (i) => JSON.stringify({ repo: "o/r", sha: "s" + i, lane: "B", needsPerson: false, ms: 40, blocked: [], results: [{ guard: "secret-scan", level: "report", pass: i >= 5, findings: i < 5 ? 1 : 0, top: i < 5 ? [{ file: `src/k${i}.js`, line: 3, message: "AWS key" }] : [] }] });
   writeFileSync(join(d, "r.jsonl"), Array.from({ length: 20 }, (_, i) => rec(i)).join("\n") + "\n");
   writeFileSync(join(d, "labels.json"), JSON.stringify(Array.from({ length: 5 }, (_, i) => ({ guard: "secret-scan", file: `src/k${i}.js`, line: 3, verdict: "real" }))));
