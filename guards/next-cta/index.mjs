@@ -36,11 +36,30 @@ export function checkMarkup(html, at, { cls }) {
   return clean;
 }
 
+// Split CSS into the parts inside @media (prefers-reduced-motion ...) { } and the rest, so "animation:none" in the
+// fallback cannot satisfy the "it spins" rule. Brace-matched, no CSS parser.
+function splitMotion(css) {
+  let rest = "", motion = "", i = 0;
+  for (const m of css.matchAll(/@media[^{]*prefers-reduced-motion[^{]*\{/gi)) {
+    if (m.index < i) continue;
+    rest += css.slice(i, m.index);
+    let depth = 1, j = m.index + m[0].length;
+    while (j < css.length && depth > 0) depth += css[j] === "{" ? 1 : css[j] === "}" ? -1 : 0, j++;
+    motion += css.slice(m.index + m[0].length, j - 1);
+    i = j;
+  }
+  return { rest: rest + css.slice(i), motion };
+}
+const blocks = (css) => [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1], body: m[2] }));
+const hasClass = (sel, cls) => new RegExp(`\\.${esc(cls)}(?![\\w-])`).test(sel);
+
 export function checkCss(css, at, { cls }) {
-  const rule = new RegExp(`\\.${esc(cls)}(?![\\w-])`);
-  if (!rule.test(css)) { at(`the page defines no CSS for .${cls}: copy docs/next-cta.css (animated border plus a prefers-reduced-motion fallback)`); return; }
-  if (!/animation\s*:|animation-name\s*:/i.test(css)) at(`the CSS for .${cls} has no animation: the border must spin`);
-  if (!/prefers-reduced-motion/i.test(css)) at("the CSS has no prefers-reduced-motion rule: give people who turn motion off a static border");
+  const { rest, motion } = splitMotion(css.replace(/\/\*[\s\S]*?\*\//g, ""));
+  if (!blocks(rest).some((b) => hasClass(b.sel, cls)) && !blocks(motion).some((b) => hasClass(b.sel, cls))) { at(`the page defines no CSS for .${cls}: copy docs/next-cta.css (animated border plus a prefers-reduced-motion fallback)`); return; }
+  // An animation on the class itself, outside the reduced-motion block, that is not "none".
+  const spins = blocks(rest).some((b) => hasClass(b.sel, cls) && /animation(?:-name)?\s*:\s*(?!none\b)[^;}\s]/i.test(b.body));
+  if (!spins) at(`the CSS for .${cls} has no animation (animation:none and animations on other classes do not count): the border must spin`);
+  if (!blocks(motion).some((b) => hasClass(b.sel, cls))) at(`the CSS has no prefers-reduced-motion rule for .${cls}: give people who turn motion off a static border`);
 }
 
 function pageCss(html, file, files, read) {
