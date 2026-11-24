@@ -29,6 +29,19 @@ export function checkFirstScreen(html, at, { maxH1, maxLead, jargon }) {
   if (!/<(?:a|button)\b[^>]*>/i.test(after.slice(0, 2500))) at("no link or button right under the headline: tell the visitor what to do next");
 }
 
+// The first link or button under the first <h1>, looked up the same way the "no button" rule does (open tag within
+// 2500 chars of the headline). Returns { tag, inner } or null. The cta-label guard judges its visible label.
+export function firstControl(html) {
+  const h1 = /<h1\b[^>]*>[\s\S]*?<\/h1>/i.exec(html);
+  if (!h1) return null;
+  const after = html.slice(h1.index + h1[0].length);
+  const open = /<(a|button)\b[^>]*>/i.exec(after.slice(0, 2500));
+  if (!open) return null;
+  const rest = after.slice(open.index + open[0].length);
+  const close = new RegExp(`</${open[1]}\\s*>`, "i").exec(rest);
+  return { tag: open[1].toLowerCase(), inner: close ? rest.slice(0, close.index) : rest.slice(0, 200) };
+}
+
 export function run({ root, files, cfg, read, ctx }) {
   const c = cfg?.five_second ?? {};
   const opts = { maxH1: c.max_h1_words ?? 12, maxLead: c.max_lead_words ?? 32, jargon: new RegExp(`\\b(?:${(c.jargon ?? JARGON).join("|")})\\b`, "i") };

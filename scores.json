@@ -187,6 +187,17 @@
   "ok": true
  },
  {
+  "guard": "cta-label",
+  "cases": 21,
+  "good": 10,
+  "bad": 11,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
   "guard": "agent-readiness",
   "cases": 35,
   "good": 12,

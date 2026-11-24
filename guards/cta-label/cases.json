@@ -1,0 +1,187 @@
+[
+ {
+  "name": "get a free api key",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Get a free API key</a></body></html>"
+  }
+ },
+ {
+  "name": "start free with github",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Start free with GitHub</a></body></html>"
+  }
+ },
+ {
+  "name": "free inside a longer sign-in label",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Sign in with GitHub, free</a></body></html>"
+  }
+ },
+ {
+  "name": "concrete verb and object",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><button>Try the demo</button></body></html>"
+  }
+ },
+ {
+  "name": "tags and entities inside the label",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\"><span>Start&nbsp;free</span> <b>with GitHub</b> &rarr;</a></body></html>"
+  }
+ },
+ {
+  "name": "no button is left to five-second-test",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p></body></html>"
+  }
+ },
+ {
+  "name": "no h1 is left to five-second-test",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><p>hi</p><a href=x>Sign in</a></body></html>"
+  }
+ },
+ {
+  "name": "icon-only link has no label to judge",
+  "label": "good",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\"><svg><path d=\"M0\"/></svg></a></body></html>"
+  }
+ },
+ {
+  "name": "bare sign in",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Sign in</a></body></html>"
+  }
+ },
+ {
+  "name": "sign in with github has no free",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Sign in with GitHub</a></body></html>"
+  }
+ },
+ {
+  "name": "bare get started",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Get started</a></body></html>"
+  }
+ },
+ {
+  "name": "learn more in caps",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">LEARN MORE &rarr;</a></body></html>"
+  }
+ },
+ {
+  "name": "button submit",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><button type=\"submit\">Submit</button></body></html>"
+  }
+ },
+ {
+  "name": "continue with google",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Continue with Google</a></body></html>"
+  }
+ },
+ {
+  "name": "label over six words",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Get your free key and start building today</a></body></html>"
+  }
+ },
+ {
+  "name": "custom banned phrase",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Join the waitlist</a></body></html>"
+  },
+  "cfg": {
+   "cta_label": {
+    "banned": [
+     "join the waitlist"
+    ]
+   }
+  }
+ },
+ {
+  "name": "custom max words",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Start free with GitHub</a></body></html>"
+  },
+  "cfg": {
+   "cta_label": {
+    "max_words": 3
+   }
+  }
+ },
+ {
+  "name": "custom pages",
+  "label": "bad",
+  "files": {
+   "web/home.html": "<html><body><h1>Run your AI for free.</h1><p>Get a free key in one minute.</p><a href=\"#k\">Sign in</a></body></html>"
+  },
+  "cfg": {
+   "cta_label": {
+    "pages": [
+     "web/home.html"
+    ]
+   }
+  }
+ },
+ {
+  "name": "rendered good",
+  "label": "good",
+  "files": {
+   "bench/five-second.json": "{\"measuredAt\": \"2026-11-01T00:00:00Z\", \"entries\": [{\"page\": \"https://x.example/\", \"width\": 375, \"height\": 812, \"html\": \"<h1>Chat free</h1><p>Ask anything.</p><a>Start free with GitHub</a>\"}]}"
+  },
+  "cfg": {
+   "five_second": {
+    "rendered": {
+     "result": "bench/five-second.json"
+    }
+   }
+  }
+ },
+ {
+  "name": "rendered sign in only",
+  "label": "bad",
+  "files": {
+   "bench/five-second.json": "{\"measuredAt\": \"2026-11-01T00:00:00Z\", \"entries\": [{\"page\": \"https://x.example/\", \"width\": 375, \"height\": 812, \"html\": \"<h1>Chat free</h1><p>Ask anything.</p><button>Sign in with GitHub</button>\"}]}"
+  },
+  "cfg": {
+   "five_second": {
+    "rendered": {
+     "result": "bench/five-second.json"
+    }
+   }
+  }
+ },
+ {
+  "name": "rendered measurement missing is left to five-second-test",
+  "label": "good",
+  "files": {},
+  "cfg": {
+   "five_second": {
+    "rendered": {
+     "result": "bench/five-second.json"
+    }
+   }
+  }
+ }
+]
