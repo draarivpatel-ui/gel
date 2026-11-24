@@ -81,6 +81,7 @@ Planted defects are ones the bench inserted itself, so "caught" measures recall 
 | `release-integrity` | a release has a non-SemVer tag, no CHANGELOG entry, a red check or assets without checksums |
 | `repo-health` | the repo has no LICENSE, SECURITY.md, CONTRIBUTING.md or CODEOWNERS |
 | `dependabot-config` | an ecosystem in use is not covered by Dependabot or Renovate |
+| `gitattributes-eol` | a `.gitattributes` line-ending rule has no `eol=lf` as its only eol setting (the Claude plugin directory refuses the repo) |
 | `sonar-patterns` | a bash script tests with `[ ]` instead of `[[ ]]`, or a non-test `.ts` file has a backtracking-prone regex (the two SonarCloud findings that keep coming back). Existing hits are frozen in `docs/gel.json` under `sonar_patterns.baseline` (file to count); a file may only get cleaner |
 | `checks-green`, `deploy-delivered` | another check on the commit is red or says it is misconfigured (a SonarCloud project that does not exist), or a deploy workflow ends green and deployed nothing because a secret is unset |
 | `change-verified`, `perf-budget` | opt-in: the project's own build or tests fail on the PR, no test notices the change (the tests still pass with it reverted), or a named benchmark is slower than its committed baseline. `gel verify` and `gel perf` run the commands |
