@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const GUARDS = ["repo-health", "status-declared", "dependabot-config"];
+const GUARDS = ["repo-health", "status-declared", "dependabot-config", "gitattributes-eol"];
 
 for (const g of GUARDS) {
   test(`${g} imports nothing from node`, () => {
@@ -58,4 +58,12 @@ test("adr-required needs a NEW file with the sections, and only where paths are 
   assert.equal(m.run({ changes: [code, adr], cfg, read: () => full }).pass, true);
   assert.equal(m.run({ changes: [code, adr], cfg, read: () => "# X\n## Context\n" }).pass, false);
   assert.equal(m.run({ changes: [code], cfg: {}, read: () => null }).pass, true);
+});
+
+test("gitattributes-eol fails text=auto and passes eol=lf, -text and binary", async () => {
+  const m = await import("../guards/gitattributes-eol/index.mjs");
+  const judge = (body) => m.run({ files: [".gitattributes"], cfg: {}, read: () => body });
+  assert.equal(judge("* text=auto\n").pass, false);
+  assert.equal(judge("*.ps1 text eol=crlf\n").pass, false);
+  assert.equal(judge("* text=auto eol=lf\n*.bat -text\n*.png binary\n").pass, true);
 });
