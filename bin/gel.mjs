@@ -23,6 +23,7 @@ import { collectRelease } from "../lib/release-ctx.mjs";
 import { collectHistory } from "../lib/history.mjs";
 import { run as northStar, ratioOf } from "../guards/north-star/index.mjs";
 import { measure as measureInput } from "../lib/input-viewport.mjs";
+import { measure as measureWorkers } from "../lib/worker-usage.mjs";
 import { run as productBrief, briefRows } from "../guards/product-brief/index.mjs";
 import { judge as judgeClicks, limits as clickLimits } from "../guards/click-map/index.mjs";
 import { measure as measureClicks } from "../lib/click-map.mjs";
@@ -369,6 +370,19 @@ async function main() {
     }
     process.exit(v.problems.length ? 1 : 0);
   }
+  if (cmd === "worker-usage") {
+    // gel worker-usage --account <id> [--day 1] [--limit 100000] [--tool-calls citable=100,flisk-tools=40] [--write bench/worker-usage.json] [--json]
+    // Requests per Worker script for one UTC day (default yesterday) from Cloudflare analytics. Exit 1 when one script or the account crosses the free-plan budget.
+    if (!opt("account")) { console.log("usage: gel worker-usage --account <id> [--day 1] [--limit 100000] [--tool-calls script=n,..] [--write bench/worker-usage.json] [--json] (CLOUDFLARE_API_TOKEN)"); process.exit(2); }
+    const toolCalls = Object.fromEntries((opt("tool-calls", "") || "").split(",").filter(Boolean).map((p) => { const [k, v] = p.split("="); return [k, Number(v)]; }));
+    let result;
+    try { result = await measureWorkers({ account: opt("account"), dayOffset: Number(opt("day", "1")), dailyLimit: Number(opt("limit", "100000")), toolCalls }); } catch (e) { console.error(`gel worker-usage: ${e.message}`); process.exit(2); }
+    if (opt("write")) writeFileSync(resolve(opt("write")), JSON.stringify(result, null, 1) + "\n");
+    const total = result.scripts.reduce((a, s) => a + s.requests, 0);
+    if (args.includes("--json")) console.log(JSON.stringify({ ...result, total }));
+    else { console.log(`${result.day}: ${total} of ${result.dailyLimit} requests`); for (const s of result.scripts.slice(0, 10)) console.log(`  ${String(s.requests).padStart(7)}  ${s.script}${s.toolCalls != null ? `  (${s.toolCalls} tool calls)` : ""}`); }
+    process.exit(result.scripts.some((s) => s.requests / result.dailyLimit > 0.25) || total / result.dailyLimit > 0.6 ? 1 : 0);
+  }
   if (cmd === "five-second") {
     // gel five-second (--url https://site | --file index.html) [--size 375x812] [--merge] [--write bench/five-second.json] [--json]
     const target = opt("url") ?? opt("file");
@@ -424,7 +438,7 @@ async function main() {
     if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, [`lane=${plan.lane}`, `lane_reason=${plan.reason}`, `scripts=${plan.scripts.join(" ")}`, `python_tests=${plan.pythonTests}`, `codeql=${plan.codeql}`].join("\n") + "\n");
     process.exit(0);
   }
-  if (cmd !== "run") { console.log("usage: gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run] | gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel verify [--root .] [--base <sha>] [--ctx ctx.json] | gel perf [--root .] [--ctx ctx.json] [--update-baseline] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions|sonar-patterns [--root .] [--repo owner/name] [--max-files 15] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
+  if (cmd !== "run") { console.log("usage: gel init [--root .] [--mode block|report] [--strict] [--force] [--dry-run] | gel queue-ready [--root .] [--repo o/n | --snapshot queue.json] [--json] | gel five-second (--url u | --file f) [--write f] | gel click-map (--url u | --file f) [--merge] [--write f] | gel input-viewport (--url u | --file f) [--size WxH,..] [--write f] | gel worker-usage --account id [--day 1] [--tool-calls s=n,..] [--write f] | gel north-star [--root .] [--measure] [--json] | gel brief [--root .] [--json] | gel lane [--root .] [--base <sha>] [--min A|B|C] [--json] | gel verify [--root .] [--base <sha>] [--ctx ctx.json] | gel perf [--root .] [--ctx ctx.json] [--update-baseline] | gel run [--root .] [--base <sha>] [--ctx ctx.json] [--record gel-record.jsonl] | gel selftest [--json] | gel factory (<prs.json> | --repo o/n [--limit 100]) [--json] | gel promote <gel-record.jsonl ...> [--labels f] [--root .] [--write] [--json] | gel metrics <gel-record.jsonl ...> [--labels gel-labels.json] [--json] | gel eval [selftest|collect --repo o/n] [--only a,b] [--runs runs.json] [--baseline b.json] [--record f] [--strict] [--json] | gel meta <gel-record.jsonl ...> [--evals f] [--outcomes f] | gel meta selftest | gel fix pinned-actions|sonar-patterns [--root .] [--repo owner/name] [--max-files 15] [--json] | gel release-ctx --repo owner/name --tag v1.2.3 [--sha s] [--phase pre|post]"); process.exit(2); }
 
   const root = resolve(opt("root", "."));
   const cfg = loadConfig(root);

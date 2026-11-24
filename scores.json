@@ -372,5 +372,16 @@
   "falseBlocks": 0,
   "wrong": [],
   "ok": true
+ },
+ {
+  "guard": "worker-request-budget",
+  "cases": 12,
+  "good": 6,
+  "bad": 6,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
  }
 ]
