@@ -54,6 +54,28 @@ test("collectChecks does not wait for a check the repo ignores", async () => {
   assert.equal(ctx.checksSettled, true);
 });
 
+test("collectChecks waits for and reports failures on later GitHub pages", async () => {
+  const completed = Array.from({ length: 100 }, (_, i) => ({ name: `test ${i}`, status: "completed", conclusion: "success" }));
+  let waited = false;
+  const get = fake({
+    "/repos/o/r/commits/abc/check-runs": (path) => {
+      const page = new URL(path, "https://api.github.com").searchParams.get("page");
+      const check_runs = page === "2"
+        ? [waited ? { name: "last test", status: "completed", conclusion: "failure" } : { name: "last test", status: "queued" }]
+        : completed;
+      return { total_count: 101, check_runs };
+    },
+    "/repos/o/r/commits/abc/status": { statuses: [] },
+  });
+  const ctx = await collectChecks(get, { repo: "o/r", sha: "abc", sleep: async () => { waited = true; } });
+  assert.equal(ctx.checkRuns.length, 101);
+  assert.equal(waited, true);
+  assert.equal(ctx.checksSettled, true);
+  const result = await (await loadGuard("checks-green")).run({ ctx, cfg: {}, files: [] });
+  assert.equal(result.pass, false);
+  assert.match(result.findings[0].message, /last test: failure/);
+});
+
 test("collectDeployRuns reads the latest deploy run of each workflow with its steps", async () => {
   const get = fake({
     "/repos/o/r/actions/runs/7/jobs": { jobs: [{ name: "deploy", conclusion: "success", steps: [{ name: "Deploy", conclusion: "skipped" }] }] },
