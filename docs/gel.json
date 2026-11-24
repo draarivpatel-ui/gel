@@ -1,6 +1,6 @@
 {
   "mode": "block",
-  "guards": { "north-star": "block", "sonar-patterns": "report" },
+  "guards": { "north-star": "block", "sonar-patterns": "report", "repo-health": "report", "status-declared": "report", "dependabot-config": "report", "product-brief": "report", "public-env-secrets": "report" },
   "north_star": {
     "metric": "planted defects GEL catches (keys, unpinned actions, open workflow tokens, dead links, false 'all green' claims), hard cases included, on 30 public repos",
     "baseline": "the same repos' own CI, counted generously (any named tool counts as catching every defect of its kind)",
