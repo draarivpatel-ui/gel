@@ -1,0 +1,27 @@
+/* next-cta: the one thing a visitor most likely does next gets a spinning rainbow border.
+   Copy this into your site's CSS, then mark exactly one element per page:
+     <a class="next-cta" data-next-cta href="/key">Get a free API key</a>
+   It must be the first link, button or input after the page's <h1>. Colors come from variables:
+   set --next-cta-1 .. --next-cta-3 from your tokens (no raw hex here, so a theme change recolors it).
+   `gel` guard: next-cta. */
+@property --next-cta-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
+.next-cta {
+  --next-cta-1: var(--accent, currentColor);
+  --next-cta-2: var(--accent-2, var(--next-cta-1));
+  --next-cta-3: var(--accent-3, var(--next-cta-2));
+  --next-cta-fill: var(--surface, Canvas);
+  border: 2px solid transparent;
+  border-radius: var(--radius, 8px);
+  background:
+    linear-gradient(var(--next-cta-fill), var(--next-cta-fill)) padding-box,
+    conic-gradient(from var(--next-cta-angle), var(--next-cta-1), var(--next-cta-2), var(--next-cta-3), var(--next-cta-1)) border-box;
+  animation: next-cta-spin 3s linear infinite;
+}
+
+@keyframes next-cta-spin { to { --next-cta-angle: 360deg; } }
+
+/* Motion off: keep the marker, stop the spin. */
+@media (prefers-reduced-motion: reduce) {
+  .next-cta { animation: none; }
+}

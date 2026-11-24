@@ -17,6 +17,7 @@
     "release-integrity": "report",
     "five-second-test": "report",
     "cta-label": "report",
+    "next-cta": "report",
     "agent-readiness": "report",
     "north-star": "report",
     "product-brief": "report",

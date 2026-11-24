@@ -198,6 +198,17 @@
   "ok": true
  },
  {
+  "guard": "next-cta",
+  "cases": 7,
+  "good": 2,
+  "bad": 5,
+  "recall": 1,
+  "precision": 1,
+  "falseBlocks": 0,
+  "wrong": [],
+  "ok": true
+ },
+ {
   "guard": "agent-readiness",
   "cases": 35,
   "good": 12,

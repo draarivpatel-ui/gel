@@ -1,0 +1,51 @@
+[
+ {
+  "name": "one marked first button",
+  "label": "good",
+  "files": {
+   "index.html": "<html><head><style>@property --a{syntax:\"<angle>\";inherits:false;initial-value:0deg}.next-cta{border:2px solid transparent;background:conic-gradient(from var(--a),var(--c1),var(--c2)) border-box;animation:s 3s linear infinite}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style></head><body><h1>Run your AI.</h1><a class=\"next-cta\" data-next-cta href=\"#k\">Get a free API key</a></body></html>"
+  }
+ },
+ {
+  "name": "no h1 is left to five-second-test",
+  "label": "good",
+  "files": {
+   "index.html": "<html><head><style>@property --a{syntax:\"<angle>\";inherits:false;initial-value:0deg}.next-cta{border:2px solid transparent;background:conic-gradient(from var(--a),var(--c1),var(--c2)) border-box;animation:s 3s linear infinite}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style></head><body><a href=\"#\">Go</a></body></html>"
+  }
+ },
+ {
+  "name": "nothing marked",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><head><style>@property --a{syntax:\"<angle>\";inherits:false;initial-value:0deg}.next-cta{border:2px solid transparent;background:conic-gradient(from var(--a),var(--c1),var(--c2)) border-box;animation:s 3s linear infinite}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style></head><body><h1>Run your AI.</h1><a class=\"next-cta\" href=\"#k\">Get a free API key</a></body></html>"
+  }
+ },
+ {
+  "name": "two marked",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><head><style>@property --a{syntax:\"<angle>\";inherits:false;initial-value:0deg}.next-cta{border:2px solid transparent;background:conic-gradient(from var(--a),var(--c1),var(--c2)) border-box;animation:s 3s linear infinite}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style></head><body><h1>Run your AI.</h1><a class=\"next-cta\" data-next-cta href=\"#k\">A</a><a class=\"next-cta\" data-next-cta href=\"#\">B</a></body></html>"
+  }
+ },
+ {
+  "name": "marked without the class",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><head><style>@property --a{syntax:\"<angle>\";inherits:false;initial-value:0deg}.next-cta{border:2px solid transparent;background:conic-gradient(from var(--a),var(--c1),var(--c2)) border-box;animation:s 3s linear infinite}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style></head><body><h1>Run your AI.</h1><a data-next-cta href=\"#k\">Get a free API key</a></body></html>"
+  }
+ },
+ {
+  "name": "marked is not the first control",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><head><style>@property --a{syntax:\"<angle>\";inherits:false;initial-value:0deg}.next-cta{border:2px solid transparent;background:conic-gradient(from var(--a),var(--c1),var(--c2)) border-box;animation:s 3s linear infinite}@media (prefers-reduced-motion:reduce){.next-cta{animation:none}}</style></head><body><h1>Run your AI.</h1><a href=\"#d\">Docs</a><a class=\"next-cta\" data-next-cta href=\"#k\">Get a free API key</a></body></html>"
+  }
+ },
+ {
+  "name": "no CSS for the class",
+  "label": "bad",
+  "files": {
+   "index.html": "<html><body><h1>Run your AI.</h1><a class=\"next-cta\" data-next-cta href=\"#k\">Get a free API key</a></body></html>"
+  }
+ }
+]

@@ -27,6 +27,7 @@ Every guard GEL runs, with the exact rule it fails on. The short list is in the 
 | `release-integrity` | a release whose tag is not SemVer, whose commit is gone or off the default branch, with no CHANGELOG entry, a red or missing check, an earlier failed release run, or assets without checksums (or an SBOM, if required). Feed it `gel release-ctx --repo o/n --tag v1.2.3 > ctx.json`, then `gel run --ctx ctx.json`; it complements the org `release-gate` rather than replacing it |
 | `five-second-test` | the first screen of a landing page (`index.html`, `public/index.html`, `docs/index.html`; set `five_second.pages` to change) cannot be understood in five seconds on a phone: no `<h1>`, a headline over 12 words, a lead over 32 words, jargon such as endpoint, inference or MCP in either, or no link or button under the headline. Offline; tune `max_h1_words`, `max_lead_words` and `jargon` under `five_second`. A page drawn by script has no headline in its source: declare `five_second.rendered` (`result`, `max_age_days`) and commit a measurement from `gel five-second --url <page> --write bench/five-second.json --merge` (headless Chrome at 375x812); the first screen the browser drew is judged by the same rules, counting only what a visitor can see (hidden, transparent, off-screen and screen-reader-only text is dropped), a headline covered by a cookie wall or popup fails, and a missing or stale measurement fails. The offline read cannot see CSS: a page that hides its real headline needs the rendered measurement |
 | `cta-label` | the first `<a>`/`<button>` after the first `<h1>` (same pages and 2500-character lookup as `five-second-test`) says nothing about what the visitor gets: its visible label (tags and entities stripped, lowercased) is a bare generic (`sign in`, `sign up`, `log in`, `login`, `submit`, `continue`, `next`, `go`, `click here`, `learn more`, `read more`, `get started`, `more`, `ok`), starts with `sign in`/`sign up`/`log in`/`login`/`continue` ("Sign in with GitHub"), or is longer than 6 words. A label containing the word `free` passes the generic check ("Start free with GitHub", "Get a free API key"). No `<h1>`, no button or an icon-only link is left to `five-second-test`. Tune in `docs/gel.json`: `"cta_label": {"pages": [...], "banned": [...], "max_words": 6}`. Pages drawn by script are read from the same `five_second.rendered` measurement (`bench/five-second.json`, `entries[].html`); a missing or stale measurement is `five-second-test`'s finding, not this one's |
+| `next-cta` | a landing page (same pages as `five-second-test`; `next_cta.pages` changes them) does not mark its single most likely next action. Fails when no element has `data-next-cta`; more than one has it; the marked element lacks the class (`next_cta.class`, default `next-cta`); the marked element is not the first `<a>`, `<button>`, `<input>` or `<textarea>` after the first `<h1>`; or the page defines no CSS for the class (inline `<style>` or a repo stylesheet linked with `<link rel="stylesheet">`) with an `animation` and a `prefers-reduced-motion` rule. A page with no `<h1>` is left to `five-second-test`. `next_cta.rendered` (`{ "result": "bench/five-second.json" }`) also judges the DOM a browser drew, for pages drawn by script (markup rules only). Copy the CSS from [next-cta.css](next-cta.css): a conic-gradient border spun with `@property`, colors from CSS variables, static under reduced motion. For an Astryx or other design-system page, put the class in the theme layer, not in one page |
 | `agent-readiness` | a site's agent-discovery files contradict each other: `llms.txt` or `llms-full.txt` advertises a remote MCP server (`https://host/mcp`) but there is no `.well-known/mcp-server-card.json`, `.well-known/mcp/server-card.json` or `.well-known/ai-catalog.json`; a published Server Card (MCP Server Card draft) lacks `$schema`, `name`, `version`, `description` or an https `remotes[].url`; an `ai-catalog.json` is empty or an entry has neither `url` nor `data`; a published `agent-card.json` has no description or no https `supportedInterfaces` (never required: a site with no agent publishes none); or a Jekyll `_config.yml` does not `include: .well-known`, so the files would 404. Offline, whole tree |
 | `north-star` | opt-in (a repo with no `docs/gel.json` is skipped): the repo's one measured headline metric is missing, stale or not met. `docs/gel.json` declares `north_star` with a `metric`, a `baseline`, a `target` (`{"ratio": 8, "better": "lower"}`), an `evidence` (how it is measured: a repo file or https link) and a `result` file (`{"value": 2.5, "baseline": 26.1, "unit": "s", "measuredAt": "..."}`). The guard fails when the result is not in the repo, is older than `max_age_days` (default 30), or `baseline / value` (`value / baseline` for `"higher"`) is under the target ratio. A claim with no number gets no pass. `gel north-star --measure` runs your `measure` command, writes `result` and exits 1 when the target is not met, so a bench workflow can gate on it. When the measure itself exits non-zero but printed a number, the number is still written (and published), the run still exits 1, and the measure's `problem` field is printed: the measure may know something the ratio cannot (a page that scrolls sideways). A measure that finds nothing prints `"value": null` with a `problem` and gel exits 2 showing it. Archived repos need none |
 | `product-brief` | opt-in (applies when `docs/gel.json` has `brief` or a `north_star`): a product has not answered the six plain questions (what, who, why, how, where, when), or an answer has no number behind it. `brief` holds one entry per question with an `answer` (three words or more), a `metric`, a number `target` and optionally `"better": "lower"`; `docs/brief.json` (or `brief.result`) holds one measured number per question: `{"who": {"value": 0, "measuredAt": "2026-11-20", "source": "https://..."}}`. The guard fails when a question has no answer, metric or target, the same sentence answers two questions, a number is missing, has no `source` (a repo file or https link) or is older than `brief.max_age_days` (default 30). A target that is not met yet is not a failure: zero paying teams is an honest number. `gel brief` prints the six rows with MET or NOT MET; `gel grade` grades the brief bad, passed, good (3 of 6 targets met), high (5) or super high (6, all measured within 7 days). Archived repos need none |
@@ -43,3 +44,37 @@ Every guard GEL runs, with the exact rule it fails on. The short list is in the 
 | `queue-required-satisfiable` | online (needs `ctx.queue`, from `gel queue-ready --repo o/n` or `--snapshot`): an active ruleset rule can never be satisfied, such as a required check or code scanning tool that never reported on a `merge_group` or default-branch commit, or a `code_coverage` or `code_quality` rule with no uploader. Without a snapshot it passes |
 
 `migrations-append-only`, `api-contract`, `tests-with-change` and `adr-required` compare a pull request with its base branch, so they run on pull requests only; a push scan passes them. `api-contract` reads a spec it understands and skips one it does not (YAML anchors, for example) rather than guess.
+
+
+### next-cta recipe
+
+Mark one element per page and copy [next-cta.css](next-cta.css):
+
+```html
+<h1>Run your AI for free</h1>
+<a class="next-cta" data-next-cta href="/key">Get a free API key</a>
+```
+
+```css
+@property --next-cta-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
+.next-cta {
+  --next-cta-1: var(--accent, currentColor);
+  --next-cta-2: var(--accent-2, var(--next-cta-1));
+  --next-cta-3: var(--accent-3, var(--next-cta-2));
+  --next-cta-fill: var(--surface, Canvas);
+  border: 2px solid transparent;
+  border-radius: var(--radius, 8px);
+  background:
+    linear-gradient(var(--next-cta-fill), var(--next-cta-fill)) padding-box,
+    conic-gradient(from var(--next-cta-angle), var(--next-cta-1), var(--next-cta-2), var(--next-cta-3), var(--next-cta-1)) border-box;
+  animation: next-cta-spin 3s linear infinite;
+}
+
+@keyframes next-cta-spin { to { --next-cta-angle: 360deg; } }
+
+/* Motion off: keep the marker, stop the spin. */
+@media (prefers-reduced-motion: reduce) {
+  .next-cta { animation: none; }
+}
+```
